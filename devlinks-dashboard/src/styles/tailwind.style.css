@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
+
+@theme {
+  --font-sans:
+    "Inter", "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, sans-serif;
+
+  --color-app-bg: #0f172a;
+  --color-card-bg: #1e293b;
+  --color-input-bg: #0f172a;
+  --color-border-subtle: #334155;
+
+  --color-brand-primary: #2563eb;
+  --color-brand-hover: #1d4ed8;
+  --color-brand-focus: rgba(37, 99, 235, 0.4);
+
+  --color-text-primary: #f8fafc;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted: #64748b;
+
+  --color-error-text: #f87171;
+  --color-error-border: #ef4444;
+  --color-success-text: #4ade80;
+
+  --color-badge-emerald-bg: #132e27;
+  --color-badge-emerald-text: #34d399;
+
+  --color-badge-purple-bg: #231b38;
+  --color-badge-purple-text: #a78bfa;
+
+  --color-badge-pink-bg: #331b2a;
+  --color-badge-pink-text: #f472b6;
+}
+
+@layer base {
+  * {
+    @apply p-0 m-0 box-border font-sans;
+  }
+}

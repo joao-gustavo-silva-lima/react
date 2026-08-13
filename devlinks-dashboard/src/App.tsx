@@ -1,3 +1,5 @@
+import "./styles/tailwind.style.css";
+
 function App() {
   return <h1>Hello World</h1>;
 }
