@@ -1,0 +1,31 @@
+import { useCallback, useEffect, useState } from "react";
+import type { Link, Query } from "../types/links.types";
+import LinksAPI from "../api/links.api";
+
+export function useLinks() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [err, setErr] = useState<Error>();
+  const [links, setLinks] = useState<Link[]>([]);
+
+  const fetchLinks = useCallback((query: Query = {}) => {
+    setIsLoading(true);
+
+    LinksAPI.fetchLinks(query)
+      .then(async (res) => await res.json())
+      .then((fetchedLinks) => setLinks(fetchedLinks))
+      .catch((_) =>
+        setErr(
+          new Error(
+            "Ocorreu um erro durante ao tentar exibir os links. Tente Novamente.",
+          ),
+        ),
+      )
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  useEffect(() => {
+    fetchLinks();
+  }, []);
+
+  return { isLoading, err, links, refetchLinks: fetchLinks };
+}
