@@ -1,8 +1,11 @@
 import "./styles/tailwind.style.css";
-import LinksAPI from "./api/links.api";
+import LinkList from "./components/LinkList";
+import { useLinks } from "./hooks/useLinks.hook";
 
 function App() {
-  return <h1>Hello World</h1>;
+  const { links, isLoading, err, refetchLinks } = useLinks();
+
+  return <LinkList links={links} isLoading={isLoading} err={err} />;
 }
 
 export default App;

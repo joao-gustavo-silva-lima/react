@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import type { Link, Query } from "../types/links.types";
 import LinksAPI from "../api/links.api";
 
-export function useLinks() {
+export function useLinks(query: Query = {}) {
   const [isLoading, setIsLoading] = useState(false);
   const [err, setErr] = useState<Error>();
   const [links, setLinks] = useState<Link[]>([]);
@@ -24,7 +24,7 @@ export function useLinks() {
   }, []);
 
   useEffect(() => {
-    fetchLinks();
+    fetchLinks(query);
   }, []);
 
   return { isLoading, err, links, refetchLinks: fetchLinks };
