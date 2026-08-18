@@ -1,6 +1,6 @@
 import "./styles/tailwind.style.css";
 import LinkList from "./components/LinkList";
-import { useLinks } from "./hooks/useLinks.hook";
+import useLinks from "./hooks/useLinks.hook";
 import Modal from "./components/Modal";
 
 function App() {

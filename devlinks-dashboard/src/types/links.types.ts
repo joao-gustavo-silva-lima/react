@@ -26,3 +26,19 @@ const ProtoLinkSchema = linkSchema
 export type ProtoLink = z.infer<typeof ProtoLinkSchema>;
 
 export type Query = Partial<Pick<Link, "title" | "category"> & { tag: string }>;
+
+export const PREDEFINED_CATEGORIES = [
+  "desenvolvimento",
+  "design",
+  "documentação",
+  "ferramentas",
+  "carreira",
+  "estudo",
+  "pessoal",
+] as const;
+
+export type LinkCategories = (typeof PREDEFINED_CATEGORIES)[number];
+
+export type ModalFormData = Partial<
+  Omit<ProtoLink, "tags"> & { tags?: string }
+>;

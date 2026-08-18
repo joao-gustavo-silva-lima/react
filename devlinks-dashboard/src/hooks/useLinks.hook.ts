@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import type { Link, Query } from "../types/links.types";
 import LinksAPI from "../api/links.api";
 
-export function useLinks(query: Query = {}) {
+export default function useLinks(query: Query = {}) {
   const [isLoading, setIsLoading] = useState(false);
   const [err, setErr] = useState<string>();
   const [links, setLinks] = useState<Link[]>([]);
