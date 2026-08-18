@@ -4,7 +4,7 @@ import LinksAPI from "../api/links.api";
 
 export function useLinks(query: Query = {}) {
   const [isLoading, setIsLoading] = useState(false);
-  const [err, setErr] = useState<Error>();
+  const [err, setErr] = useState<string>();
   const [links, setLinks] = useState<Link[]>([]);
 
   const fetchLinks = useCallback((query: Query = {}) => {
@@ -15,9 +15,7 @@ export function useLinks(query: Query = {}) {
       .then((fetchedLinks) => setLinks(fetchedLinks))
       .catch((_) =>
         setErr(
-          new Error(
-            "Ocorreu um erro durante ao tentar exibir os links. Tente Novamente.",
-          ),
+          "Ocorreu um erro durante ao tentar exibir os links. Tente Novamente.",
         ),
       )
       .finally(() => setIsLoading(false));
