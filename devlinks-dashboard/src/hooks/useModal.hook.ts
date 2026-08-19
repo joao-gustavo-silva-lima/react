@@ -5,36 +5,70 @@ import {
   type ModalFormData,
   type ProtoLink,
 } from "../types/links.types";
+import LinksAPI from "../api/links.api";
 
 type Errors = Partial<Record<keyof ModalFormData, string>>;
 
 export default function useModal() {
   const [inputErrors, setInputErrors] = useState<Errors>({});
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [generalMessage, setGeneralMessage] = useState<string>();
 
-  function submit(e: React.SubmitEvent<HTMLFormElement>) {
+  async function submit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const formData = catchFormData(e.currentTarget);
+    const newInputErrors = catchInputErrors(formData);
 
-    setInputErrors(catchInputErrors(formData));
+    setInputErrors(newInputErrors);
 
-    if (Object.keys(inputErrors).length > 0) {
+    if (Object.keys(newInputErrors).length > 0) {
       return false;
     }
 
-    const protoData = formDataToProtoLink(formData);
+    const linkPrototype = formDataToLinkPrototype(formData);
+
+    setIsRegistering(true);
+
+    const res = await LinksAPI.registerLink(linkPrototype);
+
+    setIsRegistering(false);
+
+    setGeneralMessage(undefined);
+
+    if (res.ok) {
+      setGeneralMessage("O link foi criado com sucesso.");
+      return true;
+    }
+
+    switch (res.status) {
+      case 400:
+        setGeneralMessage(
+          "A formatação do formulário é inválida. Contate o suporte.",
+        );
+        break;
+
+      case 409:
+        setInputErrors({ url: "Um link já foi registrado com essa URL." });
+        break;
+
+      case 500:
+        setGeneralMessage(
+          "Um erro interno do servidor ocorreu. Tente novamente em instantes.",
+        );
+        break;
+    }
 
     return false;
   }
 
-  return { inputErrors: inputErrors, submit };
+  return { isRegistering, generalMessage, inputErrors: inputErrors, submit };
 }
 
-function catchFormData(form: EventTarget & HTMLFormElement) {
-  const rawData = new FormData(form);
-  const data = Object.fromEntries(rawData.entries());
+function catchFormData(form: EventTarget & HTMLFormElement): ModalFormData {
+  const formData = new FormData(form);
 
-  return data;
+  return Object.fromEntries(formData.entries());
 }
 
 function catchInputErrors(data: ModalFormData) {
@@ -86,7 +120,15 @@ function catchInputErrors(data: ModalFormData) {
   return newErrors;
 }
 
-function formDataToProtoLink(data: ModalFormData): ProtoLink | null {
-  //WIP
-  return null;
+function formDataToLinkPrototype(data: ModalFormData): ProtoLink {
+  const { title, url, category, tags } = data as Required<ModalFormData>;
+
+  const linkPrototype: ProtoLink = {
+    title: title.trim(),
+    url: url.trim(),
+    category: category,
+    tags: tags.trim().split(/,\s*/),
+  };
+
+  return linkPrototype;
 }

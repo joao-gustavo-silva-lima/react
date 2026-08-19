@@ -26,15 +26,17 @@ function Modal({
   title: string;
   refetchLinks: () => void;
 }) {
-  const { inputErrors, submit } = useModal();
+  const { isRegistering, generalMessage, inputErrors, submit } = useModal();
   /* Modal title changes on visibility state toggling*/
 
   //Inputs receive formData trigger for validanting fields on useState
 
   return (
     <aside>
+      {/* isRegistering && loadingSurfaceSaver */}
+
       <h3>{title}</h3>
-      <form onSubmit={(e) => submit(e) && refetchLinks()}>
+      <form onSubmit={async (e) => (await submit(e)) && refetchLinks()}>
         <MonitoredInput label="Título" error={inputErrors.title}>
           <input type="text" name="title" id="title" />
         </MonitoredInput>
@@ -54,6 +56,7 @@ function Modal({
         <MonitoredInput label="Tags" error={inputErrors.tags}>
           <input type="text" name="tags" id="tags" />
         </MonitoredInput>
+        {generalMessage && <span>{generalMessage}</span>}
         <div>
           <button type="button">Cancelar</button>
           <button type="submit">Registrar</button>
