@@ -1,6 +1,23 @@
-import { useState, type InputHTMLAttributes } from "react";
 import useModal from "../hooks/useModal.hook";
 import { PREDEFINED_CATEGORIES } from "../types/links.types";
+
+function MonitoredInput({
+  label,
+  error,
+  children,
+}: {
+  label: string;
+  error?: string;
+  children: React.ReactElement<React.InputHTMLAttributes<HTMLInputElement>>;
+}) {
+  return (
+    <div>
+      <label htmlFor={children.props.id}>{label}</label>
+      {children}
+      {error && <span>{error}</span>}
+    </div>
+  );
+}
 
 function Modal({
   title,
@@ -9,7 +26,7 @@ function Modal({
   title: string;
   refetchLinks: () => void;
 }) {
-  const { errors, submit } = useModal();
+  const { inputErrors, submit } = useModal();
   /* Modal title changes on visibility state toggling*/
 
   //Inputs receive formData trigger for validanting fields on useState
@@ -17,18 +34,26 @@ function Modal({
   return (
     <aside>
       <h3>{title}</h3>
-      <form onSubmit={(e) => submit(e)}>
-        <input type="text" name="title" id="title" />
-        <input type="text" name="url" id="url" />
-        <select name="category" id="category">
-          <option value="">-- Categoria --</option>
-          {PREDEFINED_CATEGORIES.map((category, i) => (
-            <option key={i} value={category.toLowerCase()}>
-              {category}
-            </option>
-          ))}
-        </select>
-        <input type="text" name="tags" id="tags" />
+      <form onSubmit={(e) => submit(e) && refetchLinks()}>
+        <MonitoredInput label="Título" error={inputErrors.title}>
+          <input type="text" name="title" id="title" />
+        </MonitoredInput>
+        <MonitoredInput label="URL" error={inputErrors.url}>
+          <input type="text" name="url" id="url" />
+        </MonitoredInput>
+        <MonitoredInput label="Categoria" error={inputErrors.category}>
+          <select name="category" id="category">
+            <option value="">-- Categoria --</option>
+            {PREDEFINED_CATEGORIES.map((category, i) => (
+              <option key={i} value={category.toLowerCase()}>
+                {category}
+              </option>
+            ))}
+          </select>
+        </MonitoredInput>
+        <MonitoredInput label="Tags" error={inputErrors.tags}>
+          <input type="text" name="tags" id="tags" />
+        </MonitoredInput>
         <div>
           <button type="button">Cancelar</button>
           <button type="submit">Registrar</button>
