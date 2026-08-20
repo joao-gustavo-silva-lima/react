@@ -1,21 +1,21 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import {
-  PREDEFINED_CATEGORIES,
-  type LinkCategories,
+  EXPECTED_FORM_INPUT_IDS,
+  modalFormDataSchema,
   type ModalFormData,
   type ProtoLink,
 } from "../types/links.types";
 import LinksAPI from "../api/links.api";
 
-type Errors = Partial<Record<keyof ModalFormData, string>>;
-
 export default function useModal() {
-  const [inputErrors, setInputErrors] = useState<Errors>({});
+  const [inputErrors, setInputErrors] = useState<Record<string, string>>({});
   const [isRegistering, setIsRegistering] = useState(false);
   const [generalMessage, setGeneralMessage] = useState<string>();
 
   async function submit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
+
+    if (isRegistering) return false;
 
     const formData = catchFormData(e.currentTarget);
     const newInputErrors = catchInputErrors(formData);
@@ -26,7 +26,7 @@ export default function useModal() {
       return false;
     }
 
-    const linkPrototype = formDataToLinkPrototype(formData);
+    const linkPrototype = formDataToLinkPrototype(formData as ModalFormData);
 
     setIsRegistering(true);
 
@@ -65,57 +65,23 @@ export default function useModal() {
   return { isRegistering, generalMessage, inputErrors: inputErrors, submit };
 }
 
-function catchFormData(form: EventTarget & HTMLFormElement): ModalFormData {
+function catchFormData(form: EventTarget & HTMLFormElement) {
   const formData = new FormData(form);
 
   return Object.fromEntries(formData.entries());
 }
 
-function catchInputErrors(data: ModalFormData) {
-  const urlRegex =
-    /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
+function catchInputErrors(data: { [k: string]: FormDataEntryValue }) {
+  const newErrors: Record<string, string> = {};
+  const validation = modalFormDataSchema.safeParse(data);
 
-  const { title, url, category, tags } = data;
+  validation.error?.issues.forEach(({ path, message }) => {
+    const inputID = path[0] ?? "unexpectedError";
 
-  const newErrors: Errors = {};
-
-  const cleanTitle = title?.trim() ?? "";
-
-  if (!cleanTitle) {
-    newErrors.title = "O título é obrigatório.";
-  } else if (cleanTitle.length < 3) {
-    newErrors.title = "O título deve ter pelo menos 3 caracteres visíveis.";
-  } else if (cleanTitle.length > 50) {
-    newErrors.title = "O título é muito longo (máximo de 50 caracteres).";
-  }
-
-  const cleanUrl = url?.trim() ?? "";
-
-  if (!cleanUrl) {
-    newErrors.url = "A URL de destino é obrigatória.";
-  } else if (!urlRegex.test(cleanUrl)) {
-    newErrors.url =
-      "Informe uma URL válida contendo http:// ou https:// (ex: https://github.com).";
-  }
-
-  if (!category || /^--.*--$/.test(category.trim())) {
-    newErrors.category = "Selecione uma categoria válida para o link.";
-  } else if (!PREDEFINED_CATEGORIES.includes(category as LinkCategories)) {
-    newErrors.category =
-      "A categoria selecionada não pertence à lista permitida.";
-  }
-
-  const cleanTags = tags?.trim() ?? "";
-
-  if (cleanTags) {
-    const isPatternValid =
-      /^[a-zA-Z0-9-]{2,20}(?:,\s*[a-zA-Z0-9-]{2,20}){0,4}$/.test(cleanTags);
-
-    if (!isPatternValid) {
-      newErrors.tags =
-        "Separe até 5 tags por vírgula (ex: react, typescript). Cada tag deve ter de 2 a 20 caracteres sem espaços.";
+    if (EXPECTED_FORM_INPUT_IDS.includes(inputID as any)) {
+      newErrors[inputID as keyof ModalFormData] = message;
     }
-  }
+  });
 
   return newErrors;
 }
