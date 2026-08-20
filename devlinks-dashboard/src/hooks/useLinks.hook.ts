@@ -13,11 +13,7 @@ export default function useLinks(query: Query = {}) {
     LinksAPI.fetchLinks(query)
       .then(async (res) => await res.json())
       .then((fetchedLinks) => setLinks(fetchedLinks))
-      .catch((_) =>
-        setErr(
-          "Ocorreu um erro durante ao tentar exibir os links. Tente Novamente.",
-        ),
-      )
+      .catch((_) => setErr("Ocorreu um erro ao tentar exibir os links..."))
       .finally(() => setIsLoading(false));
   }, []);
 

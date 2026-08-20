@@ -26,7 +26,7 @@ function Modal({
   title: string;
   refetchLinks: () => void;
 }) {
-  const { isRegistering, generalMessage, inputErrors, submit } = useModal();
+  const { generalMessage, inputErrors, submit } = useModal();
   /* Modal title changes on visibility state toggling*/
 
   //Inputs receive formData trigger for validanting fields on useState
