@@ -1,5 +1,5 @@
 import useModal from "../hooks/useModal.hook";
-import { PREDEFINED_CATEGORIES } from "../types/links.types";
+import { PREDEFINED_CATEGORIES, type Link } from "../types/links.types";
 
 function MonitoredInput({
   label,
@@ -20,22 +20,22 @@ function MonitoredInput({
 }
 
 function Modal({
-  title,
+  mode,
+  links,
   refetchLinks,
 }: {
-  title: string;
+  mode: string;
+  links: Link[];
   refetchLinks: () => void;
 }) {
-  const { generalMessage, inputErrors, submit } = useModal();
+  const { generalMessage, inputErrors, submit } = useModal(links);
   /* Modal title changes on visibility state toggling*/
-
-  //Inputs receive formData trigger for validanting fields on useState
 
   return (
     <aside>
       {/* isRegistering && loadingSurfaceSaver */}
 
-      <h3>{title}</h3>
+      <h3>{mode}</h3>
       <form onSubmit={async (e) => (await submit(e)) && refetchLinks()}>
         <MonitoredInput label="Título" error={inputErrors.title}>
           <input type="text" name="title" id="title" />

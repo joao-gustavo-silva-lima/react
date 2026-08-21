@@ -2,18 +2,19 @@ import { useState } from "react";
 import {
   EXPECTED_FORM_INPUT_IDS,
   modalFormDataSchema,
+  type Link,
   type ModalFormData,
   type ProtoLink,
 } from "../types/links.types";
 import LinksAPI from "../api/links.api";
 import type z from "zod";
 
-export default function useModal() {
+export default function useModal(links: Link[]) {
   const [inputErrors, setInputErrors] = useState<Record<string, string>>({});
   const [isRegistering, setIsRegistering] = useState(false);
   const [generalMessage, setGeneralMessage] = useState<string>();
 
-  async function submit(e: React.FormEvent<HTMLFormElement>) {
+  async function submit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
 
     if (isRegistering) return false;
@@ -27,6 +28,11 @@ export default function useModal() {
     if (!validation.success) {
       const errors = parseZodErrors(validation.error.issues);
       setInputErrors(errors);
+      return false;
+    }
+
+    if (links.some((link) => link.url === formDataRaw["url"])) {
+      setInputErrors({ url: "A URL já foi registrada anteriormente." });
       return false;
     }
 
@@ -44,7 +50,7 @@ export default function useModal() {
 
       switch (res.status) {
         case 409:
-          setInputErrors({ url: "Um link já foi registrado com essa URL." });
+          setInputErrors({ url: "A URL já foi registrada anteriormente." });
           break;
         case 400:
           setGeneralMessage("A formatação do formulário é inválida.");

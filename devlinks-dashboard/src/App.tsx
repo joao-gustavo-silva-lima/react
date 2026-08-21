@@ -10,7 +10,11 @@ function App() {
     <>
       <LinkList links={links} isLoading={isLoading} err={err} />
       <br />
-      <Modal title="Registrar Novo Link" refetchLinks={refetchLinks} />
+      <Modal
+        mode="Registrar Novo Link"
+        links={links}
+        refetchLinks={refetchLinks}
+      />
     </>
   );
 }
