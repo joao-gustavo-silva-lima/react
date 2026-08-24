@@ -5,7 +5,7 @@ import {
   type FormInputNames,
   type ModalFormData,
 } from "../types/links.types";
-import { success, z } from "zod";
+import { z } from "zod";
 
 type SomeFormInput = HTMLInputElement | HTMLSelectElement;
 type SomeInputEvent<T> = React.ChangeEvent<T> | React.FocusEvent<T>;

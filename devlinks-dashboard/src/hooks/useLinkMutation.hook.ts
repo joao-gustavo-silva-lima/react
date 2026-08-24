@@ -20,10 +20,12 @@ export default function useLinkMutation() {
     setIsMutating(true);
 
     try {
-      const res = await LinksAPI.registerLink(linkPrototype);
+      const res = await (id
+        ? LinksAPI.updateUniqueLink(id, linkPrototype)
+        : LinksAPI.registerLink(linkPrototype));
 
       if (res.ok) {
-        alert("O link foi criado com sucesso.");
+        alert(`O link foi ${id ? "atualizado" : "registrado"} com sucesso.`);
         return true;
       }
 
