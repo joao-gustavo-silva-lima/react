@@ -4,13 +4,17 @@ function Badge({ tag }: { tag: string }) {
   return <li>{tag}</li>;
 }
 
-function LinkList(props: { links: Link[]; isLoading: boolean; err?: string }) {
-  if (props.isLoading) {
+function LinkList(props: {
+  links: Link[];
+  isQuerying: boolean;
+  errors?: string;
+}) {
+  if (props.isQuerying) {
     return <p>Carregando Links...</p>;
   }
 
-  if (props.err) {
-    return <p>{props.err}</p>;
+  if (props.errors) {
+    return <p>{props.errors}</p>;
   }
 
   return (

@@ -1,14 +1,14 @@
 import "./styles/tailwind.style.css";
 import LinkList from "./components/LinkList";
-import useLinks from "./hooks/useLinks.hook";
+import useLinksQuery from "./hooks/useLinksQuery.hook";
 import Modal from "./components/Modal";
 
 function App() {
-  const { links, isLoading, err, refetchLinks } = useLinks();
+  const { links, isQuerying, errors, refetchLinks } = useLinksQuery();
 
   return (
     <>
-      <LinkList links={links} isLoading={isLoading} err={err} />
+      <LinkList links={links} isQuerying={isQuerying} errors={errors} />
       <br />
       <Modal title="Registrar Novo Link" refetchLinks={refetchLinks} />
     </>
