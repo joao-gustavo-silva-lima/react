@@ -1,9 +1,18 @@
 import { z } from "zod";
 
-const urlRegex =
-  /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
+export const PREDEFINED_CATEGORIES = [
+  "desenvolvimento",
+  "design",
+  "documentação",
+  "ferramentas",
+  "carreira",
+  "estudo",
+  "pessoal",
+] as const;
 
-const tagItemRegex = /^[a-zA-Z0-9-]{2,20}$/;
+const URL_REGEX =
+  /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
+const TAG_ITEM_REGEX = /^[a-zA-Z0-9-]{2,20}$/;
 
 export const linkSchema = z.object({
   id: z.union([z.string(), z.string().uuid()]).default(""),
@@ -28,7 +37,7 @@ export const linkSchema = z.object({
       z
         .string()
         .regex(
-          urlRegex,
+          URL_REGEX,
           "Informe uma URL válida contendo http:// ou https:// (ex: https://github.com).",
         ),
     )
@@ -58,7 +67,7 @@ export const linkSchema = z.object({
           z
             .string()
             .regex(
-              tagItemRegex,
+              TAG_ITEM_REGEX,
               "Cada tag deve ter de 2 a 20 caracteres (apenas letras, números e hífen).",
             ),
         ),
@@ -71,8 +80,6 @@ export const linkSchema = z.object({
   createdAt: z.union([z.string(), z.date()]).default(""),
 });
 
-export type Link = z.infer<typeof linkSchema>;
-
 const ProtoLinkSchema = linkSchema
   .omit({
     id: true,
@@ -83,20 +90,6 @@ const ProtoLinkSchema = linkSchema
     category: true,
     tags: true,
   });
-
-export type ProtoLink = z.infer<typeof ProtoLinkSchema>;
-
-export type Query = Partial<Pick<Link, "title" | "category"> & { tag: string }>;
-
-export const PREDEFINED_CATEGORIES = [
-  "desenvolvimento",
-  "design",
-  "documentação",
-  "ferramentas",
-  "carreira",
-  "estudo",
-  "pessoal",
-] as const;
 
 export const modalFormDataSchema = linkSchema
   .pick({
@@ -125,8 +118,7 @@ export const modalFormDataSchema = linkSchema
       ),
   });
 
-export type ModalFormData = z.infer<typeof modalFormDataSchema>;
-
-export type FormInputNames = keyof ModalFormData;
-
-export const EXPECTED_FORM_INPUT_IDS = Object.keys(modalFormDataSchema.shape);
+export type Link = z.infer<typeof linkSchema>;
+export type ProtoLink = z.infer<typeof ProtoLinkSchema>;
+export type FormData = z.infer<typeof modalFormDataSchema>;
+export type Query = Partial<Pick<Link, "title" | "category"> & { tag: string }>;

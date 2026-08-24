@@ -1,20 +1,16 @@
 import { useState } from "react";
-import {
-  EXPECTED_FORM_INPUT_IDS,
-  modalFormDataSchema,
-  type FormInputNames,
-  type ModalFormData,
-} from "../types/links.types";
+import { modalFormDataSchema, type FormData } from "../types/links.types";
 import { z } from "zod";
-
-type SomeFormInput = HTMLInputElement | HTMLSelectElement;
-type SomeInputEvent<T> = React.ChangeEvent<T> | React.FocusEvent<T>;
 
 export default function useFormValidation() {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  function validateInput(e: SomeInputEvent<SomeFormInput>) {
-    const inputName = e.target.name as FormInputNames;
+  function validateInput(
+    e:
+      | React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+      | React.FocusEvent<HTMLInputElement | HTMLSelectElement>,
+  ) {
+    const inputName = e.target.name as keyof FormData;
     const validation = modalFormDataSchema.shape[inputName].safeParse(
       e.target.value,
     );
@@ -45,7 +41,7 @@ export default function useFormValidation() {
       return { success: false };
     }
 
-    return { success: true, validFormData: formDataRaw as ModalFormData };
+    return { success: true, validFormData: formDataRaw as FormData };
   }
 
   return { inputErrors: errors, validateInput, validateSubmission };
@@ -57,9 +53,7 @@ function parseZodErrors(issues: z.core.$ZodIssue[]) {
   for (const issue of issues) {
     const inputID = String(issue.path[0] ?? "");
 
-    if (EXPECTED_FORM_INPUT_IDS.includes(inputID as any)) {
-      errors[inputID] = issue.message;
-    }
+    errors[inputID] = issue.message;
   }
 
   return errors;

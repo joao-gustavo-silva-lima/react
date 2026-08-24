@@ -1,15 +1,15 @@
 import { useState } from "react";
-import { type ModalFormData, type ProtoLink } from "../types/links.types";
+import { type FormData, type ProtoLink } from "../types/links.types";
 import LinksAPI from "../api/links.api";
 
 export default function useLinkMutation() {
   const [isMutating, setIsMutating] = useState(false);
   const [conflictingURLs, setConflictingURLs] = useState<string[]>([]);
 
-  const register = (formData: ModalFormData) => mutate(formData);
-  const update = (formData: ModalFormData, id: string) => mutate(formData, id);
+  const register = (formData: FormData) => mutate(formData);
+  const update = (formData: FormData, id: string) => mutate(formData, id);
 
-  async function mutate(formData: ModalFormData, id?: string) {
+  async function mutate(formData: FormData, id?: string) {
     const linkPrototype = formDataToLinkPrototype(formData);
 
     if (conflictingURLs.includes(linkPrototype.url)) {
@@ -57,7 +57,7 @@ export default function useLinkMutation() {
   return { isMutating, register, update };
 }
 
-function formDataToLinkPrototype(data: ModalFormData): ProtoLink {
+function formDataToLinkPrototype(data: FormData): ProtoLink {
   return {
     title: data.title.trim(),
     url: data.url.trim(),
