@@ -3,8 +3,9 @@ import {
   EXPECTED_FORM_INPUT_IDS,
   modalFormDataSchema,
   type FormInputNames,
+  type ModalFormData,
 } from "../types/links.types";
-import { z } from "zod";
+import { success, z } from "zod";
 
 type SomeFormInput = HTMLInputElement | HTMLSelectElement;
 type SomeInputEvent<T> = React.ChangeEvent<T> | React.FocusEvent<T>;
@@ -41,10 +42,10 @@ export default function useFormValidation() {
     if (!validation.success) {
       const errors = parseZodErrors(validation.error.issues);
       setErrors(errors);
-      return false;
+      return { success: false };
     }
 
-    return true;
+    return { success: true, validFormData: formDataRaw as ModalFormData };
   }
 
   return { inputErrors: errors, validateInput, validateSubmission };
