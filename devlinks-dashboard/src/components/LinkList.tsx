@@ -1,36 +1,50 @@
 import type { Link } from "../types/links.types";
+import { SquarePen, Trash2 } from "lucide-react";
 
-function Badge({ tag }: { tag: string }) {
-  return <li>{tag}</li>;
-}
-
-function LinkList(props: {
+function LinkList({
+  links,
+  errors,
+  isQuerying,
+  openUpdatingModal,
+}: {
   links: Link[];
-  isQuerying: boolean;
   errors?: string;
+  isQuerying: boolean;
+  openUpdatingModal: (link: Link) => void;
 }) {
-  if (props.isQuerying) {
+  if (isQuerying) {
     return <p>Carregando Links...</p>;
   }
 
-  if (props.errors) {
-    return <p>{props.errors}</p>;
+  if (errors) {
+    return <p>{errors}</p>;
   }
 
   return (
-    <ul>
-      {props.links.map((link, i) => (
-        <li key={i}>
+    <ul className="flex flex-col gap-[15px]">
+      {links.map((link) => (
+        <li className="flex flex-col" key={link.id}>
           <span>{link.title}</span>
           <span>{link.url}</span>
+          <span>{link.category}</span>
           {link.tags.length > 0 && (
             <ul>
               {link.tags.map((tag, i) => (
-                <Badge key={i} tag={tag} />
+                <li key={i}>
+                  <span>#{tag}</span>
+                </li>
               ))}
             </ul>
           )}
           <span>Clicks: {link.clicks}</span>
+          <div>
+            <button type="button" onClick={() => openUpdatingModal(link)}>
+              <SquarePen />
+            </button>
+            <button type="button">
+              <Trash2 />
+            </button>
+          </div>
         </li>
       ))}
     </ul>

@@ -7,7 +7,7 @@ export default function useLinkMutation() {
   const [conflictingURLs, setConflictingURLs] = useState<string[]>([]);
 
   const register = (formData: FormData) => mutate(formData);
-  const update = (formData: FormData, id: string) => mutate(formData, id);
+  const update = (id: string, formData: FormData) => mutate(formData, id);
 
   async function mutate(formData: FormData, id?: string) {
     const linkPrototype = formDataToLinkPrototype(formData);

@@ -1,6 +1,6 @@
 import useFormValidation from "../hooks/useFormValidation.hook";
 import useLinkMutation from "../hooks/useLinkMutation.hook";
-import { PREDEFINED_CATEGORIES } from "../types/links.types";
+import { PREDEFINED_CATEGORIES, type Link } from "../types/links.types";
 
 function MonitoredInput({
   label,
@@ -22,16 +22,25 @@ function MonitoredInput({
 
 function Modal({
   enabled,
+  updatingLink,
   setEnabled,
+  stopUpdating,
   refetchLinks,
 }: {
   enabled: boolean;
+  updatingLink: Link | undefined;
+  stopUpdating: () => void;
   refetchLinks: () => void;
   setEnabled: (enabled: boolean) => void;
 }) {
   const { inputErrors, validateInput, validateSubmission } =
     useFormValidation();
-  const { isMutating, register } = useLinkMutation();
+  const { isMutating, register, update } = useLinkMutation();
+
+  function closeModal() {
+    stopUpdating();
+    setEnabled(false);
+  }
 
   function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -42,10 +51,14 @@ function Modal({
       return;
     }
 
-    register(validation.validFormData!).then((ok) => {
+    (updatingLink === undefined
+      ? register(validation.validFormData!)
+      : update(updatingLink.id, validation.validFormData!)
+    ).then((ok) => {
       if (ok) {
+        e.target.reset();
         refetchLinks();
-        setEnabled(false);
+        closeModal();
       }
     });
   }
@@ -56,7 +69,9 @@ function Modal({
         display: enabled ? "block" : "none",
       }}
     >
-      <h3>Registrar Novo Link</h3>
+      <h3>
+        {updatingLink === undefined ? "Registrar Novo Link" : "Atualizar Link"}
+      </h3>
       <form onSubmit={handleSubmit}>
         <fieldset disabled={isMutating}>
           <MonitoredInput label="Título" error={inputErrors.title}>
@@ -66,6 +81,7 @@ function Modal({
               type="text"
               name="title"
               id="title"
+              defaultValue={updatingLink?.title ?? ""}
             />
           </MonitoredInput>
           <MonitoredInput label="URL" error={inputErrors.url}>
@@ -75,6 +91,7 @@ function Modal({
               type="text"
               name="url"
               id="url"
+              defaultValue={updatingLink?.url ?? ""}
             />
           </MonitoredInput>
           <MonitoredInput label="Categoria" error={inputErrors.category}>
@@ -83,8 +100,9 @@ function Modal({
               onChange={validateInput}
               name="category"
               id="category"
+              defaultValue={updatingLink?.category ?? "-"}
             >
-              <option value="">-- Categoria --</option>
+              <option value="-">-- Categoria --</option>
               {PREDEFINED_CATEGORIES.map((category, i) => (
                 <option key={i} value={category.toLowerCase()}>
                   {category}
@@ -99,12 +117,16 @@ function Modal({
               type="text"
               name="tags"
               id="tags"
+              defaultValue={updatingLink?.tags.join(", ") ?? ""}
             />
           </MonitoredInput>
-          {/* {generalMessage && <span>{generalMessage}</span>} */}
           <div>
-            <button type="button">Cancelar</button>
-            <button type="submit">Registrar</button>
+            <button type="button" onClick={closeModal}>
+              Cancelar
+            </button>
+            <button type="submit">
+              {updatingLink === undefined ? "Registrar" : "Atualizar"}
+            </button>
           </div>
         </fieldset>
       </form>

@@ -11,7 +11,13 @@ export default function useLinksQuery(query: Query = {}) {
     setIsQuerying(true);
 
     LinksAPI.fetchLinks(query)
-      .then(async (res) => await res.json())
+      .then(async (res) => {
+        if (res.ok) {
+          return await res.json();
+        }
+
+        throw null;
+      })
       .then((fetchedLinks) => setLinks(fetchedLinks))
       .catch((_) => setErrors("Ocorreu um erro ao tentar exibir os links..."))
       .finally(() => setIsQuerying(false));
