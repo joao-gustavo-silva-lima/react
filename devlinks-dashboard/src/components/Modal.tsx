@@ -26,12 +26,23 @@ function Modal({
   title: string;
   refetchLinks: () => void;
 }) {
-  const { inputErrors, validateInput, validateAll } = useFormValidation();
+  const { inputErrors, validateInput, validateSubmission } =
+    useFormValidation();
+
+  function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    if (!validateSubmission(e.currentTarget)) {
+      return false;
+    }
+
+    //Registering Action Here
+  }
 
   return (
     <aside>
       <h3>{title}</h3>
-      <form>
+      <form onSubmit={handleSubmit}>
         <MonitoredInput label="Título" error={inputErrors.title}>
           <input
             onBlur={validateInput}

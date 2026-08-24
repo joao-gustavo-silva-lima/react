@@ -19,13 +19,7 @@ export default function useFormValidation() {
     );
 
     if (validation.success) {
-      setErrors((prevErrors) => {
-        const newErrors = { ...prevErrors };
-
-        delete newErrors[inputName];
-
-        return newErrors;
-      });
+      setErrors(({ [inputName]: _, ...remainingErrors }) => remainingErrors);
       return true;
     }
 
@@ -40,11 +34,9 @@ export default function useFormValidation() {
     return false;
   }
 
-  function validateAll(form: HTMLFormElement) {
+  function validateSubmission(form: HTMLFormElement) {
     const formDataRaw = Object.fromEntries(new FormData(form));
     const validation = modalFormDataSchema.safeParse(formDataRaw);
-
-    console.log(formDataRaw);
 
     if (!validation.success) {
       const errors = parseZodErrors(validation.error.issues);
@@ -55,7 +47,7 @@ export default function useFormValidation() {
     return true;
   }
 
-  return { inputErrors: errors, validateInput, validateAll };
+  return { inputErrors: errors, validateInput, validateSubmission };
 }
 
 function parseZodErrors(issues: z.core.$ZodIssue[]) {
