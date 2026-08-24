@@ -127,4 +127,6 @@ export const modalFormDataSchema = linkSchema
 
 export type ModalFormData = z.infer<typeof modalFormDataSchema>;
 
+export type FormInputNames = keyof ModalFormData;
+
 export const EXPECTED_FORM_INPUT_IDS = Object.keys(modalFormDataSchema.shape);

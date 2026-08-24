@@ -1,5 +1,4 @@
-import useFormValidation from "../hooks/useFormValidation";
-import useModal from "../hooks/useModal.hook";
+import useFormValidation from "../hooks/useFormValidation.hook";
 import { PREDEFINED_CATEGORIES } from "../types/links.types";
 
 function MonitoredInput({
@@ -27,31 +26,37 @@ function Modal({
   title: string;
   refetchLinks: () => void;
 }) {
-  const { inputErrors, validate } = useFormValidation();
-  //const { generalMessage, inputErrors, submit } = useModal();
-
-  function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    if (!validate(e)) {
-      return false;
-    }
-
-    console.log("Valid!");
-  }
+  const { inputErrors, validateInput, validateAll } = useFormValidation();
 
   return (
     <aside>
       <h3>{title}</h3>
-      <form onSubmit={handleSubmit}>
+      <form>
         <MonitoredInput label="Título" error={inputErrors.title}>
-          <input type="text" name="title" id="title" />
+          <input
+            onBlur={validateInput}
+            onChange={validateInput}
+            type="text"
+            name="title"
+            id="title"
+          />
         </MonitoredInput>
         <MonitoredInput label="URL" error={inputErrors.url}>
-          <input type="text" name="url" id="url" />
+          <input
+            onBlur={validateInput}
+            onChange={validateInput}
+            type="text"
+            name="url"
+            id="url"
+          />
         </MonitoredInput>
         <MonitoredInput label="Categoria" error={inputErrors.category}>
-          <select name="category" id="category">
+          <select
+            onBlur={validateInput}
+            onChange={validateInput}
+            name="category"
+            id="category"
+          >
             <option value="">-- Categoria --</option>
             {PREDEFINED_CATEGORIES.map((category, i) => (
               <option key={i} value={category.toLowerCase()}>
@@ -61,7 +66,13 @@ function Modal({
           </select>
         </MonitoredInput>
         <MonitoredInput label="Tags" error={inputErrors.tags}>
-          <input type="text" name="tags" id="tags" />
+          <input
+            onBlur={validateInput}
+            onChange={validateInput}
+            type="text"
+            name="tags"
+            id="tags"
+          />
         </MonitoredInput>
         {/* {generalMessage && <span>{generalMessage}</span>} */}
         <div>
