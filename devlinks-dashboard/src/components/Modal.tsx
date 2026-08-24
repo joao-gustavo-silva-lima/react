@@ -1,3 +1,4 @@
+import useFormValidation from "../hooks/useFormValidation";
 import useModal from "../hooks/useModal.hook";
 import { PREDEFINED_CATEGORIES } from "../types/links.types";
 
@@ -26,17 +27,23 @@ function Modal({
   title: string;
   refetchLinks: () => void;
 }) {
-  const { generalMessage, inputErrors, submit } = useModal();
-  /* Modal title changes on visibility state toggling*/
+  const { inputErrors, validate } = useFormValidation();
+  //const { generalMessage, inputErrors, submit } = useModal();
 
-  //Inputs receive formData trigger for validanting fields on useState
+  function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    if (!validate(e)) {
+      return false;
+    }
+
+    console.log("Valid!");
+  }
 
   return (
     <aside>
-      {/* isRegistering && loadingSurfaceSaver */}
-
       <h3>{title}</h3>
-      <form onSubmit={async (e) => (await submit(e)) && refetchLinks()}>
+      <form onSubmit={handleSubmit}>
         <MonitoredInput label="Título" error={inputErrors.title}>
           <input type="text" name="title" id="title" />
         </MonitoredInput>
@@ -56,7 +63,7 @@ function Modal({
         <MonitoredInput label="Tags" error={inputErrors.tags}>
           <input type="text" name="tags" id="tags" />
         </MonitoredInput>
-        {generalMessage && <span>{generalMessage}</span>}
+        {/* {generalMessage && <span>{generalMessage}</span>} */}
         <div>
           <button type="button">Cancelar</button>
           <button type="submit">Registrar</button>
