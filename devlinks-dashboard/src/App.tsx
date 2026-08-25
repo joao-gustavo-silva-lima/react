@@ -16,15 +16,16 @@ function App() {
         key={updatingLink?.id ?? "modal"}
         enabled={isModalEnabled}
         updatingLink={updatingLink}
-        stopUpdating={() => setUpdatingLink(undefined)}
         refetchLinks={refetchLinks}
         setEnabled={setIsModalEnabled}
+        stopUpdating={() => setUpdatingLink(undefined)}
       />
       <br />
       <LinkList
         links={links}
-        isQuerying={isQuerying}
         errors={errors}
+        refetchLinks={refetchLinks}
+        isQuerying={isQuerying}
         openUpdatingModal={(link: Link) => {
           setUpdatingLink(link);
           setIsModalEnabled(true);
