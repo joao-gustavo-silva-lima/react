@@ -5,19 +5,12 @@ import LinksAPI from "../api/links.api";
 export default function useLinkMutation() {
   const [isMutating, setIsMutating] = useState(false);
   const [conflictingURLs, setConflictingURLs] = useState<string[]>([]);
-
-  const register = (formData: FormData) => mutate(formData);
-  const update = (updatingLink: Link, formData: FormData) =>
-    mutate(formData, updatingLink);
+  const [notFoundIDs, setNotFoundIDs] = useState<string[]>([]);
 
   async function mutate(formData: FormData, updatingLink?: Link) {
     const linkPrototype = formDataToLinkPrototype(formData);
 
-    if (
-      linkPrototype.url !== updatingLink?.url &&
-      conflictingURLs.includes(linkPrototype.url)
-    ) {
-      handleConflictingURLs(linkPrototype.url);
+    if (!checkCachedConflicts(linkPrototype, updatingLink)) {
       return false;
     }
 
@@ -36,11 +29,14 @@ export default function useLinkMutation() {
       }
 
       switch (res.status) {
-        case 409:
-          handleConflictingURLs(linkPrototype.url);
-          break;
         case 400:
           alert("A formatação do formulário é inválida.");
+          break;
+        case 404:
+          handleNotFoundIDs(updatingLink!.id);
+          break;
+        case 409:
+          handleConflictingURLs(linkPrototype.url);
           break;
         default:
           alert("Ocorreu um erro no servidor. Tente novamente em instantes.");
@@ -55,12 +51,44 @@ export default function useLinkMutation() {
     }
   }
 
+  function clearCachedConflicts() {
+    setConflictingURLs([]);
+    setNotFoundIDs([]);
+  }
+
+  function checkCachedConflicts(linkPrototype: ProtoLink, updatingLink?: Link) {
+    if (updatingLink && notFoundIDs.includes(updatingLink.id)) {
+      return false;
+    }
+
+    if (
+      linkPrototype.url !== updatingLink?.url &&
+      conflictingURLs.includes(linkPrototype.url)
+    ) {
+      handleConflictingURLs(linkPrototype.url);
+      return false;
+    }
+
+    return true;
+  }
+
   function handleConflictingURLs(newUrl: string) {
     alert("Um link já foi registrado com essa URL.");
     setConflictingURLs((prevURLs) => [newUrl, ...prevURLs]);
   }
 
-  return { isMutating, register, update };
+  function handleNotFoundIDs(newID: string) {
+    alert("O link não foi reconhecido no servidor. Recarregue a página.");
+    setNotFoundIDs((prevIDs) => [newID, ...prevIDs]);
+  }
+
+  return {
+    isMutating,
+    register: (formData: FormData) => mutate(formData),
+    update: (updatingLink: Link, formData: FormData) =>
+      mutate(formData, updatingLink),
+    clearCachedConflicts,
+  };
 }
 
 function formDataToLinkPrototype(data: FormData): ProtoLink {

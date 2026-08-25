@@ -36,7 +36,8 @@ function Modal({
 }) {
   const { inputErrors, validateInput, validateSubmission } =
     useFormValidation();
-  const { isMutating, register, update } = useLinkMutation();
+  const { isMutating, register, update, clearCachedConflicts } =
+    useLinkMutation();
 
   const [category, setCategory] = useState(updatingLink?.category ?? "");
 
@@ -47,6 +48,7 @@ function Modal({
 
   function closeModal() {
     stopUpdating();
+    clearCachedConflicts();
     setEnabled(false);
   }
 
