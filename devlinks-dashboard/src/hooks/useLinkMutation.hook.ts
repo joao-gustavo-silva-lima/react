@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { type FormData, type ProtoLink } from "../types/links.types";
+import { type FormData, type Link, type ProtoLink } from "../types/links.types";
 import LinksAPI from "../api/links.api";
 
 export default function useLinkMutation() {
@@ -7,12 +7,16 @@ export default function useLinkMutation() {
   const [conflictingURLs, setConflictingURLs] = useState<string[]>([]);
 
   const register = (formData: FormData) => mutate(formData);
-  const update = (id: string, formData: FormData) => mutate(formData, id);
+  const update = (updatingLink: Link, formData: FormData) =>
+    mutate(formData, updatingLink);
 
-  async function mutate(formData: FormData, id?: string) {
+  async function mutate(formData: FormData, updatingLink?: Link) {
     const linkPrototype = formDataToLinkPrototype(formData);
 
-    if (conflictingURLs.includes(linkPrototype.url)) {
+    if (
+      linkPrototype.url !== updatingLink?.url &&
+      conflictingURLs.includes(linkPrototype.url)
+    ) {
       handleConflictingURLs(linkPrototype.url);
       return false;
     }
@@ -20,12 +24,14 @@ export default function useLinkMutation() {
     setIsMutating(true);
 
     try {
-      const res = await (id
-        ? LinksAPI.updateUniqueLink(id, linkPrototype)
+      const res = await (updatingLink
+        ? LinksAPI.updateUniqueLink(updatingLink.id, linkPrototype)
         : LinksAPI.registerLink(linkPrototype));
 
       if (res.ok) {
-        alert(`O link foi ${id ? "atualizado" : "registrado"} com sucesso.`);
+        alert(
+          `O link foi ${updatingLink ? "atualizado" : "registrado"} com sucesso.`,
+        );
         return true;
       }
 

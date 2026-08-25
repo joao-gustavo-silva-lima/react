@@ -7,7 +7,7 @@ import type { Link } from "./types/links.types";
 
 function App() {
   const { links, isQuerying, errors, refetchLinks } = useLinksQuery();
-  const [isModalEnabled, setIsModalEnabled] = useState(false);
+  const [isModalEnabled, setIsModalEnabled] = useState(true);
   const [updatingLink, setUpdatingLink] = useState<Link>();
 
   return (

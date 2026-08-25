@@ -53,7 +53,7 @@ function Modal({
 
     (updatingLink === undefined
       ? register(validation.validFormData!)
-      : update(updatingLink.id, validation.validFormData!)
+      : update(updatingLink, validation.validFormData!)
     ).then((ok) => {
       if (ok) {
         e.target.reset();
