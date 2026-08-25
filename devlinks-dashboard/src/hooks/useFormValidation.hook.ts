@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { modalFormDataSchema, type FormData } from "../types/links.types";
+import { modalFormDataSchema, type ModalFormData } from "../types/links.types";
 import { z } from "zod";
 
 export default function useFormValidation() {
@@ -10,7 +10,7 @@ export default function useFormValidation() {
       | React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
       | React.FocusEvent<HTMLInputElement | HTMLSelectElement>,
   ) {
-    const inputName = e.target.name as keyof FormData;
+    const inputName = e.target.name as keyof ModalFormData;
     const validation = modalFormDataSchema.shape[inputName].safeParse(
       e.target.value,
     );
@@ -41,7 +41,7 @@ export default function useFormValidation() {
       return { success: false };
     }
 
-    return { success: true, validFormData: formDataRaw as FormData };
+    return { success: true, validFormData: formDataRaw as ModalFormData };
   }
 
   return { inputErrors: errors, validateInput, validateSubmission };

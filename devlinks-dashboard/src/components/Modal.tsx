@@ -1,6 +1,6 @@
 import { useState } from "react";
 import useFormValidation from "../hooks/useFormValidation.hook";
-import useLinkMutation from "../hooks/useLinkMutation.hook";
+import useLinkMutation from "../hooks/useLinkActions.hook";
 import { PREDEFINED_CATEGORIES, type Link } from "../types/links.types";
 
 function MonitoredInput({
@@ -36,8 +36,7 @@ function Modal({
 }) {
   const { inputErrors, validateInput, validateSubmission } =
     useFormValidation();
-  const { isMutating, register, update, clearCachedConflicts } =
-    useLinkMutation();
+  const { isMutating, registerLink, updateLinkByID } = useLinkMutation();
 
   const [category, setCategory] = useState(updatingLink?.category ?? "");
 
@@ -48,7 +47,6 @@ function Modal({
 
   function closeModal() {
     stopUpdating();
-    clearCachedConflicts();
     setEnabled(false);
   }
 
@@ -62,10 +60,12 @@ function Modal({
     }
 
     (updatingLink === undefined
-      ? register(validation.validFormData!)
-      : update(updatingLink, validation.validFormData!)
-    ).then((ok) => {
-      if (ok) {
+      ? registerLink(validation.validFormData!)
+      : updateLinkByID(updatingLink.id, validation.validFormData!)
+    ).then((result) => {
+      alert(result.message);
+
+      if (result.success) {
         e.target.reset();
         refetchLinks();
         closeModal();

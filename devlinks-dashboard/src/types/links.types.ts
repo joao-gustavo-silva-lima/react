@@ -120,5 +120,5 @@ export const modalFormDataSchema = linkSchema
 
 export type Link = z.infer<typeof linkSchema>;
 export type ProtoLink = z.infer<typeof ProtoLinkSchema>;
-export type FormData = z.infer<typeof modalFormDataSchema>;
+export type ModalFormData = z.infer<typeof modalFormDataSchema>;
 export type Query = Partial<Pick<Link, "title" | "category"> & { tag: string }>;

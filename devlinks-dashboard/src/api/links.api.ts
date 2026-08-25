@@ -19,17 +19,17 @@ export default class LinksAPI {
     });
   }
 
-  public static fetchUniqueLink(ID: string) {
+  public static fetchLinkByID(ID: string) {
     return fetch(`${API_BASE_URL}/${ID}`);
   }
 
-  public static deleteUniqueLink(ID: string) {
+  public static deleteLinkByID(ID: string) {
     return fetch(`${API_BASE_URL}/${ID}`, {
       method: "DELETE",
     });
   }
 
-  public static updateUniqueLink(ID: string, linkPrototype: ProtoLink) {
+  public static updateLinkByID(ID: string, linkPrototype: ProtoLink) {
     return fetch(`${API_BASE_URL}/${ID}`, {
       method: "PUT",
       headers: {
@@ -39,7 +39,7 @@ export default class LinksAPI {
     });
   }
 
-  public static redirectByUniqueLink(ID: string) {
+  public static redirectByLinkID(ID: string) {
     return fetch(`${API_BASE_URL}/${ID}/redirect`);
   }
 }
