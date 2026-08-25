@@ -13,6 +13,7 @@ function App() {
   return (
     <>
       <Modal
+        key={updatingLink?.id ?? "modal"}
         enabled={isModalEnabled}
         updatingLink={updatingLink}
         stopUpdating={() => setUpdatingLink(undefined)}

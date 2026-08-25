@@ -1,3 +1,4 @@
+import { useState } from "react";
 import useFormValidation from "../hooks/useFormValidation.hook";
 import useLinkMutation from "../hooks/useLinkMutation.hook";
 import { PREDEFINED_CATEGORIES, type Link } from "../types/links.types";
@@ -36,6 +37,13 @@ function Modal({
   const { inputErrors, validateInput, validateSubmission } =
     useFormValidation();
   const { isMutating, register, update } = useLinkMutation();
+
+  const [category, setCategory] = useState(updatingLink?.category ?? "");
+
+  function handleCategoryChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    validateInput(e);
+    setCategory(e.target.value);
+  }
 
   function closeModal() {
     stopUpdating();
@@ -97,10 +105,10 @@ function Modal({
           <MonitoredInput label="Categoria" error={inputErrors.category}>
             <select
               onBlur={validateInput}
-              onChange={validateInput}
+              onChange={handleCategoryChange}
               name="category"
               id="category"
-              defaultValue={updatingLink?.category ?? "-"}
+              value={category}
             >
               <option value="-">-- Categoria --</option>
               {PREDEFINED_CATEGORIES.map((category, i) => (
