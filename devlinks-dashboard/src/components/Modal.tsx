@@ -1,6 +1,6 @@
 import { useState } from "react";
 import useFormValidation from "../hooks/useFormValidation.hook";
-import useLinkMutation from "../hooks/useLinkActions.hook";
+import useLinkAction from "../hooks/useLinkActions.hook";
 import { PREDEFINED_CATEGORIES, type Link } from "../types/links.types";
 
 function MonitoredInput({
@@ -36,7 +36,7 @@ function Modal({
 }) {
   const { inputErrors, validateInput, validateSubmission } =
     useFormValidation();
-  const { isMutating, registerLink, updateLinkByID } = useLinkMutation();
+  const { isMutating, registerLink, updateLinkByID } = useLinkAction();
 
   const [category, setCategory] = useState(updatingLink?.category ?? "");
 

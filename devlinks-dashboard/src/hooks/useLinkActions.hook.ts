@@ -3,10 +3,10 @@ import { type ModalFormData } from "../types/links.types";
 import LinksAPI from "../api/links.api";
 import { useState } from "react";
 
-export default function useLinkMutation() {
+export default function useLinkAction() {
   const [isMutating, setIsMutating] = useState(false);
 
-  async function handleLinkMutation(
+  async function handleLinkAction(
     apiCall: () => Promise<Response>,
     successMessage: string,
   ) {
@@ -32,7 +32,7 @@ export default function useLinkMutation() {
   async function registerLink(formData: ModalFormData) {
     const linkPrototype = formDataToLinkPrototype(formData);
 
-    return handleLinkMutation(
+    return handleLinkAction(
       () => LinksAPI.registerLink(linkPrototype),
       "O link foi registrado com sucesso.",
     );
@@ -41,37 +41,24 @@ export default function useLinkMutation() {
   async function updateLinkByID(id: string, formData: ModalFormData) {
     const linkPrototype = formDataToLinkPrototype(formData);
 
-    return handleLinkMutation(
+    return handleLinkAction(
       () => LinksAPI.updateLinkByID(id, linkPrototype),
       "O link foi atualizado com sucesso.",
     );
   }
 
   async function deleteLinkByID(id: string) {
-    return handleLinkMutation(
+    return handleLinkAction(
       () => LinksAPI.deleteLinkByID(id),
       "O link foi excluído com sucesso.",
     );
   }
 
   async function redirectByLinkID(id: string) {
-    return handleLinkMutation(
+    return handleLinkAction(
       () => LinksAPI.deleteLinkByID(id),
       "Você será redirecionado.",
     );
-  }
-
-  function interpretResponseStatus(status: number) {
-    switch (status) {
-      case 400:
-        return "A formatação do formulário é inválida.";
-      case 404:
-        return "O link não foi reconhecido no servidor.";
-      case 409:
-        return "A URL já está sendo utilizada por outro link.";
-      default:
-        return "Ocorreu um erro no servidor. Tente novamente em instantes.";
-    }
   }
 
   return {
@@ -81,4 +68,17 @@ export default function useLinkMutation() {
     deleteLinkByID,
     redirectByLinkID,
   };
+}
+
+function interpretResponseStatus(status: number) {
+  switch (status) {
+    case 400:
+      return "A formatação do formulário é inválida.";
+    case 404:
+      return "O link não foi reconhecido no servidor.";
+    case 409:
+      return "A URL já está sendo utilizada por outro link.";
+    default:
+      return "Ocorreu um erro no servidor. Tente novamente em instantes.";
+  }
 }
