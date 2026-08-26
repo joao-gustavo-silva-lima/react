@@ -1,5 +1,5 @@
-import { Search } from "lucide-react";
 import { PREDEFINED_CATEGORIES, type Query } from "../types/links.types";
+import { Search } from "lucide-react";
 import { useRef } from "react";
 
 export default function SearchBar({
@@ -9,22 +9,16 @@ export default function SearchBar({
 }) {
   const titleRef = useRef("");
   const categoryRef = useRef("");
-  const queryCooldownRef = useRef(-1);
+  const searchDebounceRef = useRef(-1);
 
-  function handleTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    clearTimeout(queryCooldownRef.current);
-    queryCooldownRef.current = setTimeout(() => {
-      titleRef.current = e.target.value;
-
-      query();
+  function handleSearchDebounce() {
+    clearTimeout(searchDebounceRef.current);
+    searchDebounceRef.current = setTimeout(() => {
+      refetchLinks({
+        title: titleRef.current,
+        category: categoryRef.current,
+      });
     }, 500);
-  }
-
-  function query() {
-    refetchLinks({
-      title: titleRef.current,
-      category: categoryRef.current,
-    });
   }
 
   return (
@@ -34,7 +28,10 @@ export default function SearchBar({
         <input
           type="text"
           name="title"
-          onChange={handleTitleChange}
+          onChange={(e) => {
+            titleRef.current = e.target.value;
+            handleSearchDebounce();
+          }}
           id="query_title"
           placeholder="Pesquisar links..."
         />
@@ -42,8 +39,7 @@ export default function SearchBar({
       <select
         onChange={(e) => {
           categoryRef.current = e.target.value;
-
-          query();
+          handleSearchDebounce();
         }}
         name="category"
         id="query_category"
