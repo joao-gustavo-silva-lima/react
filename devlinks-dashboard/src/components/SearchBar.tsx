@@ -2,8 +2,10 @@ import { PREDEFINED_CATEGORIES, type Query } from "../types/links.types";
 import { Search } from "lucide-react";
 
 export default function SearchBar({
+  filterQuery,
   setFilterQuery,
 }: {
+  filterQuery: Query;
   setFilterQuery: React.Dispatch<React.SetStateAction<Query>>;
 }) {
   return (
@@ -14,7 +16,7 @@ export default function SearchBar({
           type="text"
           name="title"
           onChange={(e) => {
-            setFilterQuery((query) => ({ ...query, title: e.target.value }));
+            setFilterQuery({ ...filterQuery, title: e.target.value });
           }}
           id="query_title"
           placeholder="Pesquisar links..."
@@ -22,11 +24,11 @@ export default function SearchBar({
       </label>
       <select
         onChange={(e) => {
-          setFilterQuery((query) => ({ ...query, category: e.target.value }));
+          setFilterQuery({ ...filterQuery, category: e.target.value });
         }}
         name="category"
         id="query_category"
-        defaultValue=""
+        value={filterQuery.category ?? ""}
       >
         <option value="">Todas as Categorias</option>
         {PREDEFINED_CATEGORIES.map((category, i) => (

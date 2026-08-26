@@ -8,6 +8,7 @@ function LinkList({
   isQuerying,
   filterQuery,
   refetchLinks,
+  setFilterQuery,
   openUpdatingModal,
 }: {
   links: Link[];
@@ -15,6 +16,7 @@ function LinkList({
   filterQuery: Query;
   isQuerying: boolean;
   refetchLinks: () => void;
+  setFilterQuery: (query: Query) => void;
   openUpdatingModal: (link: Link) => void;
 }) {
   const { redirectByLinkID, deleteLinkByID } = useLinkAction();
@@ -73,6 +75,10 @@ function LinkList({
     });
   }
 
+  function handleQueryChange(key: keyof Query, value: string) {
+    setFilterQuery({ ...filterQuery, [key]: value });
+  }
+
   if (isQuerying) {
     return <p>Carregando Links...</p>;
   }
@@ -87,7 +93,9 @@ function LinkList({
         <li className="flex flex-col" key={link.id}>
           <span>{link.title}</span>
           <span>{link.url}</span>
-          <span>{link.category}</span>
+          <span onClick={() => handleQueryChange("category", link.category)}>
+            {link.category}
+          </span>
           {link.tags.length > 0 && (
             <ul>
               {link.tags.map((tag, i) => (

@@ -26,14 +26,15 @@ function App() {
       <br />
       <Metrics isQuerying={isQuerying} links={links} />
       <br />
-      <SearchBar setFilterQuery={setFilterQuery} />
+      <SearchBar filterQuery={filterQuery} setFilterQuery={setFilterQuery} />
       <br />
       <LinkList
         links={links}
         errors={errors}
+        isQuerying={isQuerying}
         filterQuery={filterQuery}
         refetchLinks={refetchLinks}
-        isQuerying={isQuerying}
+        setFilterQuery={setFilterQuery}
         openUpdatingModal={(link: Link) => {
           setUpdatingLink(link);
           setIsModalEnabled(true);
