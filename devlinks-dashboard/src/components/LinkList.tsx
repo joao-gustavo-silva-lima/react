@@ -1,6 +1,6 @@
 import useLinkAction from "../hooks/useLinkActions.hook";
 import type { Link } from "../types/links.types";
-import { SquarePen, Trash2 } from "lucide-react";
+import { ExternalLink, SquarePen, Trash2 } from "lucide-react";
 
 function LinkList({
   links,
@@ -15,7 +15,26 @@ function LinkList({
   refetchLinks: () => void;
   openUpdatingModal: (link: Link) => void;
 }) {
-  const { deleteLinkByID } = useLinkAction();
+  const { redirectByLinkID, deleteLinkByID } = useLinkAction();
+
+  function handleRedirection(link: Link) {
+    const confirmRedirection = confirm(
+      `Deseja abrir '${link.url}' em uma nova aba?`,
+    );
+
+    if (!confirmRedirection) {
+      return;
+    }
+
+    redirectByLinkID(link.id).then((result) => {
+      alert(result.message);
+
+      if (result.success) {
+        open(result.data!.redirectURL, "_blank");
+        refetchLinks();
+      }
+    });
+  }
 
   function handleLinkDeletion(link: Link) {
     const confirmDeletion = confirm(`Deseja excluir o link "${link.title}"?`);
@@ -59,6 +78,9 @@ function LinkList({
           )}
           <span>Clicks: {link.clicks}</span>
           <div>
+            <button type="button" onClick={() => handleRedirection(link)}>
+              <ExternalLink />
+            </button>
             <button type="button" onClick={() => openUpdatingModal(link)}>
               <SquarePen />
             </button>

@@ -36,7 +36,7 @@ function Modal({
 }) {
   const { inputErrors, validateInput, validateSubmission } =
     useFormValidation();
-  const { isMutating, registerLink, updateLinkByID } = useLinkAction();
+  const { isActing, registerLink, updateLinkByID } = useLinkAction();
 
   const [category, setCategory] = useState(updatingLink?.category ?? "");
 
@@ -83,7 +83,7 @@ function Modal({
         {updatingLink === undefined ? "Registrar Novo Link" : "Atualizar Link"}
       </h3>
       <form onSubmit={handleSubmit}>
-        <fieldset disabled={isMutating}>
+        <fieldset disabled={isActing}>
           <MonitoredInput label="Título" error={inputErrors.title}>
             <input
               onBlur={validateInput}

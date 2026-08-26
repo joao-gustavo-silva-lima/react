@@ -3,14 +3,21 @@ import { type ModalFormData } from "../types/links.types";
 import LinksAPI from "../api/links.api";
 import { useState } from "react";
 
+type ActionReturn<ResolveData = unknown> = Promise<{
+  success: boolean;
+  message: string;
+  data?: ResolveData;
+}>;
+
 export default function useLinkAction() {
-  const [isMutating, setIsMutating] = useState(false);
+  const [isActing, setIsActing] = useState(false);
 
   async function handleLinkAction(
     apiCall: () => Promise<Response>,
     successMessage: string,
-  ) {
-    setIsMutating(true);
+    acceptData = false,
+  ): ActionReturn {
+    setIsActing(true);
 
     try {
       const res = await apiCall();
@@ -18,6 +25,7 @@ export default function useLinkAction() {
       return {
         success: res.ok,
         message: res.ok ? successMessage : interpretResponseStatus(res.status),
+        data: res.ok && acceptData && (await res.json()),
       };
     } catch {
       return {
@@ -25,7 +33,7 @@ export default function useLinkAction() {
         message: "Ocorreu um erro de rede. Cheque a conexão.",
       };
     } finally {
-      setIsMutating(false);
+      setIsActing(false);
     }
   }
 
@@ -56,13 +64,14 @@ export default function useLinkAction() {
 
   async function redirectByLinkID(id: string) {
     return handleLinkAction(
-      () => LinksAPI.deleteLinkByID(id),
+      () => LinksAPI.redirectByLinkID(id),
       "Você será redirecionado.",
-    );
+      true,
+    ) as ActionReturn<{ redirectURL: string }>;
   }
 
   return {
-    isMutating,
+    isActing,
     registerLink,
     updateLinkByID,
     deleteLinkByID,
