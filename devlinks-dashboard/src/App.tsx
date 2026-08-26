@@ -24,7 +24,7 @@ function App() {
         stopUpdating={() => setUpdatingLink(undefined)}
       />
       <br />
-      <Metrics links={links} />
+      <Metrics isQuerying={isQuerying} links={links} />
       <br />
       <SearchBar setFilterQuery={setFilterQuery} />
       <br />

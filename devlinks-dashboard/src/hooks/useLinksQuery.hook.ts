@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { Link, Query } from "../types/links.types";
+import type { Link } from "../types/links.types";
 import LinksAPI from "../api/links.api";
 
 export default function useLinksQuery() {

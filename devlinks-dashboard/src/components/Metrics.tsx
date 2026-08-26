@@ -15,8 +15,18 @@ type Metrics = {
   };
 };
 
-export default function Metrics({ links }: { links: Link[] }) {
+export default function Metrics({
+  links,
+  isQuerying,
+}: {
+  links: Link[];
+  isQuerying: boolean;
+}) {
   const { numOfLinks, numOfClicks, popularCategory } = calculateMetrics(links);
+
+  if (isQuerying) {
+    return <span>Carregando Métricas...</span>;
+  }
 
   return (
     <ul>
