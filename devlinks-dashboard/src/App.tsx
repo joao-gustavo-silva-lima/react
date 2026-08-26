@@ -3,7 +3,7 @@ import LinkList from "./components/LinkList";
 import useLinksQuery from "./hooks/useLinksQuery.hook";
 import Modal from "./components/Modal";
 import { useState } from "react";
-import type { Link } from "./types/links.types";
+import type { Link, Query } from "./types/links.types";
 import SearchBar from "./components/SearchBar";
 import Metrics from "./components/Metrics";
 
@@ -11,6 +11,7 @@ function App() {
   const { links, isQuerying, errors, refetchLinks } = useLinksQuery();
   const [isModalEnabled, setIsModalEnabled] = useState(true);
   const [updatingLink, setUpdatingLink] = useState<Link>();
+  const [filterQuery, setFilterQuery] = useState<Query>({});
 
   return (
     <>
@@ -25,11 +26,12 @@ function App() {
       <br />
       <Metrics links={links} />
       <br />
-      <SearchBar />
+      <SearchBar setFilterQuery={setFilterQuery} />
       <br />
       <LinkList
         links={links}
         errors={errors}
+        filterQuery={filterQuery}
         refetchLinks={refetchLinks}
         isQuerying={isQuerying}
         openUpdatingModal={(link: Link) => {

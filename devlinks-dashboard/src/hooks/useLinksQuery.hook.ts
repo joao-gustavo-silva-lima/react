@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 import type { Link, Query } from "../types/links.types";
 import LinksAPI from "../api/links.api";
 
-export default function useLinksQuery(query: Query = {}) {
+export default function useLinksQuery() {
   const [isQuerying, setIsQuerying] = useState(false);
   const [errors, setErrors] = useState<string>();
   const [links, setLinks] = useState<Link[]>([]);
 
-  function fetchLinks(query: Query = {}) {
+  function fetchLinks() {
     setIsQuerying(true);
 
-    LinksAPI.fetchLinks(query)
+    LinksAPI.fetchLinks()
       .then(async (res) => {
         if (res.ok) {
           return await res.json();
@@ -24,7 +24,7 @@ export default function useLinksQuery(query: Query = {}) {
   }
 
   useEffect(() => {
-    fetchLinks(query);
+    fetchLinks();
   }, []);
 
   return { isQuerying, errors, links, refetchLinks: fetchLinks };

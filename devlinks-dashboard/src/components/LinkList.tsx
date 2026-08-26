@@ -1,21 +1,42 @@
 import useLinkAction from "../hooks/useLinkActions.hook";
-import type { Link } from "../types/links.types";
+import type { Link, Query } from "../types/links.types";
 import { ExternalLink, SquarePen, Trash2 } from "lucide-react";
 
 function LinkList({
   links,
   errors,
   isQuerying,
+  filterQuery,
   refetchLinks,
   openUpdatingModal,
 }: {
   links: Link[];
   errors?: string;
+  filterQuery: Query;
   isQuerying: boolean;
   refetchLinks: () => void;
   openUpdatingModal: (link: Link) => void;
 }) {
   const { redirectByLinkID, deleteLinkByID } = useLinkAction();
+
+  const filteredLinks = links.filter((link) => {
+    const matchesTitle =
+      !filterQuery.title ||
+      filterQuery.title === "" ||
+      link.title.toLowerCase().includes(filterQuery.title.toLowerCase());
+
+    const matchesTags =
+      !filterQuery.tag ||
+      filterQuery.tag === "" ||
+      link.tags.includes(filterQuery.tag);
+
+    const matchesCategory =
+      !filterQuery.category ||
+      filterQuery.category === "" ||
+      link.category.toLowerCase() === filterQuery.category.toLowerCase();
+
+    return matchesTitle && matchesTags && matchesCategory;
+  });
 
   function handleRedirection(link: Link) {
     const confirmRedirection = confirm(
@@ -62,7 +83,7 @@ function LinkList({
 
   return (
     <ul className="flex flex-col gap-[15px]">
-      {links.map((link) => (
+      {filteredLinks.map((link) => (
         <li className="flex flex-col" key={link.id}>
           <span>{link.title}</span>
           <span>{link.url}</span>
