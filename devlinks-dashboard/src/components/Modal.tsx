@@ -91,6 +91,7 @@ function Modal({
               type="text"
               name="title"
               id="title"
+              placeholder="Meu Link..."
               defaultValue={updatingLink?.title ?? ""}
             />
           </MonitoredInput>
@@ -101,6 +102,7 @@ function Modal({
               type="text"
               name="url"
               id="url"
+              placeholder="https://..."
               defaultValue={updatingLink?.url ?? ""}
             />
           </MonitoredInput>
@@ -127,6 +129,7 @@ function Modal({
               type="text"
               name="tags"
               id="tags"
+              placeholder="site, dev, links..."
               defaultValue={updatingLink?.tags.join(", ") ?? ""}
             />
           </MonitoredInput>

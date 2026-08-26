@@ -7,7 +7,7 @@ export function formDataToLinkPrototype(data: ModalFormData): ProtoLink {
     category: data.category,
     tags: data.tags
       .split(",")
-      .map((tag) => tag.trim())
+      .map((tag) => tag.trim().toLowerCase())
       .filter(Boolean),
   };
 }
