@@ -5,6 +5,7 @@ import Modal from "./components/Modal";
 import { useState } from "react";
 import type { Link } from "./types/links.types";
 import SearchBar from "./components/SearchBar";
+import Metrics from "./components/Metrics";
 
 function App() {
   const { links, isQuerying, errors, refetchLinks } = useLinksQuery();
@@ -22,7 +23,9 @@ function App() {
         stopUpdating={() => setUpdatingLink(undefined)}
       />
       <br />
-      <SearchBar refetchLinks={refetchLinks} />
+      <Metrics links={links} />
+      <br />
+      <SearchBar />
       <br />
       <LinkList
         links={links}
