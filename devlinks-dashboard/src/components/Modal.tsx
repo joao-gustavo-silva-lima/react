@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, type SyntheticEvent } from "react";
 import useFormValidation from "../hooks/useFormValidation.hook";
 import useLinkAction from "../hooks/useLinkActions.hook";
-import { PREDEFINED_CATEGORIES, type Link } from "../types/links.types";
+import {
+  PREDEFINED_CATEGORIES,
+  type Link,
+  type ModalFormData,
+} from "../types/links.types";
 import ActionButton from "./ActionButton";
 import { ChevronDown, X } from "lucide-react";
 
@@ -27,6 +31,14 @@ export default function Modal({
   function closeModal() {
     stopUpdating();
     setEnabled(false);
+  }
+
+  function handleInputAction(e: SyntheticEvent<HTMLInputElement>) {
+    validateInput(
+      e.currentTarget.name as keyof ModalFormData,
+      e.currentTarget.value,
+      e.type === "change",
+    );
   }
 
   function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
@@ -71,8 +83,8 @@ export default function Modal({
           <fieldset className="flex flex-col gap-container" disabled={isActing}>
             <MonitoredInput label="Título" error={inputErrors.title}>
               <input
-                onBlur={validateInput}
-                onChange={validateInput}
+                onBlur={handleInputAction}
+                onChange={handleInputAction}
                 type="text"
                 name="title"
                 id="title"
@@ -82,8 +94,8 @@ export default function Modal({
             </MonitoredInput>
             <MonitoredInput label="URL" error={inputErrors.url}>
               <input
-                onBlur={validateInput}
-                onChange={validateInput}
+                onBlur={handleInputAction}
+                onChange={handleInputAction}
                 type="text"
                 name="url"
                 id="url"
@@ -94,7 +106,8 @@ export default function Modal({
             <MonitoredInput error={inputErrors.category}>
               <CategorySelect
                 category={category}
-                setCategory={(category) => setCategory(category)}
+                validateInput={() => validateInput("category", category)}
+                changeCategory={(category) => setCategory(category)}
               />
             </MonitoredInput>
             <input
@@ -105,8 +118,8 @@ export default function Modal({
             />
             <MonitoredInput label="Tags" error={inputErrors.tags}>
               <input
-                onBlur={validateInput}
-                onChange={validateInput}
+                onBlur={handleInputAction}
+                onChange={handleInputAction}
                 type="text"
                 name="tags"
                 id="tags"
@@ -131,10 +144,13 @@ export default function Modal({
 
 function CategorySelect({
   category: categoryState,
-  setCategory,
+  validateInput,
+  changeCategory,
 }: {
   category: string;
-  setCategory: (category: string) => void;
+
+  validateInput: () => void;
+  changeCategory: (category: string) => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -142,7 +158,10 @@ function CategorySelect({
     <div className="relative">
       <button
         type="button"
-        onBlur={() => setIsOpen(false)}
+        onBlur={() => {
+          setIsOpen(false);
+          validateInput();
+        }}
         onFocus={() => setIsOpen(true)}
         className="flex flex-row flex-nowrap justify-between items-center w-full capitalize main-border focus:border-white rounded-input p-input hover:cursor-pointer"
       >
@@ -156,7 +175,7 @@ function CategorySelect({
         {["", ...PREDEFINED_CATEGORIES].map((category, i) => (
           <li
             className={`p-input ${category === categoryState ? "bg-border-main" : ""} hover:cursor-pointer hover:bg-border-main`}
-            onMouseDown={() => setCategory(category.toLowerCase())}
+            onMouseDown={() => changeCategory(category.toLowerCase())}
             key={i}
           >
             {category || "categoria"}

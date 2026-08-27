@@ -6,27 +6,24 @@ export default function useFormValidation() {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   function validateInput(
-    e:
-      | React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-      | React.FocusEvent<HTMLInputElement | HTMLSelectElement>,
+    name: keyof ModalFormData,
+    value: string,
+    dismissErrors: boolean = false,
   ) {
-    const inputName = e.target.name as keyof ModalFormData;
-    const validation = modalFormDataSchema.shape[inputName].safeParse(
-      e.target.value,
-    );
+    const validation = modalFormDataSchema.shape[name].safeParse(value);
 
     if (validation.success) {
-      setErrors(({ [inputName]: _, ...remainingErrors }) => remainingErrors);
+      setErrors(({ [name]: _, ...remainingErrors }) => remainingErrors);
       return true;
     }
 
-    if (e.type === "change") {
+    if (dismissErrors) {
       return false;
     }
 
     const errorMessage = validation.error.issues[0]?.message;
 
-    setErrors({ ...errors, [inputName]: errorMessage });
+    setErrors({ ...errors, [name]: errorMessage });
 
     return false;
   }
