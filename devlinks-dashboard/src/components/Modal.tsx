@@ -3,7 +3,7 @@ import useFormValidation from "../hooks/useFormValidation.hook";
 import useLinkAction from "../hooks/useLinkActions.hook";
 import { PREDEFINED_CATEGORIES, type Link } from "../types/links.types";
 import ActionButton from "./ActionButton";
-import { X } from "lucide-react";
+import { ChevronDown, X } from "lucide-react";
 
 export default function Modal({
   enabled,
@@ -23,11 +23,6 @@ export default function Modal({
   const { isActing, registerLink, updateLinkByID } = useLinkAction();
 
   const [category, setCategory] = useState(updatingLink?.category ?? "");
-
-  function handleCategoryChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    validateInput(e);
-    setCategory(e.target.value);
-  }
 
   function closeModal() {
     stopUpdating();
@@ -97,22 +92,17 @@ export default function Modal({
               />
             </MonitoredInput>
             <MonitoredInput error={inputErrors.category}>
-              <select
-                onBlur={validateInput}
-                onChange={handleCategoryChange}
-                name="category"
-                id="category"
-                value={category}
-                className="capitalize"
-              >
-                <option value="">Categoria</option>
-                {PREDEFINED_CATEGORIES.map((category, i) => (
-                  <option key={i} value={category.toLowerCase()}>
-                    {category}
-                  </option>
-                ))}
-              </select>
+              <CategorySelect
+                category={category}
+                setCategory={(category) => setCategory(category)}
+              />
             </MonitoredInput>
+            <input
+              type="hidden"
+              id="category"
+              name="category"
+              value={category}
+            />
             <MonitoredInput label="Tags" error={inputErrors.tags}>
               <input
                 onBlur={validateInput}
@@ -139,6 +129,48 @@ export default function Modal({
   );
 }
 
+function CategorySelect({
+  category: categoryState,
+  setCategory,
+}: {
+  category: string;
+  setCategory: (category: string) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const optionClassName = `rounded-input p-input hover:cursor-pointer hover:bg-border-main`;
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="relative flex flex-row flex-nowrap justify-between items-center w-full capitalize main-border rounded-input p-input hover:cursor-pointer"
+      >
+        <span>{categoryState || "Categoria"}</span>
+        <ChevronDown width={17.5} />
+
+        <ul
+          className={`absolute top-0 left-0 ${isOpen ? "flex" : "hidden"} flex-col flex-nowrap w-full h-[150px] bg-surface rounded-input main-border overflow-auto`}
+        >
+          <li className={optionClassName} onClick={() => setCategory("")}>
+            Categoria
+          </li>
+          {PREDEFINED_CATEGORIES.map((category, i) => (
+            <li
+              className={optionClassName}
+              onClick={() => setCategory(category.toLowerCase())}
+              key={i}
+            >
+              {category}
+            </li>
+          ))}
+        </ul>
+      </button>
+    </>
+  );
+}
+
 function MonitoredInput({
   label,
   error,
@@ -146,7 +178,8 @@ function MonitoredInput({
 }: {
   label?: string;
   error?: string;
-  children: React.ReactElement<React.InputHTMLAttributes<HTMLInputElement>>;
+  children: React.ReactNode &
+    React.ReactElement<React.InputHTMLAttributes<HTMLInputElement>>;
 }) {
   const styledChild = React.cloneElement(children, {
     className:
