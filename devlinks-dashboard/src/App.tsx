@@ -6,6 +6,7 @@ import { useState } from "react";
 import type { Link, Query } from "./types/links.types";
 import SearchBar from "./components/SearchBar";
 import Metrics from "./components/Metrics";
+import Header from "./components/Header";
 
 function App() {
   const { links, isQuerying, errors, refetchLinks } = useLinksQuery();
@@ -15,6 +16,7 @@ function App() {
 
   return (
     <>
+      <Header />
       <Modal
         key={updatingLink?.id ?? "modal"}
         enabled={isModalEnabled}
