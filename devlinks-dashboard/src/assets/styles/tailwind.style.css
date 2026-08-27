@@ -17,6 +17,8 @@
   --color-tag-green: #238636;
   --color-tag-purple: #8957e5;
 
+  --color-overlay: #00000080;
+
   --font-sans:
     "Inter", "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, sans-serif;
@@ -29,19 +31,20 @@
   --text-h1: 1.4375rem;
 
   --radius-input: 0.4375rem;
+  --radius-surface: 0.4375rem;
   --radius-badge: 0.75rem;
   --radius-card: 0.875rem;
 
   --spacing-badge-gap: 0.4375rem;
-  --spacing-btn-y: 0.625rem;
-  --spacing-btn-x: 0.875rem;
+  --spacing-input: 0.4375rem 0.875rem;
+  --spacing-btn: 0.425rem 0.775rem;
   --spacing-card-gap: 0.875rem;
   --spacing-container: 1rem;
 }
 
 @layer base {
   * {
-    @apply p-0 m-0 box-border font-sans text-text-primary;
+    @apply p-0 m-0 box-border font-sans text-text-primary outline-[0] appearance-none;
   }
   html,
   body {
@@ -49,5 +52,8 @@
   }
   .container {
     @apply w-full max-w-[1280px] p-container;
+  }
+  .main-border {
+    @apply border-[1px] border-solid border-border-main;
   }
 }

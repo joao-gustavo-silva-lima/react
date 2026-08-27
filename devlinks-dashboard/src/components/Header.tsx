@@ -2,7 +2,7 @@ import { CodeXml, Search } from "lucide-react";
 
 export default function Header() {
   return (
-    <header className="flex justify-center w-full bg-surface border-[1px] border-solid border-border-main">
+    <header className="flex justify-center w-full bg-surface main-border">
       <div className="container flex flex-row flex-nowrap justify-between  items-center">
         <a className="flex flex-nowrap items-center gap-[5px]" href="/">
           <div className="w-fit aspect-square p-[5px] rounded-[5px] bg-brand">
