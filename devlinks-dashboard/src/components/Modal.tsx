@@ -141,33 +141,34 @@ function CategorySelect({
   const optionClassName = `rounded-input p-input hover:cursor-pointer hover:bg-border-main`;
 
   return (
-    <>
+    <div className="relative">
       <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        className="relative flex flex-row flex-nowrap justify-between items-center w-full capitalize main-border rounded-input p-input hover:cursor-pointer"
+        onBlur={() => setIsOpen(false)}
+        onFocus={() => setIsOpen(true)}
+        className="flex flex-row flex-nowrap justify-between items-center w-full capitalize main-border focus:border-white rounded-input p-input hover:cursor-pointer"
       >
         <span>{categoryState || "Categoria"}</span>
         <ChevronDown width={17.5} />
-
-        <ul
-          className={`absolute top-0 left-0 ${isOpen ? "flex" : "hidden"} flex-col flex-nowrap w-full h-[150px] bg-surface rounded-input main-border overflow-auto`}
-        >
-          <li className={optionClassName} onClick={() => setCategory("")}>
-            Categoria
-          </li>
-          {PREDEFINED_CATEGORIES.map((category, i) => (
-            <li
-              className={optionClassName}
-              onClick={() => setCategory(category.toLowerCase())}
-              key={i}
-            >
-              {category}
-            </li>
-          ))}
-        </ul>
       </button>
-    </>
+
+      <ul
+        className={`absolute top-0 left-0 ${isOpen ? "flex" : "hidden"} flex-col flex-nowrap w-full h-[150px] bg-surface capitalize rounded-input main-border overflow-auto`}
+      >
+        <li className={optionClassName} onMouseDown={() => setCategory("")}>
+          <option value="">Categoria</option>
+        </li>
+        {PREDEFINED_CATEGORIES.map((category, i) => (
+          <li
+            className={optionClassName}
+            onMouseDown={() => setCategory(category.toLowerCase())}
+            key={i}
+          >
+            {category}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
