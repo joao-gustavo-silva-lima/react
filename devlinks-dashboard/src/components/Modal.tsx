@@ -138,8 +138,6 @@ function CategorySelect({
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const optionClassName = `rounded-input p-input hover:cursor-pointer hover:bg-border-main`;
-
   return (
     <div className="relative">
       <button
@@ -153,18 +151,15 @@ function CategorySelect({
       </button>
 
       <ul
-        className={`absolute top-0 left-0 ${isOpen ? "flex" : "hidden"} flex-col flex-nowrap w-full h-[150px] bg-surface capitalize rounded-input main-border overflow-auto`}
+        className={`absolute top-0 left-0 ${isOpen ? "flex" : "hidden"} flex-col flex-nowrap w-full h-[150px] bg-surface capitalize rounded-input main-border border-[white] overflow-auto`}
       >
-        <li className={optionClassName} onMouseDown={() => setCategory("")}>
-          <option value="">Categoria</option>
-        </li>
-        {PREDEFINED_CATEGORIES.map((category, i) => (
+        {["", ...PREDEFINED_CATEGORIES].map((category, i) => (
           <li
-            className={optionClassName}
+            className={`p-input ${category === categoryState ? "bg-border-main" : ""} hover:cursor-pointer hover:bg-border-main`}
             onMouseDown={() => setCategory(category.toLowerCase())}
             key={i}
           >
-            {category}
+            {category || "categoria"}
           </li>
         ))}
       </ul>
