@@ -66,7 +66,7 @@ export default function Modal({
 
   return (
     <div
-      className={`${enabled ? "block" : "hidden"} absolute flex justify-center items-center top-0 w-full h-screen bg-overlay`}
+      className={`${enabled ? "block" : "hidden"} absolute flex justify-center items-center top-0 w-full h-screen bg-overlay z-2`}
     >
       <aside className="flex flex-col flex-nowrap gap-container w-full rounded-surface bg-surface main-border p-container">
         <div className="flex flex-nowrap w-full items-center justify-between">

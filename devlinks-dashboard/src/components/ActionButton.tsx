@@ -11,7 +11,7 @@ export default function ActionButton({
 }) {
   return (
     <button
-      className={`animated-button ${filled ? "bg-brand" : "main-border"} p-btn rounded-input`}
+      className={`animated-button ${filled ? "bg-brand" : "main-border"} text-nowrap p-btn rounded-input`}
       type={type}
       onClick={action}
     >
