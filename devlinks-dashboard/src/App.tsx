@@ -1,4 +1,4 @@
-import "./styles/tailwind.style.css";
+import "./assets/styles/tailwind.style.css";
 import LinkList from "./components/LinkList";
 import useLinksQuery from "./hooks/useLinksQuery.hook";
 import Modal from "./components/Modal";
