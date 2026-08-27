@@ -87,6 +87,10 @@ function LinkList({
     return <p>{errors}</p>;
   }
 
+  if (filteredLinks.length === 0) {
+    return <p>Nenhum link foi encontrado...</p>;
+  }
+
   return (
     <ul className="flex flex-col gap-[15px]">
       {filteredLinks.map((link) => (
