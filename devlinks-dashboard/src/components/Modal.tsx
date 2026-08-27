@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import useFormValidation from "../hooks/useFormValidation.hook";
 import useLinkAction from "../hooks/useLinkActions.hook";
 import { PREDEFINED_CATEGORIES, type Link } from "../types/links.types";
+import ActionButton from "./ActionButton";
+import { X } from "lucide-react";
 
-function Modal({
+export default function Modal({
   enabled,
   updatingLink,
   setEnabled,
@@ -60,11 +62,16 @@ function Modal({
       className={`${enabled ? "block" : "hidden"} absolute flex justify-center items-center top-0 w-full h-screen bg-overlay`}
     >
       <aside className="flex flex-col flex-nowrap gap-container w-full rounded-surface bg-surface main-border p-container">
-        <h3 className="font-[700] text-h2">
-          {updatingLink === undefined
-            ? "Registrar Novo Link"
-            : "Atualizar Link"}
-        </h3>
+        <div className="flex flex-nowrap w-full items-center justify-between">
+          <h3 className="font-[700] text-h2">
+            {updatingLink === undefined
+              ? "Registrar Novo Link"
+              : "Atualizar Link"}
+          </h3>
+          <div className="animated-button p-[5px]" onClick={closeModal}>
+            <X width={22.5} />
+          </div>
+        </div>
         <form onSubmit={handleSubmit}>
           <fieldset className="flex flex-col gap-container" disabled={isActing}>
             <MonitoredInput label="Título" error={inputErrors.title}>
@@ -118,19 +125,12 @@ function Modal({
               />
             </MonitoredInput>
             <div className="flex flex-row flex-nowrap gap-[0.5rem] text-body font-[500]">
-              <button
-                className="p-btn rounded-input main-border hover:cursor-pointer"
-                type="button"
-                onClick={closeModal}
-              >
+              <ActionButton type="submit" action={closeModal}>
                 Cancelar
-              </button>
-              <button
-                className="bg-brand p-btn rounded-input hover:cursor-pointer"
-                type="submit"
-              >
+              </ActionButton>
+              <ActionButton type="submit" filled={true}>
                 {updatingLink === undefined ? "Registrar" : "Atualizar"}
-              </button>
+              </ActionButton>
             </div>
           </fieldset>
         </form>
@@ -167,5 +167,3 @@ function MonitoredInput({
     </div>
   );
 }
-
-export default Modal;

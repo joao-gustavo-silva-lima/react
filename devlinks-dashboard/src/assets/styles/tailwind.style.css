@@ -56,4 +56,7 @@
   .main-border {
     @apply border-[1px] border-solid border-border-main;
   }
+  .animated-button {
+    @apply transition-all duration-[.125s] hover:cursor-pointer hover:scale-[102.5%] active:scale-[97.5%];
+  }
 }
