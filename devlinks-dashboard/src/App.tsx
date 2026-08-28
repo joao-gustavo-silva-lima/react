@@ -46,7 +46,7 @@ function App() {
         <div className="fixed bottom-[16px] left-[50%] translate-x-[-50%] z-1">
           <ActionButton action={() => setIsModalEnabled(true)} filled={true}>
             <div className="flex gap-badge-gap">
-              <span>Registrar Novo Link</span>
+              <span className="font-[500]">Registrar Novo Link</span>
               <LinkIcon width={20} />
             </div>
           </ActionButton>

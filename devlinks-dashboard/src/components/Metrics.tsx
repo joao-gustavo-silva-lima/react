@@ -59,11 +59,11 @@ function MetricCard({
   return (
     <li className="flex flex-row p-card-gap gap-card-gap items-center bg-surface rounded-input main-border">
       <div className="bg-border-main rounded-input p-[10px]">
-        <Icon width={20} />
+        <Icon width={20} color="#1f6feb" />
       </div>
       <div className="flex flex-col">
-        <span>{title}:</span>
-        <span className="capitalize text-metric font-[600]">{metric}</span>
+        <span className="text-metric font-[600]">{title}:</span>
+        <span className="capitalize font-[500]">{metric}</span>
       </div>
     </li>
   );

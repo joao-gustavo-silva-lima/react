@@ -1,6 +1,6 @@
 import useLinkAction from "../hooks/useLinkActions.hook";
-import type { Link, Query } from "../types/links.types";
-import { ExternalLink, SquarePen, Trash2 } from "lucide-react";
+import type { Link, PREDEFINED_CATEGORIES, Query } from "../types/links.types";
+import { ExternalLink, LinkIcon, SquarePen, Trash2 } from "lucide-react";
 
 function LinkList({
   links,
@@ -92,33 +92,68 @@ function LinkList({
   }
 
   return (
-    <ul className="flex flex-col gap-[15px]">
+    <ul className="grid grid-cols-[repeat(auto-fit,250px)] justify-center gap-card-gap w-full mt-[25px]">
       {filteredLinks.map((link) => (
-        <li className="flex flex-col" key={link.id}>
-          <span>{link.title}</span>
-          <span>{link.url}</span>
-          <span onClick={() => handleQueryChange("category", link.category)}>
-            {link.category}
-          </span>
-          {link.tags.length > 0 && (
-            <ul>
-              {link.tags.map((tag, i) => (
-                <li key={i}>
-                  <span>#{tag}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-          <span>Clicks: {link.clicks}</span>
-          <div>
-            <button type="button" onClick={() => handleRedirection(link)}>
-              <ExternalLink />
+        <li
+          className="flex flex-col justify-between gap-[15px] p-container w-[250px] max-w-[250px] rounded-surface bg-surface main-border"
+          key={link.id}
+        >
+          <div className="flex flex-col gap-[5px]">
+            <span className="font-[600] text-h2 truncate">{link.title}</span>
+            <span
+              className="flex flex-nowrap items-center gap-[5px] font-[500] text-brand underline hover:cursor-pointer truncate"
+              onClick={() => handleRedirection(link)}
+            >
+              <LinkIcon width={15} color="#485a81" />
+              {link.url}
+            </span>
+            <span
+              style={{
+                backgroundColor:
+                  categoryColorsMap.get(
+                    link.category as (typeof PREDEFINED_CATEGORIES)[number],
+                  ) ?? "#000",
+              }}
+              className={`font-[500] text-body text-center rounded-badge capitalize animated-button`}
+              onClick={() => handleQueryChange("category", link.category)}
+            >
+              {link.category}
+            </span>
+            {link.tags.length > 0 && (
+              <ul className="flex flex-wrap gap-[0.5rem]">
+                {link.tags.map((tag, i) => (
+                  <li key={i}>
+                    <span className="text-body text-text-secondary">
+                      #{tag}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <span className="font-[500] text-body">Clicks: {link.clicks}</span>
+          </div>
+          <div className="flex flex-nowrap gap-[10px]">
+            <button
+              className="flex flex-nowrap justify-center items-center gap-[5px] rounded-input bg-brand text-body font-[500] px-[10px] py-[2.5px] w-full animated-button"
+              type="button"
+              onClick={() => handleRedirection(link)}
+            >
+              <span>Acessar</span>
+              <ExternalLink width={20} />
             </button>
-            <button type="button" onClick={() => openUpdatingModal(link)}>
-              <SquarePen />
+            <button
+              className="animated-button main-border rounded-input p-[5px]"
+              type="button"
+              onClick={() => openUpdatingModal(link)}
+            >
+              <SquarePen width={20} />
             </button>
-            <button type="button" onClick={() => handleLinkDeletion(link)}>
-              <Trash2 />
+            <button
+              className="animated-button main-border rounded-input p-[5px]"
+              type="button"
+              onClick={() => handleLinkDeletion(link)}
+            >
+              <Trash2 width={20} />
             </button>
           </div>
         </li>
@@ -126,5 +161,17 @@ function LinkList({
     </ul>
   );
 }
+const categoryColorsMap = new Map<
+  (typeof PREDEFINED_CATEGORIES)[number],
+  string
+>([
+  ["desenvolvimento", "#485a81"],
+  ["design", "#ec4899"],
+  ["documentação", "#16a34a"],
+  ["ferramentas", "#ea580c"],
+  ["carreira", "#7c3aed"],
+  ["estudo", "#eab308"],
+  ["pessoal", "#0d9488"],
+]);
 
 export default LinkList;
