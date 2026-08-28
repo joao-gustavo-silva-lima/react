@@ -41,7 +41,16 @@ export default function useFormValidation() {
     return { success: true, validFormData: formDataRaw as ModalFormData };
   }
 
-  return { inputErrors: errors, validateInput, validateSubmission };
+  function clearValidation() {
+    setErrors({});
+  }
+
+  return {
+    inputErrors: errors,
+    validateInput,
+    validateSubmission,
+    clearValidation,
+  };
 }
 
 function parseZodErrors(issues: z.core.$ZodIssue[]) {

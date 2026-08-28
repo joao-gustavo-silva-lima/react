@@ -1,4 +1,4 @@
-import React, { useState, type SyntheticEvent } from "react";
+import React, { useEffect, useState, type SyntheticEvent } from "react";
 import useFormValidation from "../hooks/useFormValidation.hook";
 import useLinkAction from "../hooks/useLinkActions.hook";
 import {
@@ -22,7 +22,7 @@ export default function Modal({
   refetchLinks: () => void;
   setEnabled: (enabled: boolean) => void;
 }) {
-  const { inputErrors, validateInput, validateSubmission } =
+  const { inputErrors, validateInput, validateSubmission, clearValidation } =
     useFormValidation();
   const { isActing, registerLink, updateLinkByID } = useLinkAction();
 
@@ -30,6 +30,7 @@ export default function Modal({
 
   function closeModal() {
     stopUpdating();
+    clearValidation();
     setEnabled(false);
   }
 
@@ -66,9 +67,9 @@ export default function Modal({
 
   return (
     <div
-      className={`${enabled ? "block" : "hidden"} absolute flex justify-center items-center top-0 w-full h-screen bg-overlay z-2`}
+      className={`${enabled ? "block" : "hidden"} fixed flex justify-center items-center top-0 w-full h-screen bg-overlay z-2`}
     >
-      <aside className="flex flex-col flex-nowrap gap-container w-full rounded-surface bg-surface main-border p-container">
+      <aside className="flex flex-col flex-nowrap gap-container w-full max-w-[400px] h-screen bp1:h-fit max-h-screen overflow-auto rounded-surface bg-surface main-border p-container">
         <div className="flex flex-nowrap w-full items-center justify-between">
           <h3 className="font-[700] text-h2">
             {updatingLink === undefined
@@ -128,9 +129,7 @@ export default function Modal({
               />
             </MonitoredInput>
             <div className="flex flex-row flex-nowrap gap-[0.5rem] text-body font-[500]">
-              <ActionButton type="submit" action={closeModal}>
-                Cancelar
-              </ActionButton>
+              <ActionButton action={closeModal}>Cancelar</ActionButton>
               <ActionButton type="submit" filled={true}>
                 {updatingLink === undefined ? "Registrar" : "Atualizar"}
               </ActionButton>

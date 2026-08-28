@@ -12,7 +12,7 @@ export default function ActionButton({
   return (
     <button
       className={`animated-button ${filled ? "bg-brand" : "main-border"} text-nowrap p-btn rounded-input`}
-      type={type}
+      type={type ?? "button"}
       onClick={action}
     >
       {children}
