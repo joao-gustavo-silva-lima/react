@@ -29,7 +29,7 @@ export default function Metrics({
   }
 
   return (
-    <ul className="flex flex-col flex-nowrap gap-card-gap">
+    <ul className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-card-gap w-full">
       <MetricCard Icon={LinkIcon} title="Total de Links" metric={numOfLinks} />
       <MetricCard
         Icon={MousePointerClick}
@@ -58,12 +58,12 @@ function MetricCard({
 }) {
   return (
     <li className="flex flex-row p-card-gap gap-card-gap items-center bg-surface rounded-input main-border">
-      <div className="bg-border-main rounded-input p-card-gap">
-        <Icon width={25} />
+      <div className="bg-border-main rounded-input p-[10px]">
+        <Icon width={20} />
       </div>
       <div className="flex flex-col">
         <span>{title}:</span>
-        <span className="text-metric font-[600]">{metric}</span>
+        <span className="capitalize text-metric font-[600]">{metric}</span>
       </div>
     </li>
   );
