@@ -1,6 +1,6 @@
 import type { ProtoLink, Query } from "../types/links.types";
 
-const API_BASE_URL = "http://localhost:5000/api/v1/links";
+const API_BASE_URL = "https://devlinks-api-fhe4.onrender.com/api/v1/links";
 
 export default class LinksAPI {
   public static fetchLinks(query: Query = {}) {
