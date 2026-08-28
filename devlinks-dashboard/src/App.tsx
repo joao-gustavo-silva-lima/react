@@ -26,7 +26,7 @@ function App() {
         setEnabled={setIsModalEnabled}
         stopUpdating={() => setUpdatingLink(undefined)}
       />
-      <div className="contained justify-self-center flex flex-col gap-container">
+      <div className="contained justify-self-center flex flex-col gap-container mb-[60px]">
         <h1 className="font-[700] text-h1">DevLinks Dashboard</h1>
         <Metrics isQuerying={isQuerying} links={links} />
         <SearchBar filterQuery={filterQuery} setFilterQuery={setFilterQuery} />
@@ -42,11 +42,11 @@ function App() {
             setIsModalEnabled(true);
           }}
         />
-      </div>
-      <div className="fixed bottom-[16px] left-[50%] translate-x-[-50%] z-1">
-        <ActionButton action={() => setIsModalEnabled(true)} filled={true}>
-          Registrar Novo Link
-        </ActionButton>
+        <div className="fixed bottom-[16px] left-[50%] translate-x-[-50%] z-1">
+          <ActionButton action={() => setIsModalEnabled(true)} filled={true}>
+            Registrar Novo Link
+          </ActionButton>
+        </div>
       </div>
     </>
   );

@@ -10,10 +10,27 @@ export default function Header() {
           </div>
           <span className="text-h2 font-[500]">DevLinks</span>
         </a>
-        <label className="hover:cursor-pointer p-[5px]" htmlFor="query_title">
+        <label
+          onClick={scrollToSearchBar}
+          className="hover:cursor-pointer p-[5px]"
+          htmlFor="query_title"
+        >
           <Search width={20} />
         </label>
       </div>
     </header>
   );
+}
+
+function scrollToSearchBar() {
+  const searchBarElement = document.getElementById("query_title");
+
+  if (!searchBarElement) {
+    return;
+  }
+
+  searchBarElement.scrollIntoView({
+    behavior: "smooth",
+    block: "start",
+  });
 }

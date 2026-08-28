@@ -1,5 +1,6 @@
 import { PREDEFINED_CATEGORIES, type Query } from "../types/links.types";
 import { Search } from "lucide-react";
+import CategorySelect from "./CategorySelect";
 
 export default function SearchBar({
   filterQuery,
@@ -9,10 +10,14 @@ export default function SearchBar({
   setFilterQuery: React.Dispatch<React.SetStateAction<Query>>;
 }) {
   return (
-    <search>
-      <label htmlFor="query_title">
-        <Search />
+    <search className="flex flex-wrap gap-[5px] text-body">
+      <label
+        className="flex flex-nowrap items-center p-search-bar gap-[5px] min-w-[200px] flex-1 rounded-input main-border"
+        htmlFor="query_title"
+      >
+        <Search width={20} />
         <input
+          className="w-full"
           type="text"
           name="title"
           onChange={(e) => {
@@ -22,21 +27,15 @@ export default function SearchBar({
           placeholder="Pesquisar links..."
         />
       </label>
-      <select
-        onChange={(e) => {
-          setFilterQuery({ ...filterQuery, category: e.target.value });
-        }}
-        name="category"
-        id="query_category"
-        value={filterQuery.category ?? ""}
-      >
-        <option value="">Todas as Categorias</option>
-        {PREDEFINED_CATEGORIES.map((category, i) => (
-          <option key={i} value={category.toLowerCase()}>
-            {category}
-          </option>
-        ))}
-      </select>
+      <CategorySelect
+        buttonStyles="text-nowrap gap-[5px] p-search-bar"
+        itemsStyles="p-search-bar"
+        placeholder="Todas as Categorias"
+        category={filterQuery.category}
+        changeCategory={(category) =>
+          setFilterQuery({ ...filterQuery, category: category })
+        }
+      />
     </search>
   );
 }

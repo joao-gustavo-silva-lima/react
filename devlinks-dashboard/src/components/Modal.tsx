@@ -1,13 +1,10 @@
-import React, { useEffect, useState, type SyntheticEvent } from "react";
+import React, { useState, type SyntheticEvent } from "react";
 import useFormValidation from "../hooks/useFormValidation.hook";
 import useLinkAction from "../hooks/useLinkActions.hook";
-import {
-  PREDEFINED_CATEGORIES,
-  type Link,
-  type ModalFormData,
-} from "../types/links.types";
+import { type Link, type ModalFormData } from "../types/links.types";
 import ActionButton from "./ActionButton";
-import { ChevronDown, X } from "lucide-react";
+import { X } from "lucide-react";
+import CategorySelect from "./CategorySelect";
 
 export default function Modal({
   enabled,
@@ -89,6 +86,7 @@ export default function Modal({
                 type="text"
                 name="title"
                 id="title"
+                maxLength={50}
                 placeholder="Meu Link..."
                 defaultValue={updatingLink?.title ?? ""}
               />
@@ -100,12 +98,14 @@ export default function Modal({
                 type="text"
                 name="url"
                 id="url"
+                max={300}
                 placeholder="https://..."
                 defaultValue={updatingLink?.url ?? ""}
               />
             </MonitoredInput>
             <MonitoredInput error={inputErrors.category}>
               <CategorySelect
+                error={inputErrors.category !== undefined}
                 category={category}
                 validateInput={() => validateInput("category", category)}
                 changeCategory={(category) => setCategory(category)}
@@ -137,50 +137,6 @@ export default function Modal({
           </fieldset>
         </form>
       </aside>
-    </div>
-  );
-}
-
-function CategorySelect({
-  category: categoryState,
-  validateInput,
-  changeCategory,
-}: {
-  category: string;
-
-  validateInput: () => void;
-  changeCategory: (category: string) => void;
-}) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <div className="relative">
-      <button
-        type="button"
-        onBlur={() => {
-          setIsOpen(false);
-          validateInput();
-        }}
-        onFocus={() => setIsOpen(true)}
-        className="flex flex-row flex-nowrap justify-between items-center w-full capitalize main-border focus:border-white rounded-input p-input hover:cursor-pointer"
-      >
-        <span>{categoryState || "Categoria"}</span>
-        <ChevronDown width={17.5} />
-      </button>
-
-      <ul
-        className={`absolute top-0 left-0 ${isOpen ? "flex" : "hidden"} flex-col flex-nowrap w-full h-[150px] bg-surface capitalize rounded-input main-border border-[white] overflow-auto`}
-      >
-        {["", ...PREDEFINED_CATEGORIES].map((category, i) => (
-          <li
-            className={`p-input ${category === categoryState ? "bg-border-main" : ""} hover:cursor-pointer hover:bg-border-main`}
-            onMouseDown={() => changeCategory(category.toLowerCase())}
-            key={i}
-          >
-            {category || "categoria"}
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }
