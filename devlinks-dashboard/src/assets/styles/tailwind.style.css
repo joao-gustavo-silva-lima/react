@@ -50,7 +50,7 @@
   }
   html,
   body {
-    @apply w-full min-h-screen bg-bg-primary;
+    @apply w-full min-h-dvh bg-bg-primary;
   }
   .contained {
     @apply w-full max-w-[1280px] p-container;

@@ -67,9 +67,9 @@ export default function Modal({
 
   return (
     <div
-      className={`${enabled ? "block" : "hidden"} fixed flex justify-center items-center top-0 w-full h-screen bg-overlay z-2`}
+      className={`${enabled ? "block" : "hidden"} fixed flex justify-center items-center top-0 w-full h-dvh bg-overlay z-2`}
     >
-      <aside className="flex flex-col flex-nowrap gap-container w-full max-w-[400px] h-screen bp1:h-fit max-h-screen overflow-auto rounded-surface bg-surface main-border p-container">
+      <aside className="flex flex-col flex-nowrap gap-container w-full max-w-[400px] h-dvh bp1:h-fit max-h-dvh overflow-auto rounded-surface bg-surface main-border p-container">
         <div className="flex flex-nowrap w-full items-center justify-between">
           <h3 className="font-[700] text-h2">
             {updatingLink === undefined
