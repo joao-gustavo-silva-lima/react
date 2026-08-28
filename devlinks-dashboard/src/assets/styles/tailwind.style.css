@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
+
+@theme {
+  --color-bg-primary: #0d1117;
+  --color-surface: #161b22;
+  --color-border-main: #30363d;
+
+  --color-text-primary: #f0f6fc;
+  --color-text-secondary: #8b949e;
+
+  --color-brand: #1f6feb;
+  --color-success: #2ea043;
+  --color-error: #f85149;
+
+  --color-tag-green: #238636;
+  --color-tag-purple: #8957e5;
+
+  --color-overlay: #00000080;
+
+  --font-sans:
+    "Inter", "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, sans-serif;
+
+  --text-badge: 0.71875rem;
+  --text-caption: 0.75rem;
+  --text-body: 0.875rem;
+  --text-h2: 1.0625rem;
+  --text-metric: 1.125rem;
+  --text-h1: 1.4375rem;
+
+  --radius-input: 0.4375rem;
+  --radius-surface: 0.4375rem;
+  --radius-badge: 0.75rem;
+  --radius-card: 0.875rem;
+
+  --spacing-badge-gap: 0.4375rem;
+  --spacing-input: 0.4375rem 0.875rem;
+  --spacing-btn: 0.425rem 0.775rem;
+  --spacing-card-gap: 0.875rem;
+  --spacing-container: 1rem;
+  --spacing-search-bar: 0.215rem 0.475rem;
+
+  --breakpoint-bp1: 400px;
+}
+
+@layer base {
+  * {
+    @apply p-0 m-0 box-border font-sans text-text-primary outline-[0] appearance-none;
+  }
+  html,
+  body {
+    @apply w-full min-h-dvh bg-bg-primary;
+  }
+  .contained {
+    @apply w-full max-w-[1280px] p-container;
+  }
+  .main-border {
+    @apply border-[1px] border-solid border-border-main;
+  }
+  .smooth {
+    @apply transition-all duration-[.125s];
+  }
+  .animated-button {
+    @apply transition-all duration-[.125s] hover:cursor-pointer hover:scale-[102.5%] active:scale-[97.5%];
+  }
+}
