@@ -8,6 +8,7 @@ import SearchBar from "./components/SearchBar";
 import Metrics from "./components/Metrics";
 import Header from "./components/Header";
 import ActionButton from "./components/ActionButton";
+import { LinkIcon } from "lucide-react";
 
 function App() {
   const { links, isQuerying, errors, refetchLinks } = useLinksQuery();
@@ -44,7 +45,10 @@ function App() {
         />
         <div className="fixed bottom-[16px] left-[50%] translate-x-[-50%] z-1">
           <ActionButton action={() => setIsModalEnabled(true)} filled={true}>
-            Registrar Novo Link
+            <div className="flex gap-badge-gap">
+              <span>Registrar Novo Link</span>
+              <LinkIcon width={20} />
+            </div>
           </ActionButton>
         </div>
       </div>

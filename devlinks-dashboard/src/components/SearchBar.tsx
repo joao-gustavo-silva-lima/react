@@ -1,4 +1,4 @@
-import { PREDEFINED_CATEGORIES, type Query } from "../types/links.types";
+import { type Query } from "../types/links.types";
 import { Search } from "lucide-react";
 import CategorySelect from "./CategorySelect";
 
