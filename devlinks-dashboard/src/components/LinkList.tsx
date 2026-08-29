@@ -4,18 +4,20 @@ import { ExternalLink, LinkIcon, SquarePen, Trash2 } from "lucide-react";
 
 function LinkList({
   links,
-  errors,
+  hasQueryFailed,
   isQuerying,
   filterQuery,
   refetchLinks,
   setFilterQuery,
+  openRegisterModal,
   openUpdatingModal,
 }: {
   links: Link[];
-  errors?: string;
   filterQuery: Query;
   isQuerying: boolean;
+  hasQueryFailed: boolean;
   refetchLinks: () => void;
+  openRegisterModal: () => void;
   setFilterQuery: (query: Query) => void;
   openUpdatingModal: (link: Link) => void;
 }) {
@@ -79,12 +81,30 @@ function LinkList({
     setFilterQuery({ ...filterQuery, [key]: value });
   }
 
-  if (errors) {
-    return <p>{errors}</p>;
+  if (!isQuerying && hasQueryFailed) {
+    return (
+      <p className="w-full text-center">
+        Ocorreu um erro ao buscar os links. Tente novamente{" "}
+        <a className="underline text-brand" href="/">
+          aqui
+        </a>
+        .
+      </p>
+    );
   }
 
-  if (filteredLinks.length === 0) {
-    return <p>Nenhum link foi encontrado...</p>;
+  if (!isQuerying && filteredLinks.length === 0) {
+    return (
+      <p className="w-full text-center">
+        Nenhum link foi encontrado. Que tal{" "}
+        <span
+          onClick={openRegisterModal}
+          className="underline text-brand hover:cursor-pointer"
+        >
+          registrar um novo?
+        </span>
+      </p>
+    );
   }
 
   return (

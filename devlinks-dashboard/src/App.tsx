@@ -11,7 +11,7 @@ import ActionButton from "./components/ActionButton";
 import { LinkIcon } from "lucide-react";
 
 function App() {
-  const { links, isQuerying, errors, refetchLinks } = useLinksQuery();
+  const { links, isQuerying, hasQueryFailed, refetchLinks } = useLinksQuery();
   const [isModalEnabled, setIsModalEnabled] = useState(false);
   const [updatingLink, setUpdatingLink] = useState<Link>();
   const [filterQuery, setFilterQuery] = useState<Query>({});
@@ -33,11 +33,12 @@ function App() {
         <SearchBar filterQuery={filterQuery} setFilterQuery={setFilterQuery} />
         <LinkList
           links={links}
-          errors={errors}
+          hasQueryFailed={hasQueryFailed}
           isQuerying={isQuerying}
           filterQuery={filterQuery}
           refetchLinks={refetchLinks}
           setFilterQuery={setFilterQuery}
+          openRegisterModal={() => setIsModalEnabled(true)}
           openUpdatingModal={(link: Link) => {
             setUpdatingLink(link);
             setIsModalEnabled(true);

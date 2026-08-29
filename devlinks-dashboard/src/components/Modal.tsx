@@ -107,6 +107,7 @@ export default function Modal({
               <CategorySelect
                 error={inputErrors.category !== undefined}
                 category={category}
+                dropdownStyles="z-3"
                 validateInput={() => validateInput("category", category)}
                 changeCategory={(category) => setCategory(category)}
               />

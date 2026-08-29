@@ -4,7 +4,7 @@ import LinksAPI from "../api/links.api";
 
 export default function useLinksQuery() {
   const [isQuerying, setIsQuerying] = useState(false);
-  const [errors, setErrors] = useState<string>();
+  const [hasQueryFailed, setHasQueryFailed] = useState<boolean>(false);
   const [links, setLinks] = useState<Link[]>([]);
 
   function fetchLinks() {
@@ -13,13 +13,14 @@ export default function useLinksQuery() {
     LinksAPI.fetchLinks()
       .then(async (res) => {
         if (res.ok) {
+          setHasQueryFailed(false);
           return await res.json();
         }
 
         throw null;
       })
       .then((fetchedLinks) => setLinks(fetchedLinks))
-      .catch((_) => setErrors("Ocorreu um erro ao tentar exibir os links..."))
+      .catch((_) => setHasQueryFailed(true))
       .finally(() => setIsQuerying(false));
   }
 
@@ -27,5 +28,10 @@ export default function useLinksQuery() {
     fetchLinks();
   }, []);
 
-  return { isQuerying, errors, links, refetchLinks: fetchLinks };
+  return {
+    isQuerying,
+    hasQueryFailed,
+    links,
+    refetchLinks: fetchLinks,
+  };
 }

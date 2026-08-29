@@ -10,12 +10,14 @@ export default function CategorySelect({
   error = false,
   itemsStyles = "",
   buttonStyles = "",
+  dropdownStyles = "",
 }: {
   error?: boolean;
   category?: string;
   placeholder?: string;
-  buttonStyles?: string;
   itemsStyles?: string;
+  buttonStyles?: string;
+  dropdownStyles?: string;
   validateInput?: () => void;
   changeCategory: (category: string) => void;
 }) {
@@ -37,7 +39,7 @@ export default function CategorySelect({
       </button>
 
       <ul
-        className={`absolute top-0 left-0 ${isOpen ? "flex" : "hidden"} flex-col flex-nowrap w-full h-[150px] bg-surface capitalize rounded-input main-border border-[white] overflow-auto`}
+        className={`absolute top-0 left-0 ${isOpen ? "flex" : "hidden"} flex-col flex-nowrap w-full h-[150px] bg-surface capitalize rounded-input main-border border-[white] overflow-auto ${dropdownStyles}`}
       >
         {["", ...PREDEFINED_CATEGORIES].map((category, i) => (
           <li
