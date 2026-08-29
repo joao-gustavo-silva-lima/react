@@ -24,26 +24,47 @@ export default function Metrics({
 }) {
   const { numOfLinks, numOfClicks, popularCategory } = calculateMetrics(links);
 
-  if (isQuerying) {
-    return <span>Carregando Métricas...</span>;
-  }
-
   return (
     <ul className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-card-gap w-full">
-      <MetricCard Icon={LinkIcon} title="Total de Links" metric={numOfLinks} />
-      <MetricCard
-        Icon={MousePointerClick}
-        title="Total de Clicks"
-        metric={numOfClicks}
-      />
-      {popularCategory && (
-        <MetricCard
-          Icon={Star}
-          title="Categoria Popular"
-          metric={`${popularCategory.name} (${popularCategory.numOfLinks} Link${popularCategory.numOfLinks !== 1 ? "s" : ""})`}
-        />
+      {isQuerying ? (
+        <>
+          <SkeletonMetricCard />
+          <SkeletonMetricCard />
+        </>
+      ) : (
+        <>
+          <MetricCard
+            Icon={LinkIcon}
+            title="Total de Links"
+            metric={numOfLinks}
+          />
+          <MetricCard
+            Icon={MousePointerClick}
+            title="Total de Clicks"
+            metric={numOfClicks}
+          />
+          {popularCategory && (
+            <MetricCard
+              Icon={Star}
+              title="Categoria Popular"
+              metric={`${popularCategory!.name} (${popularCategory!.numOfLinks} Link${popularCategory!.numOfLinks !== 1 ? "s" : ""})`}
+            />
+          )}
+        </>
       )}
     </ul>
+  );
+}
+
+function SkeletonMetricCard() {
+  return (
+    <li className="flex flex-nowrap flex-1 p-card-gap gap-card-gap items-center bg-surface rounded-input">
+      <div className="animate-pulse w-[45px] aspect-square bg-border-main rounded-input"></div>
+      <div className="flex flex-col flex-nowrap w-full gap-[7.5px]">
+        <div className="animate-pulse w-full h-[24px] bg-border-main rounded-input"></div>
+        <div className="animate-pulse w-[50%] h-[24px] bg-border-main rounded-input"></div>
+      </div>
+    </li>
   );
 }
 
