@@ -79,10 +79,6 @@ function LinkList({
     setFilterQuery({ ...filterQuery, [key]: value });
   }
 
-  if (isQuerying) {
-    return <p>Carregando Links...</p>;
-  }
-
   if (errors) {
     return <p>{errors}</p>;
   }
@@ -93,74 +89,102 @@ function LinkList({
 
   return (
     <ul className="grid grid-cols-[repeat(auto-fit,250px)] justify-center gap-card-gap w-full mt-[25px]">
-      {filteredLinks.map((link) => (
-        <li
-          className="flex flex-col justify-between gap-[15px] p-container w-[250px] max-w-[250px] rounded-surface bg-surface main-border"
-          key={link.id}
-        >
-          <div className="flex flex-col gap-[5px]">
-            <span className="font-[600] text-h2 truncate">{link.title}</span>
-            <span
-              className="flex flex-nowrap items-center gap-[5px] font-[500] text-brand underline hover:cursor-pointer truncate"
-              onClick={() => handleRedirection(link)}
-            >
-              <LinkIcon width={15} color="#485a81" />
-              {link.url}
-            </span>
-            <span
-              style={{
-                backgroundColor:
-                  categoryColorsMap.get(
-                    link.category as (typeof PREDEFINED_CATEGORIES)[number],
-                  ) ?? "#000",
-              }}
-              className={`font-[500] text-body text-center rounded-badge capitalize animated-button`}
-              onClick={() => handleQueryChange("category", link.category)}
-            >
-              {link.category}
-            </span>
-            {link.tags.length > 0 && (
-              <ul className="flex flex-wrap gap-[0.5rem]">
-                {link.tags.map((tag, i) => (
-                  <li key={i}>
-                    <span className="text-body text-text-secondary">
-                      #{tag}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            )}
-            <span className="font-[500] text-body">Clicks: {link.clicks}</span>
-          </div>
-          <div className="flex flex-nowrap gap-[10px]">
-            <button
-              className="flex flex-nowrap justify-center items-center gap-[5px] rounded-input bg-brand text-body font-[500] px-[10px] py-[2.5px] w-full animated-button"
-              type="button"
-              onClick={() => handleRedirection(link)}
-            >
-              <span>Acessar</span>
-              <ExternalLink width={20} />
-            </button>
-            <button
-              className="animated-button main-border rounded-input p-[5px]"
-              type="button"
-              onClick={() => openUpdatingModal(link)}
-            >
-              <SquarePen width={20} />
-            </button>
-            <button
-              className="animated-button main-border rounded-input p-[5px]"
-              type="button"
-              onClick={() => handleLinkDeletion(link)}
-            >
-              <Trash2 width={20} />
-            </button>
-          </div>
-        </li>
-      ))}
+      {isQuerying ? (
+        <>
+          <CardSkeleton />
+          <CardSkeleton />
+          <CardSkeleton />
+        </>
+      ) : (
+        filteredLinks.map((link) => (
+          <li
+            className="flex flex-col justify-between gap-[15px] p-container w-[250px] max-w-[250px] rounded-surface bg-surface main-border"
+            key={link.id}
+          >
+            <div className="flex flex-col gap-[5px]">
+              <span className="font-[600] text-h2 truncate">{link.title}</span>
+              <span
+                className="flex flex-nowrap items-center gap-[5px] font-[500] text-brand underline w-fit hover:cursor-pointer truncate"
+                onClick={() => handleRedirection(link)}
+              >
+                <LinkIcon width={15} color="#1f6feb" />
+                {link.url}
+              </span>
+              <span
+                style={{
+                  backgroundColor:
+                    categoryColorsMap.get(
+                      link.category as (typeof PREDEFINED_CATEGORIES)[number],
+                    ) ?? "#485a81",
+                }}
+                className={`font-[500] text-body text-center rounded-badge capitalize animated-button`}
+                onClick={() => handleQueryChange("category", link.category)}
+              >
+                {link.category}
+              </span>
+              {link.tags.length > 0 && (
+                <ul className="flex flex-wrap gap-[0.5rem]">
+                  {link.tags.map((tag, i) => (
+                    <li key={i}>
+                      <span className="text-body text-text-secondary">
+                        #{tag}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <span className="font-[500] text-body">
+                Clicks: {link.clicks}
+              </span>
+            </div>
+            <div className="flex flex-nowrap gap-[10px]">
+              <button
+                className="flex flex-nowrap justify-center items-center gap-[5px] rounded-input bg-brand text-body font-[500] px-[10px] py-[2.5px] w-full animated-button"
+                type="button"
+                onClick={() => handleRedirection(link)}
+              >
+                <span>Acessar</span>
+                <ExternalLink width={20} />
+              </button>
+              <button
+                className="animated-button main-border rounded-input p-[5px]"
+                type="button"
+                onClick={() => openUpdatingModal(link)}
+              >
+                <SquarePen width={20} />
+              </button>
+              <button
+                className="animated-button main-border rounded-input p-[5px]"
+                type="button"
+                onClick={() => handleLinkDeletion(link)}
+              >
+                <Trash2 width={20} />
+              </button>
+            </div>
+          </li>
+        ))
+      )}
     </ul>
   );
 }
+
+function CardSkeleton() {
+  return (
+    <li className="relative aspect-square w-[250px] max-w-[250px] flex flex-col justify-between bg-surface rounded-surface p-container gap-container">
+      <div className="flex flex-col gap-container">
+        <span className="animate-pulse w-full h-[32px] bg-border-main rounded-input"></span>
+        <span className="animate-pulse w-[75%] h-[26px] bg-border-main rounded-input"></span>
+        <span className="animate-pulse w-full h-[26px] bg-border-main rounded-input"></span>
+      </div>
+      <div className="flex flex-nowrap gap-[10px]">
+        <span className="animate-pulse w-[40%] h-[24px] bg-border-main rounded-input"></span>
+        <span className="animate-pulse flex-1 h-[24px] bg-border-main rounded-input"></span>
+        <span className="animate-pulse flex-1 h-[24px] bg-border-main rounded-input"></span>
+      </div>
+    </li>
+  );
+}
+
 const categoryColorsMap = new Map<
   (typeof PREDEFINED_CATEGORIES)[number],
   string
