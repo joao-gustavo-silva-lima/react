@@ -27,7 +27,7 @@ function App() {
         setEnabled={setIsModalEnabled}
         stopUpdating={() => setUpdatingLink(undefined)}
       />
-      <div className="contained justify-self-center flex flex-col gap-container mb-[60px]">
+      <div className="contained m-auto flex flex-col gap-container mb-[60px]">
         <h1 className="font-[700] text-h1">DevLinks Dashboard</h1>
         <Metrics isQuerying={isQuerying} links={links} />
         <SearchBar filterQuery={filterQuery} setFilterQuery={setFilterQuery} />
