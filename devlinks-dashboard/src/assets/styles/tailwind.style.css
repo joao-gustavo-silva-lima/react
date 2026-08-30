@@ -3,21 +3,14 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
 
 @theme {
-  --color-bg-primary: #0d1117;
+  --color-brand: #1f6feb;
+  --color-error: #f85149;
   --color-surface: #161b22;
+  --color-overlay: #00000080;
+  --color-bg-primary: #0d1117;
   --color-border-main: #30363d;
-
   --color-text-primary: #f0f6fc;
   --color-text-secondary: #8b949e;
-
-  --color-brand: #1f6feb;
-  --color-success: #2ea043;
-  --color-error: #f85149;
-
-  --color-tag-green: #238636;
-  --color-tag-purple: #8957e5;
-
-  --color-overlay: #00000080;
 
   --font-sans:
     "Inter", "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont,

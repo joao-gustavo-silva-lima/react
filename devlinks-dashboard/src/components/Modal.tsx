@@ -3,8 +3,9 @@ import useFormValidation from "../hooks/useFormValidation.hook";
 import useLinkAction from "../hooks/useLinkActions.hook";
 import { type Link, type ModalFormData } from "../types/links.types";
 import ActionButton from "./ActionButton";
-import { X } from "lucide-react";
+import { LoaderCircle, X } from "lucide-react";
 import CategorySelect from "./CategorySelect";
+import Overlay from "./Overlay";
 
 export default function Modal({
   enabled,
@@ -62,10 +63,22 @@ export default function Modal({
     });
   }
 
+  if (!enabled) {
+    return null;
+  }
+
+  if (isActing) {
+    return (
+      <Overlay>
+        <div className="animate-spin">
+          <LoaderCircle size={50} color="#1f6feb" />
+        </div>
+      </Overlay>
+    );
+  }
+
   return (
-    <div
-      className={`${enabled ? "block" : "hidden"} fixed flex justify-center items-center top-0 w-full h-dvh bg-overlay z-2`}
-    >
+    <Overlay>
       <aside className="flex flex-col flex-nowrap gap-container w-full max-w-[400px] h-dvh bp1:h-fit max-h-dvh overflow-auto rounded-surface bg-surface main-border p-container">
         <div className="flex flex-nowrap w-full items-center justify-between">
           <h3 className="font-[700] text-h2">
@@ -138,6 +151,14 @@ export default function Modal({
           </fieldset>
         </form>
       </aside>
+    </Overlay>
+  );
+}
+
+function LoadingTab() {
+  return (
+    <div className="animate-spin">
+      <LoaderCircle size={50} color="#1f6feb" />
     </div>
   );
 }

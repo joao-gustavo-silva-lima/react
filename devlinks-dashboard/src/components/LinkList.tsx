@@ -1,6 +1,13 @@
 import useLinkAction from "../hooks/useLinkActions.hook";
 import type { Link, PREDEFINED_CATEGORIES, Query } from "../types/links.types";
-import { ExternalLink, LinkIcon, SquarePen, Trash2 } from "lucide-react";
+import {
+  ExternalLink,
+  LinkIcon,
+  LoaderCircle,
+  SquarePen,
+  Trash2,
+} from "lucide-react";
+import Overlay from "./Overlay";
 
 function LinkList({
   links,
@@ -21,7 +28,7 @@ function LinkList({
   setFilterQuery: (query: Query) => void;
   openUpdatingModal: (link: Link) => void;
 }) {
-  const { redirectByLinkID, deleteLinkByID } = useLinkAction();
+  const { isActing, redirectByLinkID, deleteLinkByID } = useLinkAction();
 
   const filteredLinks = links.filter((link) => {
     const matchesTitle =
@@ -96,7 +103,7 @@ function LinkList({
   if (!isQuerying && filteredLinks.length === 0) {
     return (
       <p className="w-full text-center">
-        Nenhum link foi encontrado. Que tal{" "}
+        Não há links registrados. Que tal{" "}
         <span
           onClick={openRegisterModal}
           className="underline text-brand hover:cursor-pointer"
@@ -109,6 +116,13 @@ function LinkList({
 
   return (
     <ul className="grid grid-cols-[repeat(auto-fit,250px)] justify-center gap-card-gap w-full mt-[25px]">
+      {isActing && (
+        <Overlay>
+          <div className="animate-spin">
+            <LoaderCircle size={50} color="#1f6feb" />
+          </div>
+        </Overlay>
+      )}
       {isQuerying ? (
         <>
           <CardSkeleton />
