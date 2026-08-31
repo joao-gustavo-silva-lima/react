@@ -135,15 +135,17 @@ function LinkList({
             className="flex flex-col justify-between gap-[15px] p-container w-[250px] max-w-[250px] rounded-surface bg-surface main-border"
             key={link.id}
           >
-            <div className="flex flex-col gap-[5px]">
+            <div className="flex flex-col w-full gap-[5px]">
               <span className="font-[600] text-h2 truncate">{link.title}</span>
-              <span
-                className="flex flex-nowrap items-center gap-[5px] font-[500] text-brand underline w-fit hover:cursor-pointer truncate"
-                onClick={() => handleRedirection(link)}
-              >
-                <LinkIcon width={15} color="#1f6feb" />
-                {link.url}
-              </span>
+              <div className="flex flex-row flex-nowrap items-center gap-[5px] hover:cursor-pointer">
+                <LinkIcon className="min-w-fit" size={15} color="#1f6feb" />
+                <span
+                  className="font-[500] text-brand underline truncate"
+                  onClick={() => handleRedirection(link)}
+                >
+                  {link.url}
+                </span>
+              </div>
               <span
                 style={{
                   backgroundColor:
