@@ -155,14 +155,6 @@ export default function Modal({
   );
 }
 
-function LoadingTab() {
-  return (
-    <div className="animate-spin">
-      <LoaderCircle size={50} color="#1f6feb" />
-    </div>
-  );
-}
-
 function MonitoredInput({
   label,
   error,
