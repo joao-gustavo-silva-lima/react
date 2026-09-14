@@ -18,12 +18,12 @@ export default function Index() {
         <li key={routine.id}>
           <h2>{routine.title}</h2>
           <ul>
-            {Object.values(routine.habits).map((habit: Habit) => (
+            {routine.habits.map((habit: Habit) => (
               <li key={habit.id}>
                 <h3>{habit.title}</h3>
                 <span>Categoria: {habit.category}</span>
                 <ul>
-                  {Object.values(habit.subTasks).map((subTask: SubTask) => (
+                  {habit.subTasks.map((subTask: SubTask) => (
                     <li key={subTask.id}>
                       <h4>{subTask.title}</h4>
                     </li>

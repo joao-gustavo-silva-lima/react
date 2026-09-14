@@ -1,9 +1,4 @@
-import {
-  useForm,
-  useFieldArray,
-  type SubmitHandler,
-  type FieldError,
-} from "react-hook-form";
+import { useForm, useFieldArray, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   CATEGORIES_TO_PT_BR,
@@ -14,7 +9,6 @@ import {
 export default function Modal() {
   const {
     control,
-    trigger,
     register,
     handleSubmit,
     formState: { errors },
@@ -51,7 +45,7 @@ export default function Modal() {
             <label>Categoria</label>
             <select id="category" {...register("category")}>
               <option value=""></option>
-              {Array.from(CATEGORIES_TO_PT_BR).map(([category, label]) => (
+              {[...CATEGORIES_TO_PT_BR].map(([category, label]) => (
                 <option key={category} value={category}>
                   {label}
                 </option>

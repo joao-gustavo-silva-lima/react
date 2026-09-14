@@ -27,10 +27,7 @@ const isoDateStringSchema = z
   );
 
 export const subTaskSchema = z.object({
-  id: z
-    .string("ID da sub-tarefa inválido.")
-    .optional()
-    .default(() => `sub-task-${crypto.randomUUID()}`),
+  id: z.string("ID da sub-tarefa inválido.").optional(),
   title: z
     .string({ error: "O título da sub-tarefa é obrigatório." })
     .trim()
@@ -50,11 +47,7 @@ export const subTaskSchema = z.object({
 });
 
 export const habitSchema = z.object({
-  id: z
-    .string("ID do hábito inválido.")
-    .optional()
-    .default(() => `habit-${crypto.randomUUID()}`),
-
+  id: z.string("ID do hábito inválido.").optional(),
   title: z
     .string({ error: "O título do hábito é obrigatório." })
     .trim()
@@ -78,14 +71,7 @@ export const habitSchema = z.object({
       "Um hábito não pode conter sub-tarefas duplicadas.",
     )
     .optional()
-    .default([])
-    .transform(
-      (subTasks) =>
-        subTasks.reduce(
-          (acc, subTask) => ({ ...acc, [subTask.id]: subTask }),
-          {},
-        ) as Record<string, SubTask>,
-    ),
+    .default([]),
 
   completionDates: z
     .array(isoDateStringSchema, {
@@ -102,10 +88,7 @@ export const habitSchema = z.object({
 export const habitChildrenSchema = habitSchema.pick({ subTasks: true });
 
 export const routineSchema = z.object({
-  id: z
-    .string("ID da rotina inválido.")
-    .optional()
-    .default(() => `routine-${crypto.randomUUID()}`),
+  id: z.string("ID da rotina inválido.").optional(),
 
   title: z
     .string({ error: "O título da rotina é obrigatório." })
@@ -115,18 +98,11 @@ export const routineSchema = z.object({
     .max(40, "O título da rotina é muito longo (máximo de 40 caracteres)."),
 
   habits: z
-    .preprocess(
-      (val) => {
-        if (Array.isArray(val)) return val;
-        if (val && typeof val === "object") return Object.values(val);
-        return val;
-      },
-      z.array(habitSchema, {
-        error: "Os hábitos da rotina devem ser um array ou um objeto.",
-      }),
-    )
+    .array(habitSchema, {
+      error: "Os hábitos da rotina devem estar em um array ou objeto.",
+    })
     .refine(
-      (habits) => Object.keys(habits).length > 0,
+      (habits) => habits.length > 0,
       "A rotina deve conter pelo menos 1 hábito cadastrado.",
     )
     .refine(
@@ -135,16 +111,9 @@ export const routineSchema = z.object({
     )
     .refine(
       (habits) =>
-        new Set(Object.values(habits).map((habit) => habit.title)).size ===
-        Object.values(habits).map((habit) => habit.title).length,
+        new Set(habits.map((habit) => habit.title)).size ===
+        habits.map((habit) => habit.title).length,
       "Uma rotina não pode conter hábitos duplicados.",
-    )
-    .transform(
-      (habits) =>
-        habits.reduce(
-          (acc, habit) => ({ ...acc, [habit.id]: habit }),
-          {},
-        ) as Record<string, Habit>,
     ),
 
   completionDates: z
@@ -164,4 +133,7 @@ export const routineChildrenSchema = routineSchema.pick({ habits: true });
 export type SubTask = z.infer<typeof subTaskSchema>;
 export type Habit = z.infer<typeof habitSchema>;
 export type Routine = z.infer<typeof routineSchema>;
+export type DTO = Routine | Habit | SubTask;
 export type Category = (typeof PREDEFINED_CATEGORIES)[number];
+
+export type Database = Routine[];
