@@ -2,9 +2,11 @@ import { useForm, useFieldArray, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   CATEGORIES_TO_PT_BR,
-  habitSchema,
-  type Habit,
+  CreateHabitSchema,
+  type CreateHabitDTO,
 } from "../types/routines.types";
+import { useParams } from "react-router";
+import { useFetchRoutineById } from "../hooks/useRoutines";
 
 export default function Modal() {
   const {
@@ -13,7 +15,7 @@ export default function Modal() {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(habitSchema),
+    resolver: zodResolver(CreateHabitSchema),
     mode: "onChange",
   });
 
@@ -22,15 +24,43 @@ export default function Modal() {
     control,
   });
 
-  const onSubmit: SubmitHandler<Habit> = (data) => {
+  const onSubmit: SubmitHandler<CreateHabitDTO> = (data) => {
     console.log(data);
   };
+
+  const { routineId } = useParams();
+  const isMutatingRoutine = routineId !== undefined;
+  const {
+    data: routine,
+    isFetching,
+    isError,
+    error: fetchingError,
+  } = isMutatingRoutine ? useFetchRoutineById(routineId) : {};
+
+  if (isMutatingRoutine && isFetching) {
+    return <p>Carregando dados da rotina...</p>;
+  }
+
+  if (isMutatingRoutine && isError) {
+    return <p>{fetchingError!.message}</p>;
+  }
 
   return (
     <>
       <h2>NOVO HÁBITO</h2>
       <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
         <fieldset>
+          <div>
+            <label htmlFor="routineId">Título da Rotina</label>
+            <input
+              placeholder="Rotina de Saúde..."
+              defaultValue={routine?.title}
+              readOnly={isMutatingRoutine}
+              {...register("routineId")}
+            />
+
+            {errors.routineId && <p>{errors.routineId.message}</p>}
+          </div>
           <div>
             <label htmlFor="title">Título do Hábito</label>
             <input
@@ -44,7 +74,7 @@ export default function Modal() {
           <div>
             <label>Categoria</label>
             <select id="category" {...register("category")}>
-              <option value=""></option>
+              <option value="">Selecione uma categoria</option>
               {[...CATEGORIES_TO_PT_BR].map(([category, label]) => (
                 <option key={category} value={category}>
                   {label}
