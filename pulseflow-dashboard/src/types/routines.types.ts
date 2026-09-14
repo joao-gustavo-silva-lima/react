@@ -70,10 +70,7 @@ export const habitSchema = z.object({
     .array(subTaskSchema, {
       error: "As sub-tarefas do hábito devem ser um array ou um objeto.",
     })
-    .refine(
-      (subTasks) => subTasks.length <= 10,
-      "Você pode adicionar no máximo 10 sub-tarefas por hábito.",
-    )
+    .max(10, "Você pode adicionar no máximo 10 sub-tarefas por hábito.")
     .refine(
       (subtasks) =>
         new Set(subtasks.map((subtask) => subtask.title)).size ===

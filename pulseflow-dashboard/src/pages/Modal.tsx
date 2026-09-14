@@ -1,4 +1,9 @@
-import { useForm, useFieldArray, type SubmitHandler } from "react-hook-form";
+import {
+  useForm,
+  useFieldArray,
+  type SubmitHandler,
+  type FieldError,
+} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   CATEGORIES_TO_PT_BR,
@@ -55,7 +60,10 @@ export default function Modal() {
             {errors.category && <p>{errors.category.message}</p>}
           </div>
           <div>
-            <label>Subtarefas</label>
+            <label>
+              Subtarefas{" "}
+              {fields.length > 0 && <span>{`(${fields.length} / 10)`}</span>}
+            </label>
             {fields.map((field, index) => (
               <div key={field.id}>
                 <div>
@@ -71,21 +79,19 @@ export default function Modal() {
                 )}
               </div>
             ))}
-            <input
-              onClick={async () => {
-                if (fields.length === 0) {
-                  return append({ title: "" });
-                }
-
-                await trigger(`subTasks`);
-
-                if (errors.subTasks === undefined) {
-                  append({ title: "" });
-                }
-              }}
-              type="button"
-              value="Adicionar Sub-tarefa"
-            />
+            <div>
+              <input
+                disabled={fields.length >= 10}
+                onClick={() => {
+                  if (errors.subTasks === undefined) {
+                    append({ title: "" });
+                  }
+                }}
+                type="button"
+                value="Adicionar Sub-tarefa"
+              />
+              {errors.subTasks?.root && <p>{errors.subTasks!.root.message}</p>}
+            </div>
           </div>
           <input type="submit" value="Criar" />
         </fieldset>
