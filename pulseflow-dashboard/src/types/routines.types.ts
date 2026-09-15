@@ -131,7 +131,7 @@ export const routineSchema = z.object({
 export const routineChildrenSchema = routineSchema.pick({ habits: true });
 
 export const CreateHabitSchema = habitSchema.extend({
-  routineId: routineSchema.shape.title,
+  routineTitle: routineSchema.shape.title,
 });
 
 export type CreateHabitDTO = z.infer<typeof CreateHabitSchema>;

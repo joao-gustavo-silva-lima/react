@@ -1,3 +1,4 @@
+import type { CreateHabitDTO, Routine } from "../types/routines.types";
 import { StatefulError } from "../utils/stateful-error.utils";
 
 const BASE_URL = "http://localhost:3000";
@@ -28,6 +29,25 @@ export async function fetchRoutineById(id: string) {
       : `Ocorreu um erro na requisição (Código: ${response.status}).`;
 
   throw new StatefulError(response.status, errorMessage);
+}
+
+export async function createFirstHabit(payload: Routine) {
+  const response = await safeFetch(BASE_URL, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(payload, null, 2),
+  });
+
+  if (response.ok || response.status >= 400) {
+    return await response.json();
+  }
+
+  throw new StatefulError(
+    response.status,
+    `Ocorreu um erro na requisição (Código: ${response.status}).`,
+  );
 }
 
 async function safeFetch(input: RequestInfo | URL, init?: RequestInit) {

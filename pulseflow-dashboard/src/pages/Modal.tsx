@@ -4,9 +4,10 @@ import {
   CATEGORIES_TO_PT_BR,
   CreateHabitSchema,
   type CreateHabitDTO,
+  type Routine,
 } from "../types/routines.types";
 import { useParams } from "react-router";
-import { useFetchRoutineById } from "../hooks/useRoutines";
+import { useCreateFirstHabit, useFetchRoutineById } from "../hooks/useRoutines";
 
 export default function Modal() {
   const {
@@ -24,24 +25,49 @@ export default function Modal() {
     control,
   });
 
-  const onSubmit: SubmitHandler<CreateHabitDTO> = (data) => {
-    console.log(data);
-  };
+  const {
+    mutate,
+    isPending: isCreating,
+    isError: hasMutationFailed,
+    isSuccess: hasMutationSucceded,
+  } = useCreateFirstHabit();
 
   const { routineId } = useParams();
   const isMutatingRoutine = routineId !== undefined;
   const {
     data: routine,
     isFetching,
-    isError,
+    isError: hasFetchingFailed,
     error: fetchingError,
   } = isMutatingRoutine ? useFetchRoutineById(routineId) : {};
+
+  const onSubmit: SubmitHandler<CreateHabitDTO> = async (data) => {
+    console.log(data);
+
+    if (isMutatingRoutine) {
+    } else {
+      const { routineTitle, ...habitDTO } = data;
+
+      mutate({
+        title: routineTitle,
+        habits: [habitDTO],
+      } as Routine);
+    }
+  };
+
+  if (hasMutationFailed) {
+    alert("Ocorreu uma falha ao tentar criar o hábito.");
+  }
+
+  if (hasMutationSucceded) {
+    alert("Novo hábito criado com sucesso.");
+  }
 
   if (isMutatingRoutine && isFetching) {
     return <p>Carregando dados da rotina...</p>;
   }
 
-  if (isMutatingRoutine && isError) {
+  if (isMutatingRoutine && hasFetchingFailed) {
     return <p>{fetchingError!.message}</p>;
   }
 
@@ -56,10 +82,10 @@ export default function Modal() {
               placeholder="Rotina de Saúde..."
               defaultValue={routine?.title}
               readOnly={isMutatingRoutine}
-              {...register("routineId")}
+              {...register("routineTitle")}
             />
 
-            {errors.routineId && <p>{errors.routineId.message}</p>}
+            {errors.routineTitle && <p>{errors.routineTitle.message}</p>}
           </div>
           <div>
             <label htmlFor="title">Título do Hábito</label>
@@ -117,7 +143,7 @@ export default function Modal() {
               {errors.subTasks?.root && <p>{errors.subTasks!.root.message}</p>}
             </div>
           </div>
-          <input type="submit" value="Criar" />
+          <input disabled={isCreating} type="submit" value="Criar" />
         </fieldset>
       </form>
     </>
