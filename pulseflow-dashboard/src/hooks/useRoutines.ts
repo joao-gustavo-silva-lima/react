@@ -16,17 +16,18 @@ export function useFetchRoutines() {
   });
 }
 
-export function useFetchRoutineById(id: string) {
+export function useFetchRoutineById(id?: string) {
   const queryClient = useQueryClient();
 
   return useQuery<Routine, StatefulError>({
     queryKey: ["routines"],
-    queryFn: () => fetchRoutineById(id),
+    queryFn: () => fetchRoutineById(id!),
+    enabled: Boolean(id),
     retry: false,
     initialData: () => {
-      const routines = queryClient.getQueryData<Routine[]>(["routines"]);
-
-      return routines?.find((routine) => routine.id === id);
+      return queryClient
+        .getQueryData<Routine[]>(["routines"])
+        ?.find((routine) => routine.id === id);
     },
     staleTime: 60000,
   });
@@ -35,7 +36,14 @@ export function useFetchRoutineById(id: string) {
 export function useCreateRoutine() {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useMutation<
+    {
+      message: string;
+      data: Routine;
+    },
+    StatefulError,
+    Routine
+  >({
     mutationKey: ["routines"],
     mutationFn: createRoutine,
     onSuccess: () => {
@@ -47,7 +55,14 @@ export function useCreateRoutine() {
 export function useCreateHabit() {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useMutation<
+    { message: string; data: Habit },
+    StatefulError,
+    {
+      routineId: string;
+      habit: Habit;
+    }
+  >({
     mutationFn: createHabit,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["routines"] });

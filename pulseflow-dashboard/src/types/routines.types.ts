@@ -120,12 +120,7 @@ export const routineSchema = z.object({
     .array(isoDateStringSchema, {
       error: "As datas de conclusão da rotina devem estar em um array.",
     })
-    .optional()
-    .default(() => [])
-    .refine(
-      (dates) => new Set(dates).size === dates.length,
-      "O histórico de conclusão não pode conter datas duplicadas.",
-    ),
+    .optional(),
 });
 
 export const routineChildrenSchema = routineSchema.pick({ habits: true });

@@ -1,85 +1,65 @@
-import type { CreateHabitDTO, Habit, Routine } from "../types/routines.types";
+import type { Habit, Routine } from "../types/routines.types";
 import { StatefulError } from "../utils/stateful-error.utils";
 
 const BASE_URL = "http://localhost:3000";
 
 export async function fetchRoutines() {
-  const response = await safeFetch(BASE_URL);
-
-  if (response.ok) {
-    return await response.json();
-  }
-
-  throw new StatefulError(
-    response.status,
-    `Ocorreu um erro na requisição (Código: ${response.status}).`,
-  );
+  return await request<Routine[]>(BASE_URL);
 }
 
 export async function fetchRoutineById(id: string) {
-  const response = await safeFetch(`${BASE_URL}/${id}`);
-
-  if (response.ok) {
-    return await response.json();
-  }
-
-  const errorMessage =
-    response.status === 404
-      ? "A rotina não foi encontrada."
-      : `Ocorreu um erro na requisição (Código: ${response.status}).`;
-
-  throw new StatefulError(response.status, errorMessage);
+  return await request<Routine>(`${BASE_URL}/${id}`);
 }
 
-export async function createRoutine(payload: Routine) {
-  const response = await safeFetch(BASE_URL, {
+export async function createRoutine(routine: Routine) {
+  return await request<{
+    message: string;
+    data: Routine;
+  }>(BASE_URL, {
     method: "POST",
     headers: {
       "content-type": "application/json",
     },
-    body: JSON.stringify(payload, null, 2),
+    body: JSON.stringify(routine, null, 2),
   });
-
-  if (response.ok) {
-    return await response.json();
-  }
-
-  throw new StatefulError(
-    response.status,
-    `Ocorreu um erro na requisição (Código: ${response.status}).`,
-  );
 }
 
 export async function createHabit({
   routineId,
-  payload,
+  habit,
 }: {
   routineId: string;
-  payload: Habit;
+  habit: Habit;
 }) {
-  const response = await safeFetch(`${BASE_URL}/${routineId}/habits`, {
+  return await request<{
+    message: string;
+    data: Habit;
+  }>(`${BASE_URL}/${routineId}/habits`, {
     method: "POST",
     headers: {
       "content-type": "application/json",
     },
-    body: JSON.stringify(payload, null, 2),
+    body: JSON.stringify(habit, null, 2),
   });
-
-  if (response.ok) {
-    return await response.json();
-  }
-
-  throw new StatefulError(
-    response.status,
-    `Ocorreu um erro na requisição (Código: ${response.status}).`,
-  );
 }
 
-async function safeFetch(input: RequestInfo | URL, init?: RequestInit) {
-  return await fetch(input, init).catch(() => {
+async function request<T>(
+  input: RequestInfo | URL,
+  init?: RequestInit,
+): Promise<T> {
+  const response = await fetch(input, init).catch(() => {
     throw new StatefulError(
       0,
       "Falha de conexão com a rede ou o servidor está fora do ar.",
     );
   });
+
+  if (!response.ok) {
+    throw new StatefulError(
+      response.status,
+      `Ocorreu um erro na requisição (Código: ${response.status}).`,
+    );
+  }
+
+  return response.json();
 }

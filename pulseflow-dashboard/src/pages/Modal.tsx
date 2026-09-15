@@ -4,8 +4,6 @@ import {
   CATEGORIES_TO_PT_BR,
   CreateHabitSchema,
   type CreateHabitDTO,
-  type Habit,
-  type Routine,
 } from "../types/routines.types";
 import { useParams } from "react-router";
 import {
@@ -30,61 +28,27 @@ export default function Modal() {
     control,
   });
 
-  const {
-    mutate: createRoutine,
-    isPending: isCreatingRoutine,
-    isError: hasRoutineCreationFailed,
-    isSuccess: hasRoutineCreationSucceded,
-  } = useCreateRoutine();
-
-  const {
-    mutate: createHabit,
-    isPending: isCreatingHabit,
-    isError: hasHabitCreationFailed,
-    isSuccess: hasHabitCreationSucceded,
-  } = useCreateHabit();
+  const { mutate: createRoutine, isPending: isCreatingRoutine } =
+    useCreateRoutine();
+  const { mutate: createHabit, isPending: isCreatingHabit } = useCreateHabit();
 
   const { routineId } = useParams();
-  const isMutatingRoutine = routineId !== undefined;
-  const {
-    data: routine,
-    isFetching,
-    isError: hasFetchingFailed,
-    error: fetchingError,
-  } = isMutatingRoutine ? useFetchRoutineById(routineId) : {};
+  const isMutatingRoutine = Boolean(routineId);
+  const { data: routine } = useFetchRoutineById(routineId);
 
   const onSubmit: SubmitHandler<CreateHabitDTO> = async (data) => {
-    console.log(data);
+    const { routineTitle, ...habit } = data;
 
     if (isMutatingRoutine) {
-      const { routineTitle, ...habitDTO } = data;
-
-      createHabit({ routineId, payload: habitDTO as Habit });
-    } else {
-      const { routineTitle, ...habitDTO } = data;
-
-      createRoutine({
-        title: routineTitle,
-        habits: [habitDTO],
-      } as Routine);
+      createHabit({ routineId: routineId!, habit });
+      return;
     }
+
+    createRoutine({
+      title: routineTitle,
+      habits: [habit],
+    });
   };
-
-  if (hasRoutineCreationFailed || hasHabitCreationFailed) {
-    alert("Ocorreu uma falha ao tentar criar o hábito.");
-  }
-
-  if (hasRoutineCreationSucceded || hasHabitCreationSucceded) {
-    alert("Novo hábito criado com sucesso.");
-  }
-
-  if (isMutatingRoutine && isFetching) {
-    return <p>Carregando dados da rotina...</p>;
-  }
-
-  if (isMutatingRoutine && hasFetchingFailed) {
-    return <p>{fetchingError!.message}</p>;
-  }
 
   return (
     <>
