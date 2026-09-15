@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { API_MESSAGES } from "../api/messages.api";
 
 export const PREDEFINED_CATEGORIES = [
   "Health",
@@ -19,106 +20,106 @@ export const CATEGORIES_TO_PT_BR = new Map([
 ]);
 
 const isoDateStringSchema = z
-  .string()
+  .string(API_MESSAGES.get("INVALID_DATE_TYPE")!)
   .trim()
   .regex(
     /^\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01])$/,
-    "A data deve estar no formato 'AAAA-MM-DD'.",
+    API_MESSAGES.get("INVALID_DATE_FORMAT")!,
   );
 
 export const subTaskSchema = z.object({
-  id: z.string("ID da sub-tarefa inválido.").optional(),
+  id: z.string(API_MESSAGES.get("INVALID_SUBTASK_ID")!).optional(),
   title: z
-    .string({ error: "O título da sub-tarefa é obrigatório." })
+    .string({ error: API_MESSAGES.get("SUBTASK_TITLE_REQUIRED")! })
     .trim()
-    .min(1, "O título da sub-tarefa não pode estar vazio.")
-    .min(2, "A sub-tarefa deve ter pelo menos 2 caracteres.")
-    .max(60, "A sub-tarefa deve ter no máximo 60 caracteres."),
+    .min(1, API_MESSAGES.get("SUBTASK_TITLE_EMPTY")!)
+    .min(2, API_MESSAGES.get("SUBTASK_TITLE_TOO_SHORT")!)
+    .max(60, API_MESSAGES.get("SUBTASK_TITLE_TOO_LONG")!),
   completionDates: z
     .array(isoDateStringSchema, {
-      error: "As datas de conclusão da sub-tarefa devem estar em um array.",
+      error: API_MESSAGES.get("INVALID_SUBTASK_COMPLETION_DATES")!,
     })
     .optional()
     .default(() => [])
     .refine(
       (dates) => new Set(dates).size === dates.length,
-      "O histórico de conclusão não pode conter datas duplicadas.",
+      API_MESSAGES.get("DUPLICATE_SUBTASK_COMPLETION_DATE")!,
     ),
 });
 
 export const habitSchema = z.object({
-  id: z.string("ID do hábito inválido.").optional(),
+  id: z.string(API_MESSAGES.get("INVALID_HABIT_ID")!).optional(),
   title: z
-    .string({ error: "O título do hábito é obrigatório." })
+    .string({ error: API_MESSAGES.get("HABIT_TITLE_REQUIRED")! })
     .trim()
-    .min(1, "O título do hábito é obrigatório.")
-    .min(3, "O título deve ter pelo menos 3 caracteres visíveis.")
-    .max(50, "O título é muito longo (máximo de 50 caracteres)."),
+    .min(1, API_MESSAGES.get("HABIT_TITLE_EMPTY")!)
+    .min(3, API_MESSAGES.get("HABIT_TITLE_TOO_SHORT")!)
+    .max(50, API_MESSAGES.get("HABIT_TITLE_TOO_LONG")!),
 
   category: z.enum(PREDEFINED_CATEGORIES, {
-    error: "A categoria do hábito é inválida.",
+    error: API_MESSAGES.get("INVALID_HABIT_CATEGORY")!,
   }),
 
   subTasks: z
     .array(subTaskSchema, {
-      error: "As sub-tarefas do hábito devem ser um array ou um objeto.",
+      error: API_MESSAGES.get("INVALID_HABIT_SUBTASKS")!,
     })
-    .max(10, "Você pode adicionar no máximo 10 sub-tarefas por hábito.")
+    .max(10, API_MESSAGES.get("HABIT_SUBTASK_LIMIT_EXCEEDED")!)
     .refine(
       (subtasks) =>
         new Set(subtasks.map((subtask) => subtask.title)).size ===
         subtasks.map((subtask) => subtask.title).length,
-      "Um hábito não pode conter sub-tarefas duplicadas.",
+      API_MESSAGES.get("DUPLICATE_HABIT_SUBTASK_TITLE")!,
     )
     .optional()
     .default([]),
 
   completionDates: z
     .array(isoDateStringSchema, {
-      error: "As datas de conclusão do hábito devem estar em um array.",
+      error: API_MESSAGES.get("INVALID_HABIT_COMPLETION_DATES")!,
     })
     .optional()
     .default(() => [])
     .refine(
       (dates) => new Set(dates).size === dates.length,
-      "O histórico de conclusão não pode conter datas duplicadas.",
+      API_MESSAGES.get("DUPLICATE_HABIT_COMPLETION_DATE")!,
     ),
 });
 
 export const habitChildrenSchema = habitSchema.pick({ subTasks: true });
 
 export const routineSchema = z.object({
-  id: z.string("ID da rotina inválido.").optional(),
+  id: z.string(API_MESSAGES.get("INVALID_ROUTINE_ID")!).optional(),
 
   title: z
-    .string({ error: "O título da rotina é obrigatório." })
+    .string({ error: API_MESSAGES.get("ROUTINE_TITLE_REQUIRED")! })
     .trim()
-    .min(1, "O título da rotina é obrigatório.")
-    .min(3, "O título da rotina deve ter pelo menos 3 caracteres.")
-    .max(40, "O título da rotina é muito longo (máximo de 40 caracteres)."),
+    .min(1, API_MESSAGES.get("ROUTINE_TITLE_EMPTY")!)
+    .min(3, API_MESSAGES.get("ROUTINE_TITLE_TOO_SHORT")!)
+    .max(40, API_MESSAGES.get("ROUTINE_TITLE_TOO_LONG")!),
 
   habits: z
     .array(habitSchema, {
-      error: "Os hábitos da rotina devem estar em um array ou objeto.",
+      error: API_MESSAGES.get("INVALID_ROUTINE_HABITS")!,
     })
     .refine(
       (habits) => habits.length > 0,
-      "A rotina deve conter pelo menos 1 hábito cadastrado.",
+      API_MESSAGES.get("ROUTINE_HABIT_REQUIRED")!,
     )
     .refine(
       (habits) => Object.keys(habits).length <= 15,
-      "A rotina pode conter no máximo 15 hábitos.",
+      API_MESSAGES.get("ROUTINE_HABIT_LIMIT_EXCEEDED")!,
     )
     .refine(
       (habits) =>
         new Set(habits.map((habit) => habit.title)).size ===
         habits.map((habit) => habit.title).length,
-      "Uma rotina não pode conter hábitos duplicados.",
+      API_MESSAGES.get("DUPLICATE_ROUTINE_HABIT_TITLE")!,
     ),
 
   completionDates: z
     .array(isoDateStringSchema, {
-      error: "As datas de conclusão da rotina devem estar em um array.",
+      error: API_MESSAGES.get("INVALID_ROUTINE_COMPLETION_DATES")!,
     })
     .optional(),
 });
