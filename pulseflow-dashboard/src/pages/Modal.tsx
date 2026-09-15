@@ -4,10 +4,15 @@ import {
   CATEGORIES_TO_PT_BR,
   CreateHabitSchema,
   type CreateHabitDTO,
+  type Habit,
   type Routine,
 } from "../types/routines.types";
 import { useParams } from "react-router";
-import { useCreateFirstHabit, useFetchRoutineById } from "../hooks/useRoutines";
+import {
+  useCreateHabit,
+  useCreateRoutine,
+  useFetchRoutineById,
+} from "../hooks/useRoutines";
 
 export default function Modal() {
   const {
@@ -26,11 +31,18 @@ export default function Modal() {
   });
 
   const {
-    mutate,
-    isPending: isCreating,
-    isError: hasMutationFailed,
-    isSuccess: hasMutationSucceded,
-  } = useCreateFirstHabit();
+    mutate: createRoutine,
+    isPending: isCreatingRoutine,
+    isError: hasRoutineCreationFailed,
+    isSuccess: hasRoutineCreationSucceded,
+  } = useCreateRoutine();
+
+  const {
+    mutate: createHabit,
+    isPending: isCreatingHabit,
+    isError: hasHabitCreationFailed,
+    isSuccess: hasHabitCreationSucceded,
+  } = useCreateHabit();
 
   const { routineId } = useParams();
   const isMutatingRoutine = routineId !== undefined;
@@ -45,21 +57,24 @@ export default function Modal() {
     console.log(data);
 
     if (isMutatingRoutine) {
+      const { routineTitle, ...habitDTO } = data;
+
+      createHabit({ routineId, payload: habitDTO as Habit });
     } else {
       const { routineTitle, ...habitDTO } = data;
 
-      mutate({
+      createRoutine({
         title: routineTitle,
         habits: [habitDTO],
       } as Routine);
     }
   };
 
-  if (hasMutationFailed) {
+  if (hasRoutineCreationFailed || hasHabitCreationFailed) {
     alert("Ocorreu uma falha ao tentar criar o hábito.");
   }
 
-  if (hasMutationSucceded) {
+  if (hasRoutineCreationSucceded || hasHabitCreationSucceded) {
     alert("Novo hábito criado com sucesso.");
   }
 
@@ -143,7 +158,11 @@ export default function Modal() {
               {errors.subTasks?.root && <p>{errors.subTasks!.root.message}</p>}
             </div>
           </div>
-          <input disabled={isCreating} type="submit" value="Criar" />
+          <input
+            disabled={isCreatingRoutine || isCreatingHabit}
+            type="submit"
+            value="Criar"
+          />
         </fieldset>
       </form>
     </>

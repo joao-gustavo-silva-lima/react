@@ -1,6 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { Routine } from "../types/routines.types";
-import { createFirstHabit, fetchRoutineById, fetchRoutines } from "../api/api";
+import type { Habit, Routine } from "../types/routines.types";
+import {
+  createHabit,
+  createRoutine,
+  fetchRoutineById,
+  fetchRoutines,
+} from "../api/api";
 import type { StatefulError } from "../utils/stateful-error.utils";
 
 export function useFetchRoutines() {
@@ -27,11 +32,23 @@ export function useFetchRoutineById(id: string) {
   });
 }
 
-export function useCreateFirstHabit() {
+export function useCreateRoutine() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: createFirstHabit,
+    mutationKey: ["routines"],
+    mutationFn: createRoutine,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["routines"] });
+    },
+  });
+}
+
+export function useCreateHabit() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: createHabit,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["routines"] });
     },
