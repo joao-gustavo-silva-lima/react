@@ -49,15 +49,23 @@ async function request<T>(
 ): Promise<T> {
   const response = await fetch(input, init).catch(() => {
     throw new StatefulError(
+      "CONNECTION_ERROR",
       0,
       "Falha de conexão com a rede ou o servidor está fora do ar.",
     );
   });
 
   if (!response.ok) {
+    const isJSON = response.headers
+      .get("content-type")
+      ?.includes("application/json");
+    const errorData = isJSON ? await response.json().catch(null) : null;
+
     throw new StatefulError(
+      errorData.code ?? "UNKNOWN_ERROR",
       response.status,
-      `Ocorreu um erro na requisição (Código: ${response.status}).`,
+      errorData.message ??
+        `Ocorreu um erro na requisição (Código: ${response.status}).`,
     );
   }
 
