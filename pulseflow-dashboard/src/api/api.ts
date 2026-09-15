@@ -3,12 +3,7 @@ import { StatefulError } from "../utils/stateful-error.utils";
 const BASE_URL = "http://localhost:3000";
 
 export async function fetchRoutines() {
-  const response = await fetch(BASE_URL).catch(() => {
-    throw new StatefulError(
-      0,
-      "Falha de conexão com a rede ou o servidor está fora do ar.",
-    );
-  });
+  const response = await safeFetch(BASE_URL);
 
   if (response.ok) {
     return await response.json();
@@ -21,12 +16,7 @@ export async function fetchRoutines() {
 }
 
 export async function fetchRoutineById(id: string) {
-  const response = await fetch(`${BASE_URL}/${id}`).catch(() => {
-    throw new StatefulError(
-      0,
-      "Falha de conexão com a rede ou o servidor está fora do ar.",
-    );
-  });
+  const response = await safeFetch(`${BASE_URL}/${id}`);
 
   if (response.ok) {
     return await response.json();
@@ -38,4 +28,13 @@ export async function fetchRoutineById(id: string) {
       : `Ocorreu um erro na requisição (Código: ${response.status}).`;
 
   throw new StatefulError(response.status, errorMessage);
+}
+
+async function safeFetch(input: RequestInfo | URL, init?: RequestInit) {
+  return await fetch(input, init).catch(() => {
+    throw new StatefulError(
+      0,
+      "Falha de conexão com a rede ou o servidor está fora do ar.",
+    );
+  });
 }
