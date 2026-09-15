@@ -1,6 +1,12 @@
 import type { Habit, Routine } from "../types/routines.types";
 import { StatefulError } from "../utils/stateful-error.utils";
 
+export type DetailedResponse<T = undefined> = {
+  code: string;
+  message: string;
+  data?: T;
+};
+
 const BASE_URL = "http://localhost:3000";
 
 export async function fetchRoutines() {
@@ -12,10 +18,7 @@ export async function fetchRoutineById(id: string) {
 }
 
 export async function createRoutine(routine: Routine) {
-  return await request<{
-    message: string;
-    data: Routine;
-  }>(BASE_URL, {
+  return await request<DetailedResponse<Routine>>(BASE_URL, {
     method: "POST",
     headers: {
       "content-type": "application/json",
@@ -31,16 +34,16 @@ export async function createHabit({
   routineId: string;
   habit: Habit;
 }) {
-  return await request<{
-    message: string;
-    data: Habit;
-  }>(`${BASE_URL}/${routineId}/habits`, {
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
+  return await request<DetailedResponse<Habit>>(
+    `${BASE_URL}/${routineId}/habits`,
+    {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(habit, null, 2),
     },
-    body: JSON.stringify(habit, null, 2),
-  });
+  );
 }
 
 async function request<T>(

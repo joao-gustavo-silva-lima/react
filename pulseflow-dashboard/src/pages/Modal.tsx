@@ -5,12 +5,13 @@ import {
   CreateHabitSchema,
   type CreateHabitDTO,
 } from "../types/routines.types";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import {
   useCreateHabit,
   useCreateRoutine,
   useFetchRoutineById,
 } from "../hooks/useRoutines";
+import { API_MESSAGES } from "../api/messages.api";
 
 export default function Modal() {
   const {
@@ -36,18 +37,35 @@ export default function Modal() {
   const isMutatingRoutine = Boolean(routineId);
   const { data: routine } = useFetchRoutineById(routineId);
 
+  const navigate = useNavigate();
+
   const onSubmit: SubmitHandler<CreateHabitDTO> = async (data) => {
     const { routineTitle, ...habit } = data;
 
-    if (isMutatingRoutine) {
-      createHabit({ routineId: routineId!, habit });
-      return;
-    }
-
-    createRoutine({
-      title: routineTitle,
-      habits: [habit],
-    });
+    isMutatingRoutine
+      ? createHabit(
+          { routineId: routineId!, habit },
+          {
+            onSuccess() {
+              navigate("/");
+              alert(
+                `${routine!.title}/${habit.title}: ${API_MESSAGES.get("HABIT_CREATED")!}`,
+              );
+            },
+          },
+        )
+      : createRoutine(
+          {
+            title: routineTitle,
+            habits: [habit],
+          },
+          {
+            onSuccess() {
+              navigate("/");
+              alert(`${habit.title}: ${API_MESSAGES.get("HABIT_CREATED")!}`);
+            },
+          },
+        );
   };
 
   return (

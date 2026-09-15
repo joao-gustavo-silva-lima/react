@@ -5,6 +5,7 @@ import {
   createRoutine,
   fetchRoutineById,
   fetchRoutines,
+  type DetailedResponse,
 } from "../api/api";
 import type { StatefulError } from "../utils/stateful-error.utils";
 
@@ -36,14 +37,7 @@ export function useFetchRoutineById(id?: string) {
 export function useCreateRoutine() {
   const queryClient = useQueryClient();
 
-  return useMutation<
-    {
-      message: string;
-      data: Routine;
-    },
-    StatefulError,
-    Routine
-  >({
+  return useMutation<DetailedResponse<Routine>, StatefulError, Routine>({
     mutationKey: ["routines"],
     mutationFn: createRoutine,
     onSuccess: () => {
@@ -56,7 +50,7 @@ export function useCreateHabit() {
   const queryClient = useQueryClient();
 
   return useMutation<
-    { message: string; data: Habit },
+    DetailedResponse<Habit>,
     StatefulError,
     {
       routineId: string;
