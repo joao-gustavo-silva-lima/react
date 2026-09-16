@@ -1,18 +1,19 @@
 import {
-  useForm,
   useFieldArray,
+  useForm,
   type FieldPath,
   type SubmitHandler,
 } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  CATEGORIES_TO_PT_BR,
   habitSchema,
   type Habit,
+  type HabitFormInput,
 } from "../types/routines.types";
 import { useNavigate, useParams } from "react-router";
 import { useCreateHabit, useFetchRoutineById } from "../hooks/useRoutines";
 import { API_MESSAGES } from "../api/messages.api";
+import HabitFormFields from "./HabitFormFields";
 
 export default function HabitModal() {
   const {
@@ -27,9 +28,9 @@ export default function HabitModal() {
     mode: "onChange",
   });
 
-  const { fields, append, remove } = useFieldArray({
-    name: "subTasks",
+  const arr = useFieldArray<HabitFormInput>({
     control,
+    name: "subTasks",
   });
 
   const navigate = useNavigate();
@@ -86,67 +87,13 @@ export default function HabitModal() {
     <>
       <h2>NOVO HÁBITO</h2>
       <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
-        <fieldset>
-          <div>
-            <label htmlFor="title">Título do Hábito</label>
-            <input
-              type="text"
-              id="title"
-              placeholder="Correr 15 Km..."
-              {...register("title")}
-            />
-            {errors.title && <p>{errors.title.message}</p>}
-          </div>
-          <div>
-            <label>Categoria</label>
-            <select id="category" {...register("category")}>
-              <option value="">Selecione uma categoria</option>
-              {[...CATEGORIES_TO_PT_BR].map(([category, label]) => (
-                <option key={category} value={category}>
-                  {label}
-                </option>
-              ))}
-            </select>
-            {errors.category && <p>{errors.category.message}</p>}
-          </div>
-          <div>
-            <label>
-              Subtarefas{" "}
-              {fields.length > 0 && <span>{`(${fields.length} / 10)`}</span>}
-            </label>
-            {fields.map((field, index) => (
-              <div key={field.id}>
-                <div>
-                  <input {...register(`subTasks.${index}.title`)} />
-                  <input
-                    onClick={() => remove(index)}
-                    type="button"
-                    value="excluir"
-                  />
-                </div>
-                {errors.subTasks && errors.subTasks[index] && (
-                  <p>{errors.subTasks[index]?.title?.message}</p>
-                )}
-              </div>
-            ))}
-            <div>
-              <input
-                disabled={fields.length >= 10 || errors.subTasks !== undefined}
-                onClick={async () => {
-                  const subTasksAreValid = await trigger("subTasks");
-
-                  if (subTasksAreValid) {
-                    append({ title: "" });
-                  }
-                }}
-                type="button"
-                value="Adicionar Sub-tarefa"
-              />
-              {errors.subTasks?.root && <p>{errors.subTasks!.root.message}</p>}
-            </div>
-          </div>
-          <input disabled={isCreatingHabit} type="submit" value="Criar" />
-        </fieldset>
+        <HabitFormFields
+          errors={errors}
+          trigger={trigger}
+          register={register}
+          fieldsArrayReturn={arr}
+        />
+        <input disabled={isCreatingHabit} type="submit" value="Criar" />
       </form>
     </>
   );

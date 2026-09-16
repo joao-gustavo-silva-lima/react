@@ -7,7 +7,7 @@ export default function Router() {
     <BrowserRouter>
       <Routes>
         <Route index element={<Index />} />
-        <Route path="/:routineId/habits/new" element={<HabitModal />} />
+        <Route path="/:routineId/new-habit" element={<HabitModal />} />
       </Routes>
     </BrowserRouter>
   );

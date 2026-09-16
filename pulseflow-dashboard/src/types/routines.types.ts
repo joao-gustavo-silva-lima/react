@@ -39,12 +39,7 @@ export const subTaskSchema = z.object({
     .array(isoDateStringSchema, {
       error: API_MESSAGES.get("INVALID_SUB-TASK_COMPLETION_DATES")!,
     })
-    .optional()
-    .default(() => [])
-    .refine(
-      (dates) => new Set(dates).size === dates.length,
-      API_MESSAGES.get("DUPLICATE_SUB-TASK_COMPLETION_DATE")!,
-    ),
+    .optional(),
 });
 
 export const habitSchema = z.object({
@@ -126,16 +121,12 @@ export const routineSchema = z.object({
 
 export const routineChildrenSchema = routineSchema.pick({ habits: true });
 
-export const CreateHabitSchema = habitSchema.extend({
-  routineTitle: routineSchema.shape.title,
-});
-
-export type CreateHabitDTO = z.infer<typeof CreateHabitSchema>;
-
 export type SubTask = z.infer<typeof subTaskSchema>;
 export type Habit = z.infer<typeof habitSchema>;
 export type Routine = z.infer<typeof routineSchema>;
 export type DTO = Routine | Habit | SubTask;
 export type Category = (typeof PREDEFINED_CATEGORIES)[number];
+
+export type HabitFormInput = z.input<typeof habitSchema>;
 
 export type Database = Routine[];

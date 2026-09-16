@@ -24,64 +24,71 @@ export default function Index() {
   }
 
   if (routines?.length === 0) {
-    return <p>Nenhuma rotina encontrada...</p>;
+    return;
   }
 
   return (
-    <ul>
-      {routines?.map((routine) => (
-        <li id={routine.id} key={routine.id}>
-          <div>
-            <h2>{routine.title}</h2>
-            <DeletionButton
-              targetTitle={routine.title}
-              ids={{
-                routineId: routine.id!,
-              }}
-            />
-          </div>
-          <ul>
-            {routine.habits.map((habit: Habit) => (
-              <li id={habit.id} key={habit.id}>
-                <div>
-                  <h3>{habit.title}</h3>
-                  <DeletionButton
-                    targetTitle={habit.title}
-                    ids={{
-                      routineId: routine.id!,
-                      habitId: habit.id,
-                    }}
-                  />
-                </div>
-                <span>Categoria: {habit.category}</span>
-                <ul>
-                  {habit.subTasks.map((subTask: SubTask) => (
-                    <li id={subTask.id} key={subTask.id}>
-                      <h4>{subTask.title}</h4>
+    <>
+      <Link to="/new">+ Criar uma nova rotina</Link>
+      {routines?.length === 0 ? (
+        <p>Nenhuma rotina encontrada...</p>
+      ) : (
+        <ul>
+          {routines?.map((routine) => (
+            <li id={routine.id} key={routine.id}>
+              <div>
+                <h2>{routine.title}</h2>
+                <DeletionButton
+                  targetTitle={routine.title}
+                  ids={{
+                    routineId: routine.id!,
+                  }}
+                />
+              </div>
+              <ul>
+                {routine.habits.map((habit: Habit) => (
+                  <li id={habit.id} key={habit.id}>
+                    <div>
+                      <h3>{habit.title}</h3>
                       <DeletionButton
-                        targetTitle={subTask.title}
+                        targetTitle={habit.title}
                         ids={{
                           routineId: routine.id!,
                           habitId: habit.id,
-                          subTaskId: subTask.id,
                         }}
                       />
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-            {routine.habits.length < 15 && (
-              <li>
-                <Link to={`/${routine.id}/habits/new`}>
-                  + Adicionar novo hábito
-                </Link>
-              </li>
-            )}
-          </ul>
-        </li>
-      ))}
-    </ul>
+                    </div>
+                    <span>Categoria: {habit.category}</span>
+                    <ul>
+                      {habit.subTasks.map((subTask: SubTask) => (
+                        <li id={subTask.id} key={subTask.id}>
+                          <h4>{subTask.title}</h4>
+                          <DeletionButton
+                            targetTitle={subTask.title}
+                            ids={{
+                              routineId: routine.id!,
+                              habitId: habit.id,
+                              subTaskId: subTask.id,
+                            }}
+                          />
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                ))}
+                {routine.habits.length < 15 && (
+                  <li>
+                    <Link to={`/${routine.id}/new-habit`}>
+                      + Adicionar novo hábito
+                    </Link>
+                  </li>
+                )}
+              </ul>
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
   );
 }
 
