@@ -5,7 +5,7 @@ import {
   fetchRoutines,
   fetchRoutineById,
   type DetailedResponse,
-  deleteHabit,
+  deleteResource,
 } from "../api/api";
 import { StatefulError } from "../utils/stateful-error.utils";
 
@@ -52,15 +52,19 @@ export function useCreateHabit() {
   });
 }
 
-export function useDeleteHabit() {
+export function useDeleteResource() {
   const queryClient = useQueryClient();
 
   return useMutation<
     DetailedResponse,
     StatefulError,
-    { routineId: string; habitId: string }
+    {
+      routineId: string;
+      habitId?: string;
+      subTaskId?: string;
+    }
   >({
-    mutationFn: deleteHabit,
+    mutationFn: deleteResource,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["routines"] }),
   });
 }

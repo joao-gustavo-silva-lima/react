@@ -9,6 +9,22 @@ export type DetailedResponse<T = undefined> = {
 
 const BASE_URL = "http://localhost:3000";
 
+function concatPath(routineId: string, habitId?: string, subTaskId?: string) {
+  let path = `/${routineId}`;
+
+  if (habitId === undefined) {
+    return path;
+  }
+
+  path += `/habits/${habitId}`;
+
+  if (subTaskId === undefined) {
+    return path;
+  }
+
+  return path + `/sub-tasks/${subTaskId}`;
+}
+
 export async function fetchRoutines() {
   return await request<Routine[]>(BASE_URL);
 }
@@ -55,6 +71,23 @@ export async function deleteHabit({
 }) {
   return await request<DetailedResponse>(
     `${BASE_URL}/${routineId}/habits/${habitId}`,
+    {
+      method: "DELETE",
+    },
+  );
+}
+
+export async function deleteResource({
+  routineId,
+  habitId,
+  subTaskId,
+}: {
+  routineId: string;
+  habitId?: string;
+  subTaskId?: string;
+}) {
+  return await request<DetailedResponse>(
+    `${BASE_URL}${concatPath(routineId, habitId, subTaskId)}`,
     {
       method: "DELETE",
     },
