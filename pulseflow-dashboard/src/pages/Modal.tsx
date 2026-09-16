@@ -1,4 +1,9 @@
-import { useForm, useFieldArray, type SubmitHandler } from "react-hook-form";
+import {
+  useForm,
+  useFieldArray,
+  type FieldPath,
+  type SubmitHandler,
+} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   CATEGORIES_TO_PT_BR,
@@ -12,9 +17,9 @@ import { API_MESSAGES } from "../api/messages.api";
 export default function Modal() {
   const {
     control,
-    trigger,
     register,
     setError,
+    trigger,
     handleSubmit,
     formState: { errors },
   } = useForm({
@@ -29,7 +34,8 @@ export default function Modal() {
 
   const navigate = useNavigate();
   const { routineId } = useParams();
-  const { error: routineFetchingError } = useFetchRoutineById(routineId);
+  const { data: routine, error: routineFetchingError } =
+    useFetchRoutineById(routineId);
   const { mutate: createHabit, isPending: isCreatingHabit } = useCreateHabit();
 
   const onSubmit: SubmitHandler<Habit> = async (habit) => {
@@ -39,8 +45,8 @@ export default function Modal() {
         onError(error) {
           if (error.appendix?.zodErrors) {
             Object.entries(error.appendix.zodErrors).forEach(
-              ([field, message]) => {
-                setError(field as any, {
+                ([field, message]) => {
+                setError(field as FieldPath<Habit>, {
                   type: "server",
                   message: API_MESSAGES.get(message),
                 });
@@ -57,7 +63,10 @@ export default function Modal() {
     );
   };
 
-  if (routineFetchingError?.code === "ROUTINE_NOT_FOUND") {
+  if (
+    routineFetchingError?.code === "ROUTINE_NOT_FOUND" ||
+    routine === undefined
+  ) {
     return <p>Oops... {API_MESSAGES.get("ROUTINE_NOT_FOUND") ?? 404}</p>;
   }
 
@@ -110,11 +119,11 @@ export default function Modal() {
             ))}
             <div>
               <input
-                disabled={fields.length >= 10}
+                disabled={fields.length >= 10 || errors.subTasks !== undefined}
                 onClick={async () => {
-                  await trigger("subTasks");
+                  const subTasksAreValid = await trigger("subTasks");
 
-                  if (errors.subTasks === undefined) {
+                  if (subTasksAreValid) {
                     append({ title: "" });
                   }
                 }}
