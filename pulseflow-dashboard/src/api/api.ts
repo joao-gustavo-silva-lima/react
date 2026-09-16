@@ -62,21 +62,6 @@ export async function createHabit({
   );
 }
 
-export async function deleteHabit({
-  routineId,
-  habitId,
-}: {
-  routineId: string;
-  habitId: string;
-}) {
-  return await request<DetailedResponse>(
-    `${BASE_URL}/${routineId}/habits/${habitId}`,
-    {
-      method: "DELETE",
-    },
-  );
-}
-
 export async function deleteResource({
   routineId,
   habitId,

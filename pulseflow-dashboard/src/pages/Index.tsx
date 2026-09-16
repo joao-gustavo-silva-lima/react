@@ -73,7 +73,9 @@ export default function Index() {
             ))}
             {routine.habits.length < 15 && (
               <li>
-                <Link to={`/new/${routine.id}`}>+ Adicionar novo hábito</Link>
+                <Link to={`/${routine.id}/habits/new`}>
+                  + Adicionar novo hábito
+                </Link>
               </li>
             )}
           </ul>

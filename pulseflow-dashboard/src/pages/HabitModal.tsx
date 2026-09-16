@@ -14,7 +14,7 @@ import { useNavigate, useParams } from "react-router";
 import { useCreateHabit, useFetchRoutineById } from "../hooks/useRoutines";
 import { API_MESSAGES } from "../api/messages.api";
 
-export default function Modal() {
+export default function HabitModal() {
   const {
     control,
     register,
@@ -34,8 +34,7 @@ export default function Modal() {
 
   const navigate = useNavigate();
   const { routineId } = useParams();
-  const { data: routine, error: routineFetchingError } =
-    useFetchRoutineById(routineId);
+  const { error: routineFetchingError } = useFetchRoutineById(routineId);
   const { mutate: createHabit, isPending: isCreatingHabit } = useCreateHabit();
 
   const onSubmit: SubmitHandler<Habit> = async (habit) => {
@@ -45,29 +44,42 @@ export default function Modal() {
         onError(error) {
           if (error.appendix?.zodErrors) {
             Object.entries(error.appendix.zodErrors).forEach(
-                ([field, message]) => {
+              ([field, message]) => {
                 setError(field as FieldPath<Habit>, {
                   type: "server",
                   message: API_MESSAGES.get(message),
                 });
               },
             );
+          } else {
+            alert(
+              API_MESSAGES.get(error.code) ??
+                "Um erro ocorreu durante a criação do hábito. Tente novamente depois.",
+            );
           }
         },
         onSuccess(response) {
-          const habit = response.data;
+          const habitTitle = response.data?.title;
 
-          navigate(`/#${habit?.id ?? ""}`);
+          alert(
+            `O hábito ${habitTitle ? `"${habitTitle}"` : ""} foi criado com sucesso.`,
+          );
+
+          navigate(`/`);
         },
       },
     );
   };
 
-  if (
-    routineFetchingError?.code === "ROUTINE_NOT_FOUND" ||
-    routine === undefined
-  ) {
-    return <p>Oops... {API_MESSAGES.get("ROUTINE_NOT_FOUND") ?? 404}</p>;
+  if (routineFetchingError) {
+    //Return 404 or broken page
+    return (
+      <p>
+        Oops...{" "}
+        {API_MESSAGES.get(routineFetchingError.code) ??
+          "Um erro inesperado ocorreu. Tente novamente mais tarde."}
+      </p>
+    );
   }
 
   return (
