@@ -29,7 +29,7 @@ export default function Index() {
 
   return (
     <>
-      <Link to="/new">+ Criar uma nova rotina</Link>
+      <Link to="/new-routine">+ Criar uma nova rotina</Link>
       {routines?.length === 0 ? (
         <p>Nenhuma rotina encontrada...</p>
       ) : (

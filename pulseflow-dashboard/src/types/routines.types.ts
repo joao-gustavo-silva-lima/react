@@ -122,11 +122,12 @@ export const routineSchema = z.object({
 export const routineChildrenSchema = routineSchema.pick({ habits: true });
 
 export type SubTask = z.infer<typeof subTaskSchema>;
+export type SubTaskFormInput = z.input<typeof subTaskSchema>;
 export type Habit = z.infer<typeof habitSchema>;
+export type HabitFormInput = z.input<typeof habitSchema>;
 export type Routine = z.infer<typeof routineSchema>;
+export type RoutineFormInput = z.input<typeof routineSchema>;
 export type DTO = Routine | Habit | SubTask;
 export type Category = (typeof PREDEFINED_CATEGORIES)[number];
-
-export type HabitFormInput = z.input<typeof habitSchema>;
 
 export type Database = Routine[];

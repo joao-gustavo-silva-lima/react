@@ -1,9 +1,4 @@
-import {
-  useFieldArray,
-  useForm,
-  type FieldPath,
-  type SubmitHandler,
-} from "react-hook-form";
+import { useForm, type FieldPath, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   habitSchema,
@@ -24,18 +19,17 @@ export default function HabitModal() {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(habitSchema),
+    resolver: zodResolver<HabitFormInput, unknown, Habit>(habitSchema),
     mode: "onChange",
-  });
-
-  const arr = useFieldArray<HabitFormInput>({
-    control,
-    name: "subTasks",
   });
 
   const navigate = useNavigate();
   const { routineId } = useParams();
-  const { error: routineFetchingError } = useFetchRoutineById(routineId);
+  const {
+    data: routine,
+    error: routineFetchingError,
+    isFetching: isFetchingRoutine,
+  } = useFetchRoutineById(routineId);
   const { mutate: createHabit, isPending: isCreatingHabit } = useCreateHabit();
 
   const onSubmit: SubmitHandler<Habit> = async (habit) => {
@@ -72,6 +66,10 @@ export default function HabitModal() {
     );
   };
 
+  if (isFetchingRoutine) {
+    return <p>Carregando rotina...</p>;
+  }
+
   if (routineFetchingError) {
     //Return 404 or broken page
     return (
@@ -86,15 +84,22 @@ export default function HabitModal() {
   return (
     <>
       <h2>NOVO HÁBITO</h2>
+      <p>Rotina: {routine?.title}</p>
       <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
         <HabitFormFields
+          fieldPrefix=""
           errors={errors}
+          control={control}
           trigger={trigger}
           register={register}
-          fieldsArrayReturn={arr}
+          subTaskFieldArrayProps={{
+            control,
+            name: "subTasks",
+          }}
         />
         <input disabled={isCreatingHabit} type="submit" value="Criar" />
       </form>
+      {/* Display existent habits here */}
     </>
   );
 }
