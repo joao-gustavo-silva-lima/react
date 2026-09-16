@@ -28,22 +28,22 @@ const isoDateStringSchema = z
   );
 
 export const subTaskSchema = z.object({
-  id: z.string(API_MESSAGES.get("INVALID_SUBTASK_ID")!).optional(),
+  id: z.string(API_MESSAGES.get("INVALID_SUB-TASK_ID")!).optional(),
   title: z
-    .string({ error: API_MESSAGES.get("SUBTASK_TITLE_REQUIRED")! })
+    .string({ error: API_MESSAGES.get("SUB-TASK_TITLE_REQUIRED")! })
     .trim()
-    .min(1, API_MESSAGES.get("SUBTASK_TITLE_EMPTY")!)
-    .min(2, API_MESSAGES.get("SUBTASK_TITLE_TOO_SHORT")!)
-    .max(60, API_MESSAGES.get("SUBTASK_TITLE_TOO_LONG")!),
+    .min(1, API_MESSAGES.get("SUB-TASK_TITLE_EMPTY")!)
+    .min(2, API_MESSAGES.get("SUB-TASK_TITLE_TOO_SHORT")!)
+    .max(60, API_MESSAGES.get("SUB-TASK_TITLE_TOO_LONG")!),
   completionDates: z
     .array(isoDateStringSchema, {
-      error: API_MESSAGES.get("INVALID_SUBTASK_COMPLETION_DATES")!,
+      error: API_MESSAGES.get("INVALID_SUB-TASK_COMPLETION_DATES")!,
     })
     .optional()
     .default(() => [])
     .refine(
       (dates) => new Set(dates).size === dates.length,
-      API_MESSAGES.get("DUPLICATE_SUBTASK_COMPLETION_DATE")!,
+      API_MESSAGES.get("DUPLICATE_SUB-TASK_COMPLETION_DATE")!,
     ),
 });
 
@@ -62,14 +62,14 @@ export const habitSchema = z.object({
 
   subTasks: z
     .array(subTaskSchema, {
-      error: API_MESSAGES.get("INVALID_HABIT_SUBTASKS")!,
+      error: API_MESSAGES.get("INVALID_HABIT_SUB-TASKS")!,
     })
     .max(10, API_MESSAGES.get("HABIT_SUBTASK_LIMIT_EXCEEDED")!)
     .refine(
       (subtasks) =>
         new Set(subtasks.map((subtask) => subtask.title)).size ===
         subtasks.map((subtask) => subtask.title).length,
-      API_MESSAGES.get("DUPLICATE_HABIT_SUBTASK_TITLE")!,
+      API_MESSAGES.get("DUPLICATE_HABIT_SUB-TASK_TITLE")!,
     )
     .optional()
     .default([]),
