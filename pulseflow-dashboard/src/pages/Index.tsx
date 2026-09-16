@@ -1,19 +1,25 @@
 import { Link } from "react-router";
-import { useFetchRoutines } from "../hooks/useRoutines";
+import { useDeleteHabit, useFetchRoutines } from "../hooks/useRoutines";
 import type { Habit, SubTask } from "../types/routines.types";
 import { API_MESSAGES } from "../api/messages.api";
 
 export default function Index() {
-  const { data: routines, isFetching, error } = useFetchRoutines();
+  const {
+    data: routines,
+    isFetching: isFetchingRoutines,
+    error: routinesFetchingError,
+  } = useFetchRoutines();
 
-  if (isFetching) {
+  const { mutate: deleteHabit } = useDeleteHabit();
+
+  if (isFetchingRoutines) {
     return <p>Carregando rotinas...</p>;
   }
 
-  if (error !== null) {
+  if (routinesFetchingError !== null) {
     return (
       <p>
-        {API_MESSAGES.get(error.code) ??
+        {API_MESSAGES.get(routinesFetchingError.code) ??
           "Algum erro ocorreu ao tentar buscar as rotinas..."}
       </p>
     );
@@ -31,7 +37,27 @@ export default function Index() {
           <ul>
             {routine.habits.map((habit: Habit) => (
               <li id={habit.id} key={habit.id}>
-                <h3>{habit.title}</h3>
+                <div>
+                  <h3>{habit.title}</h3>
+                  <button
+                    onClick={() =>
+                      deleteHabit(
+                        { routineId: routine.id!, habitId: habit.id! },
+                        {
+                          onSettled(data, error) {
+                            console.log(data?.code ?? error?.code);
+
+                            alert(
+                              API_MESSAGES.get((data?.code ?? error?.code)!),
+                            );
+                          },
+                        },
+                      )
+                    }
+                  >
+                    Excluir
+                  </button>
+                </div>
                 <span>Categoria: {habit.category}</span>
                 <ul>
                   {habit.subTasks.map((subTask: SubTask) => (
@@ -42,9 +68,11 @@ export default function Index() {
                 </ul>
               </li>
             ))}
-            <li>
-              <Link to={`/new/${routine.id}`}>+ Adicionar novo hábito</Link>
-            </li>
+            {routine.habits.length < 15 && (
+              <li>
+                <Link to={`/new/${routine.id}`}>+ Adicionar novo hábito</Link>
+              </li>
+            )}
           </ul>
         </li>
       ))}

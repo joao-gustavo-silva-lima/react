@@ -5,8 +5,9 @@ import {
   fetchRoutines,
   fetchRoutineById,
   type DetailedResponse,
+  deleteHabit,
 } from "../api/api";
-import type { StatefulError } from "../utils/stateful-error.utils";
+import { StatefulError } from "../utils/stateful-error.utils";
 
 export function useFetchRoutines() {
   return useQuery<Routine[], StatefulError>({
@@ -48,5 +49,18 @@ export function useCreateHabit() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["routines"] });
     },
+  });
+}
+
+export function useDeleteHabit() {
+  const queryClient = useQueryClient();
+
+  return useMutation<
+    DetailedResponse,
+    StatefulError,
+    { routineId: string; habitId: string }
+  >({
+    mutationFn: deleteHabit,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["routines"] }),
   });
 }
