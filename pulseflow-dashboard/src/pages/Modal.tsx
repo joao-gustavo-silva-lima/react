@@ -12,6 +12,7 @@ import { API_MESSAGES } from "../api/messages.api";
 export default function Modal() {
   const {
     control,
+    trigger,
     register,
     setError,
     handleSubmit,
@@ -110,7 +111,9 @@ export default function Modal() {
             <div>
               <input
                 disabled={fields.length >= 10}
-                onClick={() => {
+                onClick={async () => {
+                  await trigger("subTasks");
+
                   if (errors.subTasks === undefined) {
                     append({ title: "" });
                   }
