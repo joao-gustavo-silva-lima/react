@@ -2,25 +2,22 @@ import { useForm, useFieldArray, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   CATEGORIES_TO_PT_BR,
-  CreateHabitSchema,
-  type CreateHabitDTO,
+  habitSchema,
+  type Habit,
 } from "../types/routines.types";
 import { useNavigate, useParams } from "react-router";
-import {
-  useCreateHabit,
-  useCreateRoutine,
-  useFetchRoutineById,
-} from "../hooks/useRoutines";
+import { useCreateHabit, useFetchRoutineById } from "../hooks/useRoutines";
 import { API_MESSAGES } from "../api/messages.api";
 
 export default function Modal() {
   const {
     control,
     register,
+    setError,
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(CreateHabitSchema),
+    resolver: zodResolver(habitSchema),
     mode: "onChange",
   });
 
@@ -29,61 +26,45 @@ export default function Modal() {
     control,
   });
 
-  const { mutate: createRoutine, isPending: isCreatingRoutine } =
-    useCreateRoutine();
+  const navigate = useNavigate();
+  const { routineId } = useParams();
+  const { error: routineFetchingError } = useFetchRoutineById(routineId);
   const { mutate: createHabit, isPending: isCreatingHabit } = useCreateHabit();
 
-  const { routineId } = useParams();
-  const isMutatingRoutine = Boolean(routineId);
-  const { data: routine } = useFetchRoutineById(routineId);
+  const onSubmit: SubmitHandler<Habit> = async (habit) => {
+    createHabit(
+      { routineId: routineId!, habit },
+      {
+        onError(error) {
+          if (error.appendix?.zodErrors) {
+            Object.entries(error.appendix.zodErrors).forEach(
+              ([field, message]) => {
+                setError(field as any, {
+                  type: "server",
+                  message: API_MESSAGES.get(message),
+                });
+              },
+            );
+          }
+        },
+        onSuccess(response) {
+          const habit = response.data;
 
-  const navigate = useNavigate();
-
-  const onSubmit: SubmitHandler<CreateHabitDTO> = async (data) => {
-    const { routineTitle, ...habit } = data;
-
-    isMutatingRoutine
-      ? createHabit(
-          { routineId: routineId!, habit },
-          {
-            onSuccess() {
-              navigate("/");
-              alert(
-                `${routine!.title}/${habit.title}: ${API_MESSAGES.get("HABIT_CREATED")!}`,
-              );
-            },
-          },
-        )
-      : createRoutine(
-          {
-            title: routineTitle,
-            habits: [habit],
-          },
-          {
-            onSuccess() {
-              navigate("/");
-              alert(`${habit.title}: ${API_MESSAGES.get("HABIT_CREATED")!}`);
-            },
-          },
-        );
+          navigate(`/#${habit?.id ?? ""}`);
+        },
+      },
+    );
   };
+
+  if (routineFetchingError?.code === "ROUTINE_NOT_FOUND") {
+    return <p>Oops... {API_MESSAGES.get("ROUTINE_NOT_FOUND") ?? 404}</p>;
+  }
 
   return (
     <>
       <h2>NOVO HÁBITO</h2>
       <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
         <fieldset>
-          <div>
-            <label htmlFor="routineId">Título da Rotina</label>
-            <input
-              placeholder="Rotina de Saúde..."
-              defaultValue={routine?.title}
-              readOnly={isMutatingRoutine}
-              {...register("routineTitle")}
-            />
-
-            {errors.routineTitle && <p>{errors.routineTitle.message}</p>}
-          </div>
           <div>
             <label htmlFor="title">Título do Hábito</label>
             <input
@@ -140,11 +121,7 @@ export default function Modal() {
               {errors.subTasks?.root && <p>{errors.subTasks!.root.message}</p>}
             </div>
           </div>
-          <input
-            disabled={isCreatingRoutine || isCreatingHabit}
-            type="submit"
-            value="Criar"
-          />
+          <input disabled={isCreatingHabit} type="submit" value="Criar" />
         </fieldset>
       </form>
     </>

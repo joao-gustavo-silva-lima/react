@@ -7,7 +7,7 @@ export default function Router() {
     <BrowserRouter>
       <Routes>
         <Route index element={<Index />} />
-        <Route path="/new/:routineId?" element={<Modal />} />
+        <Route path="/new/:routineId" element={<Modal />} />
       </Routes>
     </BrowserRouter>
   );

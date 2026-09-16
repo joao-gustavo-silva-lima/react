@@ -36,8 +36,9 @@ export const API_MESSAGES = new Map<string, string>([
   ["INVALID_HABIT_CATEGORY", "Selecione uma categoria de hábito válida."],
   ["INVALID_HABIT_SUBTASKS", "As subtarefas do hábito são inválidas."],
   ["HABIT_SUBTASK_LIMIT_EXCEEDED", "O hábito excede o limite de subtarefas."],
+  ["DUPLICATE_SUB-TASK_TITLE", ""],
   [
-    "DUPLICATE_HABIT_SUBTASK_TITLE",
+    "DUPLICATE_SUB-TASK_TITLE",
     "Já existe uma subtarefa com este título no hábito.",
   ],
   [
@@ -56,10 +57,7 @@ export const API_MESSAGES = new Map<string, string>([
   ["INVALID_ROUTINE_HABITS", "Os hábitos da rotina são inválidos."],
   ["ROUTINE_HABIT_REQUIRED", "Informe pelo menos um hábito para a rotina."],
   ["ROUTINE_HABIT_LIMIT_EXCEEDED", "A rotina excede o limite de hábitos."],
-  [
-    "DUPLICATE_ROUTINE_HABIT_TITLE",
-    "Já existe um hábito com este título na rotina.",
-  ],
+  ["DUPLICATE_HABIT_TITLE", "Já existe um hábito com este título na rotina."],
   [
     "INVALID_ROUTINE_COMPLETION_DATES",
     "As datas de conclusão da rotina são inválidas.",

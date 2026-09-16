@@ -2,9 +2,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { Habit, Routine } from "../types/routines.types";
 import {
   createHabit,
-  createRoutine,
-  fetchRoutineById,
   fetchRoutines,
+  fetchRoutineById,
   type DetailedResponse,
 } from "../api/api";
 import type { StatefulError } from "../utils/stateful-error.utils";
@@ -21,7 +20,7 @@ export function useFetchRoutineById(id?: string) {
   const queryClient = useQueryClient();
 
   return useQuery<Routine, StatefulError>({
-    queryKey: ["routines"],
+    queryKey: ["routines", id],
     queryFn: () => fetchRoutineById(id!),
     enabled: Boolean(id),
     retry: false,
@@ -31,18 +30,6 @@ export function useFetchRoutineById(id?: string) {
         ?.find((routine) => routine.id === id);
     },
     staleTime: 60000,
-  });
-}
-
-export function useCreateRoutine() {
-  const queryClient = useQueryClient();
-
-  return useMutation<DetailedResponse<Routine>, StatefulError, Routine>({
-    mutationKey: ["routines"],
-    mutationFn: createRoutine,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["routines"] });
-    },
   });
 }
 

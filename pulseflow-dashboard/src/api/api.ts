@@ -69,6 +69,7 @@ async function request<T>(
       response.status,
       errorData.message ??
         `Ocorreu um erro na requisição (Código: ${response.status}).`,
+      errorData.appendix,
     );
   }
 
