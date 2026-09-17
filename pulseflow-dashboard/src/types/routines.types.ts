@@ -129,5 +129,6 @@ export type Routine = z.infer<typeof routineSchema>;
 export type RoutineFormInput = z.input<typeof routineSchema>;
 export type DTO = Routine | Habit | SubTask;
 export type Category = (typeof PREDEFINED_CATEGORIES)[number];
+export type PatchingDTO = { title?: string; category?: Category };
 
 export type Database = Routine[];

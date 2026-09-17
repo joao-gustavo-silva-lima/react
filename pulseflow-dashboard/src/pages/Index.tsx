@@ -42,6 +42,7 @@ export default function Index() {
             <li id={routine.id} key={routine.id}>
               <div>
                 <h2>{routine.title}</h2>
+                <Link to={`${routine.id}/edit`}>Editar</Link>
                 <DeletionButton
                   targetTitle={routine.title}
                   ids={{

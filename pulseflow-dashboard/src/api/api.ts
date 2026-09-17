@@ -1,4 +1,4 @@
-import type { DTO, Routine } from "../types/routines.types";
+import type { DTO, PatchingDTO, Routine } from "../types/routines.types";
 import { StatefulError } from "../utils/stateful-error.utils";
 
 export type DetailedResponse<T = undefined> = {
@@ -46,16 +46,6 @@ export async function fetchRoutineById(id: string) {
   return await request<Routine>(`${BASE_URL}/${id}`);
 }
 
-export async function createRoutine(routine: Routine) {
-  return await request<DetailedResponse<Routine>>(BASE_URL, {
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
-    },
-    body: JSON.stringify(routine, null, 2),
-  });
-}
-
 export async function createResource({
   DTO,
   routineId,
@@ -69,6 +59,29 @@ export async function createResource({
     `${BASE_URL}${concatPath(false, routineId, habitId)}`,
     {
       method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(DTO, null, 2),
+    },
+  );
+}
+
+export async function patchResource({
+  DTO,
+  routineId,
+  habitId,
+  subTaskId,
+}: {
+  DTO: PatchingDTO;
+  routineId: string;
+  habitId?: string;
+  subTaskId?: string;
+}) {
+  return await request<DetailedResponse<DTO>>(
+    `${BASE_URL}${concatPath(true, routineId, habitId, subTaskId)}`,
+    {
+      method: "PATCH",
       headers: {
         "content-type": "application/json",
       },
