@@ -1,6 +1,5 @@
 import {
   get,
-  useFieldArray,
   type ArrayPath,
   type FieldErrors,
   type FieldPath,
@@ -9,14 +8,14 @@ import {
   type UseFormRegister,
   type Control,
   type FieldValues,
+  useFieldArray,
 } from "react-hook-form";
 import {
-  type SubTaskFormInput,
   CATEGORIES_TO_PT_BR,
+  type SubTaskFormInput,
 } from "../types/routines.types";
-import SubTasksFormFields from "./SubTasksFormFIelds";
 
-export default function HabitFormFields<TForm extends FieldValues>({
+export default function HabitFormField<TForm extends FieldValues>({
   errors,
   trigger,
   register,
@@ -30,10 +29,11 @@ export default function HabitFormFields<TForm extends FieldValues>({
   register: UseFormRegister<TForm>;
   subTaskFieldArrayProps: UseFieldArrayProps<TForm, ArrayPath<TForm>>;
 }) {
-  const { fields, append, remove } = useFieldArray(subTaskFieldArrayProps);
-  const appendSubTask = append as (value: SubTaskFormInput) => void;
   const fieldPath = (path: string) =>
     (fieldPrefix ? `${fieldPrefix}.${path}` : path) as FieldPath<TForm>;
+
+  const { fields, append, remove } = useFieldArray(subTaskFieldArrayProps);
+  const appendSubTask = append as (value: SubTaskFormInput) => void;
 
   return (
     <fieldset>
@@ -63,13 +63,44 @@ export default function HabitFormFields<TForm extends FieldValues>({
           <p>{get(errors, fieldPath("category")).message}</p>
         )}
       </div>
-      <SubTasksFormFields
-        errors={errors}
-        trigger={trigger}
-        register={register}
-        fieldPath={fieldPath}
-        subTaskFieldArrayProps={subTaskFieldArrayProps}
-      />
+      <div>
+        <label>
+          Subtarefas{" "}
+          {fields.length > 0 && <span>{`(${fields.length} / 10)`}</span>}
+        </label>
+        {fields.map((field, index) => (
+          <div key={field.id}>
+            <div>
+              <input {...register(fieldPath(`subTasks.${index}.title`))} />
+              <input
+                onClick={() => remove(index)}
+                type="button"
+                value="excluir"
+              />
+            </div>
+            {get(errors, fieldPath(`subTasks.${index}.title`))?.message && (
+              <p>{get(errors, fieldPath(`subTasks.${index}.title`)).message}</p>
+            )}
+          </div>
+        ))}
+        <div>
+          <input
+            disabled={fields.length >= 10}
+            onClick={async () => {
+              const subTasksAreValid = await trigger(fieldPath("subTasks"));
+
+              if (subTasksAreValid) {
+                appendSubTask({ title: "" });
+              }
+            }}
+            type="button"
+            value="Adicionar Sub-tarefa"
+          />
+          {get(errors, fieldPath("subTasks.root"))?.message && (
+            <p>{get(errors, fieldPath("subTasks.root")).message}</p>
+          )}
+        </div>
+      </div>
     </fieldset>
   );
 }

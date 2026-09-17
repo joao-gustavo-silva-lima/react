@@ -8,6 +8,8 @@ export default function handleFormError<TDTO extends DTO>(
   setFormError: UseFormSetError<TDTO>,
   unexpectedErrorMessage: string,
 ) {
+  alert(API_MESSAGES.get(error.code) ?? unexpectedErrorMessage);
+
   if (error.appendix?.zodErrors) {
     Object.entries(error.appendix.zodErrors).forEach(([field, message]) => {
       setFormError(field as FieldPath<TDTO>, {
@@ -15,7 +17,5 @@ export default function handleFormError<TDTO extends DTO>(
         message: API_MESSAGES.get(message),
       });
     });
-  } else {
-    alert(API_MESSAGES.get(error.code) ?? unexpectedErrorMessage);
   }
 }

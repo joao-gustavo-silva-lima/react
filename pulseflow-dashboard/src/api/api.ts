@@ -9,20 +9,33 @@ export type DetailedResponse<T = undefined> = {
 
 const BASE_URL = "http://localhost:3000";
 
-function concatPath(routineId?: string, habitId?: string, subTaskId?: string) {
-  let path = `/${routineId ?? ""}`;
+function concatPath(
+  isSingleResource: boolean,
+  routineId?: string,
+  habitId?: string,
+  subTaskId?: string,
+) {
+  let path = `/`;
+
+  if (routineId === undefined) {
+    return path;
+  }
+
+  path += isSingleResource ? routineId : `${routineId}/habits`;
 
   if (habitId === undefined) {
     return path;
   }
 
-  path += `/habits/${habitId}`;
+  path += isSingleResource ? `/habits/${habitId}` : `/${habitId}/sub-tasks`;
 
   if (subTaskId === undefined) {
     return path;
   }
 
-  return path + `/sub-tasks/${subTaskId}`;
+  path += isSingleResource ? `/sub-tasks/${subTaskId}` : `/${subTaskId}`;
+
+  return path;
 }
 
 export async function fetchRoutines() {
@@ -53,7 +66,7 @@ export async function createResource({
   habitId?: string;
 }) {
   return await request<DetailedResponse<DTO>>(
-    `${BASE_URL}${concatPath(routineId, habitId)}`,
+    `${BASE_URL}${concatPath(false, routineId, habitId)}`,
     {
       method: "POST",
       headers: {
@@ -74,7 +87,7 @@ export async function deleteResource({
   subTaskId?: string;
 }) {
   return await request<DetailedResponse>(
-    `${BASE_URL}${concatPath(routineId, habitId, subTaskId)}`,
+    `${BASE_URL}${concatPath(true, routineId, habitId, subTaskId)}`,
     {
       method: "DELETE",
     },

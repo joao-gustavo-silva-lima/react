@@ -79,6 +79,13 @@ export default function Index() {
                           />
                         </li>
                       ))}
+                      {habit.subTasks.length < 10 && (
+                        <li>
+                          <Link to={`/${routine.id}/${habit.id}/new-sub-task`}>
+                            + Adicionar nova sub-tarefa
+                          </Link>
+                        </li>
+                      )}
                     </ul>
                   </li>
                 ))}
@@ -114,14 +121,11 @@ function DeletionButton({
           return;
         }
 
-        deleteResource(
-          { ...ids },
-          {
-            onSettled(data, error) {
-              alert(API_MESSAGES.get((data?.code ?? error?.code)!));
-            },
+        deleteResource(ids, {
+          onSettled(data, error) {
+            alert(API_MESSAGES.get((data?.code ?? error?.code)!));
           },
-        );
+        });
       }}
     >
       Excluir
