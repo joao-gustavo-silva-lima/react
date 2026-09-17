@@ -22,6 +22,9 @@ export default function RoutineModal() {
   } = useForm<RoutineFormInput, unknown, Routine>({
     resolver: zodResolver(routineSchema),
     mode: "onChange",
+    defaultValues: {
+      habits: [{}],
+    },
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -81,9 +84,11 @@ export default function RoutineModal() {
                   name: `habits.${index}.subTasks`,
                 }}
               />
-              <button type="button" onClick={() => remove(index)}>
-                Remover hábito
-              </button>
+              {index > 0 && (
+                <button type="button" onClick={() => remove(index)}>
+                  Remover hábito
+                </button>
+              )}
             </div>
           ))}
           <button

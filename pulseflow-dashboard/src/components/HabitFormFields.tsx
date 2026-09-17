@@ -14,6 +14,7 @@ import {
   type SubTaskFormInput,
   CATEGORIES_TO_PT_BR,
 } from "../types/routines.types";
+import SubTasksFormFields from "./SubTasksFormFIelds";
 
 export default function HabitFormFields<TForm extends FieldValues>({
   errors,
@@ -62,44 +63,13 @@ export default function HabitFormFields<TForm extends FieldValues>({
           <p>{get(errors, fieldPath("category")).message}</p>
         )}
       </div>
-      <div>
-        <label>
-          Subtarefas{" "}
-          {fields.length > 0 && <span>{`(${fields.length} / 10)`}</span>}
-        </label>
-        {fields.map((field, index) => (
-          <div key={field.id}>
-            <div>
-              <input {...register(fieldPath(`subTasks.${index}.title`))} />
-              <input
-                onClick={() => remove(index)}
-                type="button"
-                value="excluir"
-              />
-            </div>
-            {get(errors, fieldPath(`subTasks.${index}.title`))?.message && (
-              <p>{get(errors, fieldPath(`subTasks.${index}.title`)).message}</p>
-            )}
-          </div>
-        ))}
-        <div>
-          <input
-            disabled={fields.length >= 10}
-            onClick={async () => {
-              const subTasksAreValid = await trigger(fieldPath("subTasks"));
-
-              if (subTasksAreValid) {
-                appendSubTask({ title: "" });
-              }
-            }}
-            type="button"
-            value="Adicionar Sub-tarefa"
-          />
-          {get(errors, fieldPath("subTasks.root"))?.message && (
-            <p>{get(errors, fieldPath("subTasks.root")).message}</p>
-          )}
-        </div>
-      </div>
+      <SubTasksFormFields
+        errors={errors}
+        trigger={trigger}
+        register={register}
+        fieldPath={fieldPath}
+        subTaskFieldArrayProps={subTaskFieldArrayProps}
+      />
     </fieldset>
   );
 }
