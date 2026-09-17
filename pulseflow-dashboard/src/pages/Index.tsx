@@ -1,6 +1,10 @@
 import { Link } from "react-router";
 import { useDeleteResource, useFetchRoutines } from "../hooks/useRoutines";
-import type { Habit, SubTask } from "../types/routines.types";
+import {
+  CATEGORIES_TO_PT_BR,
+  type Habit,
+  type SubTask,
+} from "../types/routines.types";
 import { API_MESSAGES } from "../api/messages.api";
 
 export default function Index() {
@@ -58,7 +62,9 @@ export default function Index() {
                         }}
                       />
                     </div>
-                    <span>Categoria: {habit.category}</span>
+                    <span>
+                      Categoria: {CATEGORIES_TO_PT_BR.get(habit.category)}
+                    </span>
                     <ul>
                       {habit.subTasks.map((subTask: SubTask) => (
                         <li id={subTask.id} key={subTask.id}>

@@ -1,4 +1,4 @@
-import type { DTO, Habit, Routine } from "../types/routines.types";
+import type { DTO, Routine } from "../types/routines.types";
 import { StatefulError } from "../utils/stateful-error.utils";
 
 export type DetailedResponse<T = undefined> = {
