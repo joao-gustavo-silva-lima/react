@@ -1,0 +1,21 @@
+import type { FieldPath, UseFormSetError } from "react-hook-form";
+import { API_MESSAGES } from "../api/messages.api";
+import type { DTO } from "../types/routines.types";
+import { StatefulError } from "./stateful-error.utils";
+
+export default function handleFormError<TDTO extends DTO>(
+  error: StatefulError,
+  setFormError: UseFormSetError<TDTO>,
+  unexpectedErrorMessage: string,
+) {
+  if (error.appendix?.zodErrors) {
+    Object.entries(error.appendix.zodErrors).forEach(([field, message]) => {
+      setFormError(field as FieldPath<TDTO>, {
+        type: "server",
+        message: API_MESSAGES.get(message),
+      });
+    });
+  } else {
+    alert(API_MESSAGES.get(error.code) ?? unexpectedErrorMessage);
+  }
+}

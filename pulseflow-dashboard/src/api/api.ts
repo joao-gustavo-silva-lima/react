@@ -1,4 +1,4 @@
-import type { Habit, Routine } from "../types/routines.types";
+import type { DTO, Habit, Routine } from "../types/routines.types";
 import { StatefulError } from "../utils/stateful-error.utils";
 
 export type DetailedResponse<T = undefined> = {
@@ -9,8 +9,8 @@ export type DetailedResponse<T = undefined> = {
 
 const BASE_URL = "http://localhost:3000";
 
-function concatPath(routineId: string, habitId?: string, subTaskId?: string) {
-  let path = `/${routineId}`;
+function concatPath(routineId?: string, habitId?: string, subTaskId?: string) {
+  let path = `/${routineId ?? ""}`;
 
   if (habitId === undefined) {
     return path;
@@ -43,21 +43,23 @@ export async function createRoutine(routine: Routine) {
   });
 }
 
-export async function createHabit({
+export async function createResource({
+  DTO,
   routineId,
-  habit,
+  habitId,
 }: {
-  routineId: string;
-  habit: Habit;
+  DTO: DTO;
+  routineId?: string;
+  habitId?: string;
 }) {
-  return await request<DetailedResponse<Habit>>(
-    `${BASE_URL}/${routineId}/habits`,
+  return await request<DetailedResponse<DTO>>(
+    `${BASE_URL}${concatPath(routineId, habitId)}`,
     {
       method: "POST",
       headers: {
         "content-type": "application/json",
       },
-      body: JSON.stringify(habit, null, 2),
+      body: JSON.stringify(DTO, null, 2),
     },
   );
 }

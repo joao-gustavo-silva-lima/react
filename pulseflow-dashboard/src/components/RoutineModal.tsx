@@ -7,12 +7,16 @@ import {
 import { useFieldArray, useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import HabitFormFields from "./HabitFormFields";
+import { useCreateResource } from "../hooks/useRoutines";
+import handleFormError from "../utils/handle-error.utils";
+import { useNavigate } from "react-router";
 
 export default function RoutineModal() {
   const {
     control,
     trigger,
     register,
+    setError,
     handleSubmit,
     formState: { errors },
   } = useForm<RoutineFormInput, unknown, Routine>({
@@ -25,8 +29,32 @@ export default function RoutineModal() {
     name: "habits",
   });
 
+  const { mutate: createRoutine, isPending: isCreatingRoutine } =
+    useCreateResource();
+
+  const navigate = useNavigate();
+
   const onSubmit: SubmitHandler<Routine> = (data) => {
-    console.log(data);
+    createRoutine(
+      { DTO: data },
+      {
+        onError: (error) =>
+          handleFormError(
+            error,
+            setError,
+            "Um erro ocorreu durante a criação da rotina. Tente novamente depois.",
+          ),
+        onSuccess(response) {
+          const habitTitle = (response.data as Routine)?.title;
+
+          alert(
+            `A rotina ${habitTitle ? `"${habitTitle}"` : ""} foi criada com sucesso.`,
+          );
+
+          navigate(`/`);
+        },
+      },
+    );
   };
 
   return (
@@ -59,14 +87,25 @@ export default function RoutineModal() {
             </div>
           ))}
           <button
+            disabled={fields.length >= 15 || errors.habits !== undefined}
             type="button"
-            onClick={() => append({ title: "" } as HabitFormInput)}
+            onClick={async () => {
+              const habitsAreValid = await trigger("habits");
+
+              if (habitsAreValid) {
+                append({ title: "" } as HabitFormInput);
+              }
+            }}
           >
             Criar Novo Hábito
           </button>
         </fieldset>
         <input
-          disabled={fields.length === 0 || errors.habits !== undefined}
+          disabled={
+            isCreatingRoutine ||
+            fields.length === 0 ||
+            errors.habits !== undefined
+          }
           type="submit"
           value="Criar"
         />

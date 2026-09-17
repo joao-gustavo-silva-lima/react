@@ -1,4 +1,4 @@
-import { useForm, type FieldPath, type SubmitHandler } from "react-hook-form";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   habitSchema,
@@ -6,9 +6,10 @@ import {
   type HabitFormInput,
 } from "../types/routines.types";
 import { useNavigate, useParams } from "react-router";
-import { useCreateHabit, useFetchRoutineById } from "../hooks/useRoutines";
+import { useCreateResource, useFetchRoutineById } from "../hooks/useRoutines";
 import { API_MESSAGES } from "../api/messages.api";
 import HabitFormFields from "./HabitFormFields";
+import handleFormError from "../utils/handle-error.utils";
 
 export default function HabitModal() {
   const {
@@ -30,31 +31,21 @@ export default function HabitModal() {
     error: routineFetchingError,
     isFetching: isFetchingRoutine,
   } = useFetchRoutineById(routineId);
-  const { mutate: createHabit, isPending: isCreatingHabit } = useCreateHabit();
+  const { mutate: createHabit, isPending: isCreatingHabit } =
+    useCreateResource();
 
   const onSubmit: SubmitHandler<Habit> = async (habit) => {
     createHabit(
-      { routineId: routineId!, habit },
+      { routineId: routineId!, DTO: habit },
       {
-        onError(error) {
-          if (error.appendix?.zodErrors) {
-            Object.entries(error.appendix.zodErrors).forEach(
-              ([field, message]) => {
-                setError(field as FieldPath<Habit>, {
-                  type: "server",
-                  message: API_MESSAGES.get(message),
-                });
-              },
-            );
-          } else {
-            alert(
-              API_MESSAGES.get(error.code) ??
-                "Um erro ocorreu durante a criação do hábito. Tente novamente depois.",
-            );
-          }
-        },
+        onError: (error) =>
+          handleFormError(
+            error,
+            setError,
+            "Um erro ocorreu durante a criação do hábito. Tente novamente depois.",
+          ),
         onSuccess(response) {
-          const habitTitle = response.data?.title;
+          const habitTitle = (response.data as Habit)?.title;
 
           alert(
             `O hábito ${habitTitle ? `"${habitTitle}"` : ""} foi criado com sucesso.`,
