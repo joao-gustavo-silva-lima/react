@@ -3,6 +3,7 @@ import Index from "../pages/Index";
 import HabitModal from "../components/HabitModal";
 import RoutineModal from "../components/RoutineModal";
 import SubTaskModal from "../components/SubTaskModal";
+import Analytics from "../pages/Analytics";
 
 export default function Router() {
   return (
@@ -30,6 +31,7 @@ export default function Router() {
           path="/:routineId/:habitId/:subTaskId/edit"
           element={<SubTaskModal mode="patch" />}
         />
+        <Route path="/analytics" element={<Analytics />} />
       </Routes>
     </BrowserRouter>
   );

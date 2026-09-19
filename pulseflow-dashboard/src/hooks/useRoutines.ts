@@ -20,9 +20,14 @@ import {
 import { StatefulError } from "../utils/stateful-error.utils";
 
 export function useFetchRoutines() {
+  const queryClient = useQueryClient();
+
   return useQuery<Routine[], StatefulError>({
     queryKey: ["routines"],
     queryFn: fetchRoutines,
+    initialData: () => {
+      return queryClient.getQueryData<Routine[]>(["routines"]);
+    },
     staleTime: 60000,
   });
 }
