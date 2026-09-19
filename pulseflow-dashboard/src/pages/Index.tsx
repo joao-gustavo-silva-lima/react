@@ -41,6 +41,11 @@ export default function Index() {
             <li id={routine.id} key={routine.id}>
               <div>
                 <h2>{routine.title}</h2>
+                {routine.streak > 0 && (
+                  <p>
+                    🔥 {routine.streak} Dia{routine.streak > 1 ? "s" : ""}
+                  </p>
+                )}
                 <p>Status: {routine.isComplete ? "✅" : "⏳"}</p>
                 <Link to={`${routine.id}/edit`}>Editar</Link>
                 <DeletionButton
@@ -55,6 +60,11 @@ export default function Index() {
                   <li id={habit.id} key={habit.id}>
                     <div>
                       <h3>{habit.title}</h3>
+                      {habit.streak > 0 && (
+                        <p>
+                          🔥 {habit.streak} Dia{habit.streak > 1 ? "s" : ""}
+                        </p>
+                      )}
                       <p>Status: {habit.isComplete ? "✅" : "⏳"}</p>
                       {habit.subTasks.length === 0 && (
                         <DailyStatusToggleButton
@@ -81,6 +91,12 @@ export default function Index() {
                       {habit.subTasks.map((subTask) => (
                         <li id={subTask.id} key={subTask.id}>
                           <h4>{subTask.title}</h4>
+                          {subTask.streak > 0 && (
+                            <p>
+                              🔥 {subTask.streak} Dia
+                              {subTask.streak > 1 ? "s" : ""}
+                            </p>
+                          )}
                           <p>Status: {subTask.isComplete ? "✅" : "⏳"}</p>
                           <DailyStatusToggleButton
                             ids={{
