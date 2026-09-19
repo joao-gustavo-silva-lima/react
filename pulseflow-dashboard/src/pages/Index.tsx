@@ -71,6 +71,12 @@ export default function Index() {
                       {habit.subTasks.map((subTask: SubTask) => (
                         <li id={subTask.id} key={subTask.id}>
                           <h4>{subTask.title}</h4>
+                          <Link
+                            to={`${routine.id}/${habit.id}/${subTask.id}/edit`}
+                          >
+                            Editar
+                          </Link>
+
                           <DeletionButton
                             targetTitle={subTask.title}
                             ids={{

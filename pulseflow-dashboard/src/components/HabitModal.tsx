@@ -1,4 +1,5 @@
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { useEffect } from "react";
+import { useForm, type Resolver, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   habitSchema,
@@ -8,6 +9,7 @@ import {
 import { useNavigate, useParams } from "react-router";
 import {
   useCreateResource,
+  useFetchHabitById,
   useFetchRoutineById,
   usePatchResource,
 } from "../hooks/useRoutines";
@@ -16,7 +18,22 @@ import HabitFormField from "./HabitFormField";
 import handleFormError from "../utils/handle-error.utils";
 
 export default function HabitModal({ mode }: { mode: "create" | "patch" }) {
+  const { routineId, habitId } = useParams();
+  const navigate = useNavigate();
+
   const {
+    data: routine,
+    error: routineFetchingError,
+    isFetching: isFetchingRoutine,
+  } = useFetchRoutineById(routineId);
+  const {
+    data: habit,
+    error: habitFetchingError,
+    isFetching: isFetchingHabit,
+  } = useFetchHabitById(routineId, habitId);
+
+  const {
+    reset,
     control,
     register,
     setError,
@@ -24,17 +41,23 @@ export default function HabitModal({ mode }: { mode: "create" | "patch" }) {
     handleSubmit,
     formState: { errors },
   } = useForm<HabitFormInput, unknown, Habit>({
-    resolver: zodResolver<HabitFormInput, unknown, Habit>(habitSchema),
+    resolver: zodResolver(
+      mode === "create"
+        ? habitSchema
+        : habitSchema.pick({ title: true, category: true }),
+    ) as unknown as Resolver<HabitFormInput, unknown, Habit>,
     mode: "onChange",
+    defaultValues:
+      mode === "patch" && habit
+        ? { title: habit.title, category: habit.category }
+        : undefined,
   });
 
-  const navigate = useNavigate();
-  const { routineId, habitId } = useParams();
-  const {
-    data: routine,
-    error: routineFetchingError,
-    isFetching: isFetchingRoutine,
-  } = useFetchRoutineById(routineId);
+  useEffect(() => {
+    if (mode === "patch" && habit) {
+      reset({ title: habit.title, category: habit.category });
+    }
+  }, [habit, mode, reset]);
 
   const { mutate: createHabit, isPending: isCreatingHabit } =
     useCreateResource();
@@ -83,17 +106,24 @@ export default function HabitModal({ mode }: { mode: "create" | "patch" }) {
     );
   };
 
-  if (isFetchingRoutine) {
+  if (isFetchingRoutine || (mode === "patch" && isFetchingHabit)) {
     return <p>Carregando rotina...</p>;
   }
 
-  if (routineFetchingError) {
-    //Return 404 or broken page
+  if (
+    routineFetchingError?.status === 404 ||
+    habitFetchingError?.status === 404
+  ) {
+    return (
+      <p>404 - {habitFetchingError ? "Hábito" : "Rotina"} não encontrado.</p>
+    );
+  }
+
+  if (routineFetchingError || habitFetchingError) {
     return (
       <p>
-        Oops...{" "}
-        {API_MESSAGES.get(routineFetchingError.code) ??
-          "Um erro inesperado ocorreu. Tente novamente mais tarde."}
+        {API_MESSAGES.get((habitFetchingError ?? routineFetchingError)!.code) ??
+          "Não foi possível carregar o recurso."}
       </p>
     );
   }
@@ -106,7 +136,7 @@ export default function HabitModal({ mode }: { mode: "create" | "patch" }) {
       <h2>{mode === "create" ? "NOVO HÁBITO" : "EDITAR HÁBITO"}</h2>
       <p>Rotina: {routine?.title}</p>
       <HabitFormField
-        mode="patch"
+        mode={mode}
         fieldPrefix=""
         errors={errors}
         control={control}

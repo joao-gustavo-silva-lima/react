@@ -24,7 +24,11 @@ export default function Router() {
         />
         <Route
           path="/:routineId/:habitId/new-sub-task"
-          element={<SubTaskModal />}
+          element={<SubTaskModal mode="create" />}
+        />
+        <Route
+          path="/:routineId/:habitId/:subTaskId/edit"
+          element={<SubTaskModal mode="patch" />}
         />
       </Routes>
     </BrowserRouter>

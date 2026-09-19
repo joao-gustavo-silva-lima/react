@@ -1,4 +1,10 @@
-import type { DTO, PatchingDTO, Routine } from "../types/routines.types";
+import type {
+  DTO,
+  Habit,
+  PatchingDTO,
+  Routine,
+  SubTask,
+} from "../types/routines.types";
 import { StatefulError } from "../utils/stateful-error.utils";
 
 export type DetailedResponse<T = undefined> = {
@@ -44,6 +50,20 @@ export async function fetchRoutines() {
 
 export async function fetchRoutineById(id: string) {
   return await request<Routine>(`${BASE_URL}/${id}`);
+}
+
+export async function fetchHabitById(routineId: string, habitId: string) {
+  return await request<Habit>(`${BASE_URL}/${routineId}/habits/${habitId}`);
+}
+
+export async function fetchSubTaskById(
+  routineId: string,
+  habitId: string,
+  subTaskId: string,
+) {
+  return await request<SubTask>(
+    `${BASE_URL}/${routineId}/habits/${habitId}/sub-tasks/${subTaskId}`,
+  );
 }
 
 export async function createResource({
