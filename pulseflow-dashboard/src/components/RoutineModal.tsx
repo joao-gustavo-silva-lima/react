@@ -13,12 +13,26 @@ import {
 } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import HabitFormField from "./HabitFormField";
-import { useCreateResource, usePatchResource } from "../hooks/useRoutines";
+import {
+  useCreateResource,
+  useFetchRoutineById,
+  usePatchResource,
+} from "../hooks/useRoutines";
 import handleFormError from "../utils/handle-error.utils";
 import { useNavigate, useParams } from "react-router";
+import { useEffect } from "react";
 
 export default function RoutineModal({ mode }: { mode: "create" | "patch" }) {
+  const { routineId } = useParams();
+
   const {
+    data: routine,
+    error: routineFetchingError,
+    isFetching: isFetchingRoutine,
+  } = useFetchRoutineById(routineId);
+
+  const {
+    reset,
     control,
     trigger,
     register,
@@ -35,8 +49,16 @@ export default function RoutineModal({ mode }: { mode: "create" | "patch" }) {
         ? {
             habits: [{} as HabitFormInput],
           }
-        : undefined,
+        : routine
+          ? { title: routine.title }
+          : undefined,
   });
+
+  useEffect(() => {
+    if (mode === "patch" && routine) {
+      reset({ title: routine.title });
+    }
+  }, [mode, reset, routine]);
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -50,7 +72,6 @@ export default function RoutineModal({ mode }: { mode: "create" | "patch" }) {
     usePatchResource();
 
   const navigate = useNavigate();
-  const { routineId } = useParams();
 
   const onSubmitPatch: SubmitHandler<Routine> = ({ title }) => {
     if (!routineId) {
@@ -99,6 +120,18 @@ export default function RoutineModal({ mode }: { mode: "create" | "patch" }) {
     );
   };
 
+  if (mode === "patch" && isFetchingRoutine) {
+    return <p>Carregando rotina...</p>;
+  }
+
+  if (mode === "patch" && routineFetchingError?.status === 404) {
+    return <p>404 - Rotina não encontrada.</p>;
+  }
+
+  if (mode === "patch" && routineFetchingError) {
+    return <p>Não foi possível carregar a rotina.</p>;
+  }
+
   return (
     <form
       autoComplete="off"
@@ -117,6 +150,7 @@ export default function RoutineModal({ mode }: { mode: "create" | "patch" }) {
             {fields.map((field, index) => (
               <div key={field.id}>
                 <HabitFormField
+                  mode="create"
                   errors={errors}
                   trigger={trigger}
                   control={control}

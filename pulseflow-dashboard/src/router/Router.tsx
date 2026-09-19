@@ -14,7 +14,14 @@ export default function Router() {
           path="/:routineId/edit"
           element={<RoutineModal mode="patch" />}
         />
-        <Route path="/:routineId/new-habit" element={<HabitModal />} />
+        <Route
+          path="/:routineId/new-habit"
+          element={<HabitModal mode="create" />}
+        />
+        <Route
+          path="/:routineId/:habitId/edit"
+          element={<HabitModal mode="patch" />}
+        />
         <Route
           path="/:routineId/:habitId/new-sub-task"
           element={<SubTaskModal />}

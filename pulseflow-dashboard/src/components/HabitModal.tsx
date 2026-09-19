@@ -6,12 +6,16 @@ import {
   type HabitFormInput,
 } from "../types/routines.types";
 import { useNavigate, useParams } from "react-router";
-import { useCreateResource, useFetchRoutineById } from "../hooks/useRoutines";
+import {
+  useCreateResource,
+  useFetchRoutineById,
+  usePatchResource,
+} from "../hooks/useRoutines";
 import { API_MESSAGES } from "../api/messages.api";
 import HabitFormField from "./HabitFormField";
 import handleFormError from "../utils/handle-error.utils";
 
-export default function HabitModal() {
+export default function HabitModal({ mode }: { mode: "create" | "patch" }) {
   const {
     control,
     register,
@@ -19,22 +23,44 @@ export default function HabitModal() {
     trigger,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<HabitFormInput, unknown, Habit>({
     resolver: zodResolver<HabitFormInput, unknown, Habit>(habitSchema),
     mode: "onChange",
   });
 
   const navigate = useNavigate();
-  const { routineId } = useParams();
+  const { routineId, habitId } = useParams();
   const {
     data: routine,
     error: routineFetchingError,
     isFetching: isFetchingRoutine,
   } = useFetchRoutineById(routineId);
+
   const { mutate: createHabit, isPending: isCreatingHabit } =
     useCreateResource();
+  const { mutate: patchHabit, isPending: isPatchingHabit } = usePatchResource();
 
-  const onSubmit: SubmitHandler<Habit> = async (habit) => {
+  const onSubmitPatch: SubmitHandler<Habit> = ({ title, category }) => {
+    patchHabit(
+      { routineId: routineId!, habitId: habitId!, DTO: { title, category } },
+      {
+        onError: (error) =>
+          handleFormError(
+            error,
+            setError,
+            "Um erro ocorreu durante a edição do hábito. Tente novamente depois.",
+          ),
+        onSuccess(_) {
+          alert(
+            `O hábito ${title ? `"${title}"` : ""} foi criado com sucesso.`,
+          );
+
+          navigate(`/`);
+        },
+      },
+    );
+  };
+  const onSubmit: SubmitHandler<Habit> = (habit) => {
     createHabit(
       { routineId: routineId!, DTO: habit },
       {
@@ -73,10 +99,14 @@ export default function HabitModal() {
   }
 
   return (
-    <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
-      <h2>NOVO HÁBITO</h2>
+    <form
+      autoComplete="off"
+      onSubmit={handleSubmit(mode === "create" ? onSubmit : onSubmitPatch)}
+    >
+      <h2>{mode === "create" ? "NOVO HÁBITO" : "EDITAR HÁBITO"}</h2>
       <p>Rotina: {routine?.title}</p>
       <HabitFormField
+        mode="patch"
         fieldPrefix=""
         errors={errors}
         control={control}
@@ -87,8 +117,11 @@ export default function HabitModal() {
           name: "subTasks",
         }}
       />
-      <input disabled={isCreatingHabit} type="submit" value="Criar" />
-      {/* Display existent habits here */}
+      <input
+        disabled={mode === "create" ? isCreatingHabit : isPatchingHabit}
+        type="submit"
+        value={mode === "create" ? "Criar Novo Hábito" : "Editar Hábito"}
+      />
     </form>
   );
 }
