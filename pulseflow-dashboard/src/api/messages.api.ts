@@ -25,7 +25,7 @@ export const API_MESSAGES = new Map<string, string>([
   ["ROUTINE_TITLE_TOO_SHORT", "O título da rotina é muito curto."],
   ["ROUTINE_TITLE_TOO_LONG", "O título da rotina é muito longo."],
   ["INVALID_ROUTINE_HABITS", "Os hábitos da rotina são inválidos."],
-  ["ROUTINE_HABIT_REQUIRED", "Informe pelo menos um hábito para a rotina."],
+  ["ROUTINE_HABIT_REQUIRED", "A rotina deve ter ao menos um hábito."],
   ["ROUTINE_HABIT_LIMIT_EXCEEDED", "A rotina excedeu o limite de hábitos."],
   [
     "DUPLICATE_ROUTINE_HABIT_TITLE",

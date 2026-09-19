@@ -9,8 +9,11 @@ export default function Router() {
     <BrowserRouter>
       <Routes>
         <Route index element={<Index />} />
-        <Route path="/new-routine" element={<RoutineModal />} />
-        <Route path="/:routineId/edit" element={<p>WIP</p>} />
+        <Route path="/new-routine" element={<RoutineModal mode="create" />} />
+        <Route
+          path="/:routineId/edit"
+          element={<RoutineModal mode="patch" />}
+        />
         <Route path="/:routineId/new-habit" element={<HabitModal />} />
         <Route
           path="/:routineId/:habitId/new-sub-task"
