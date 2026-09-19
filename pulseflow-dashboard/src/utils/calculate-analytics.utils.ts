@@ -1,19 +1,26 @@
 import type { Routine } from "../types/routines.types";
 
 const heatLevelColors = new Map<number, string>([
-  [1, "#14532d"],
-  [2, "#15803d"],
-  [3, "#22c55e"],
-  [4, "#4ade80"],
-  [5, "#86efac"],
+  [0, "#ffffff80"],
+  [2, "#033a16"],
+  [3, "#196c2e"],
+  [4, "#2ea043"],
+  [5, "#56d364"],
 ]);
 
 export default function calculateAnalytics(routines: Routine[]) {
+  let totalHabits = 0;
+
   const contributions: Record<string, number> = {};
   let highestDailyContribution = 0;
 
+  const categoriesDistribution: Record<string, number> = {};
+
   routines.forEach(({ habits }) => {
-    habits.forEach(({ completionDates }) => {
+    habits.forEach(({ completionDates, category }) => {
+      totalHabits++;
+      categoriesDistribution[category] =
+        (categoriesDistribution[category] ?? 0) + 1;
       completionDates.forEach((date) => {
         contributions[date] = (contributions[date] ?? 0) + 1;
 
@@ -28,7 +35,11 @@ export default function calculateAnalytics(routines: Routine[]) {
     calculateHeatLevel(contribution, highestDailyContribution),
   );
 
-  return { heatMap, heatLevelColors };
+  for (const [category, quantity] of Object.entries(categoriesDistribution)) {
+    categoriesDistribution[category] = (quantity * 100) / totalHabits;
+  }
+
+  return { heatMap, heatLevelColors, categoriesDistribution };
 }
 
 function constructHeatMap(
