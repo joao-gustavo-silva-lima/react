@@ -15,6 +15,7 @@ import {
   deleteResource,
   createResource,
   patchResource,
+  toggleResourcesDailyStatus,
 } from "../api/api";
 import { StatefulError } from "../utils/stateful-error.utils";
 
@@ -141,6 +142,23 @@ export function useDeleteResource() {
     }
   >({
     mutationFn: deleteResource,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["routines"] }),
+  });
+}
+
+export function useToggleResourcesDailyStatus() {
+  const queryClient = useQueryClient();
+
+  return useMutation<
+    DetailedResponse,
+    StatefulError,
+    {
+      routineId: string;
+      habitId?: string;
+      subTaskId?: string;
+    }
+  >({
+    mutationFn: toggleResourcesDailyStatus,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["routines"] }),
   });
 }

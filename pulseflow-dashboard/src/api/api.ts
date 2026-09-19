@@ -127,6 +127,23 @@ export async function deleteResource({
   );
 }
 
+export async function toggleResourcesDailyStatus({
+  routineId,
+  habitId,
+  subTaskId,
+}: {
+  routineId: string;
+  habitId?: string;
+  subTaskId?: string;
+}) {
+  return await request<DetailedResponse>(
+    `${BASE_URL}${concatPath(true, routineId, habitId, subTaskId)}/toggle-today`,
+    {
+      method: "POST",
+    },
+  );
+}
+
 async function request<T>(
   input: RequestInfo | URL,
   init?: RequestInit,
