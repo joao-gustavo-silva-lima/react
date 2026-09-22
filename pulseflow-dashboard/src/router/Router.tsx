@@ -4,6 +4,7 @@ import HabitModal from "../components/HabitModal";
 import RoutineModal from "../components/RoutineModal";
 import SubTaskModal from "../components/SubTaskModal";
 import Analytics from "../pages/Analytics";
+import Fallback from "../pages/Fallback";
 
 export default function Router() {
   return (
@@ -32,6 +33,7 @@ export default function Router() {
           element={<SubTaskModal mode="patch" />}
         />
         <Route path="/analytics" element={<Analytics />} />
+        <Route path="*" element={<Fallback />} />
       </Routes>
     </BrowserRouter>
   );
