@@ -132,3 +132,8 @@ export type Category = (typeof PREDEFINED_CATEGORIES)[number];
 export type PatchingDTO = { title?: string; category?: Category };
 
 export type Database = Routine[];
+
+export type Query = {
+  title: string;
+  category: Category | "All" | "Pending" | "Complete";
+};

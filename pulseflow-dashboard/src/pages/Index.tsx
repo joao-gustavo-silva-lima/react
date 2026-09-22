@@ -4,18 +4,32 @@ import {
   useFetchRoutines,
   useToggleResourcesDailyStatus,
 } from "../hooks/useRoutines";
-import { CATEGORIES_TO_PT_BR, type DTO } from "../types/routines.types";
+import {
+  CATEGORIES_TO_PT_BR,
+  type DTO,
+  type Query,
+} from "../types/routines.types";
 import { API_MESSAGES } from "../api/messages.api";
 import { checkCompletionDates } from "../utils/handle-completion-dates.utils";
+import SearchBar from "../components/SearchBar";
+import { formatDate } from "../utils/date-conversion.utils";
+import { useState } from "react";
+import filterRoutines from "../utils/filter-routines.utils";
 
 export default function Index() {
+  const [query, setQuery] = useState<Query>({
+    title: "",
+    category: "All",
+  });
+
   const {
     data: routines,
     isFetching: isFetchingRoutines,
     error: routinesFetchingError,
   } = useFetchRoutines();
 
-  const statefulRoutines = checkCompletionDates(routines ?? []);
+  const markedRoutines = checkCompletionDates(routines ?? []);
+  const filteredRoutines = filterRoutines(query, markedRoutines);
 
   if (isFetchingRoutines) {
     return <p>Carregando rotinas...</p>;
@@ -32,12 +46,15 @@ export default function Index() {
 
   return (
     <>
+      <h1>{formatDate(new Date())}</h1>
+      <SearchBar setQuery={setQuery} />
+      <h3>Rotinas & Hábitos</h3>
       <Link to="/new-routine">+ Criar uma nova rotina</Link>
-      {statefulRoutines.length === 0 ? (
+      {filteredRoutines.length === 0 ? (
         <p>Nenhuma rotina encontrada...</p>
       ) : (
         <ul>
-          {statefulRoutines.map((routine) => (
+          {filteredRoutines.map((routine) => (
             <li id={routine.id} key={routine.id}>
               <div>
                 <h2>{routine.title}</h2>

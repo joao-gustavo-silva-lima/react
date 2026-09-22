@@ -1,5 +1,7 @@
 import type { Routine } from "../types/routines.types";
 
+export type MarkedRoutines = ReturnType<typeof checkCompletionDates>;
+
 export function checkCompletionDates(routines: Routine[]) {
   const todayISOString = new Date().toISOString().split("T")[0]!;
 
