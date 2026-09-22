@@ -15,10 +15,10 @@
   --color-primary-foreground: #091a0f;
 
   /* Cores de Categoria e Status */
-  --color-category-health: #22c55e; /* Saúde (Verde) */
-  --color-category-studies: #3b82f6; /* Estudos (Azul) */
-  --color-category-work: #f97316; /* Trabalho (Laranja) */
+  --color-streak: #f97316; /* Trabalho (Laranja) */
   --color-danger: #ef4444; /* Ações destrutivas / Ícone de lixeira */
+  --color-danger-foreground: #1a0505;
+  --color-pendent: #eab308; /* Status pendente (Amarelo) */
   --color-warning: #eab308; /* Alertas e Toasts */
 
   /* Cores de Texto */
@@ -77,5 +77,9 @@
 
   .surface {
     @apply bg-surface rounded-lg p-card-p;
+  }
+
+  .button-basics {
+    @apply transition-all duration-[.125s] hover:cursor-pointer hover:scale-[105%] active:scale-[95%];
   }
 }

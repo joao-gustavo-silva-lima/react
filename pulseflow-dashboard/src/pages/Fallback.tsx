@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import ActionButton from "../components/ActionButton";
 
 export default function Fallback({ message }: { message?: string }) {
   return (
@@ -11,12 +11,7 @@ export default function Fallback({ message }: { message?: string }) {
       <p className="text-text-secondary text-base text-center">
         {message ?? "Oops... Não queremos ficar por aqui."}
       </p>
-      <Link
-        className="transition-all duration-[.125s] main-border border-primary font-medium text-primary px-[15px] py-[5px] rounded-md text-nowrap text-center bg-transparent  hover:bg-primary-foreground hover:border-primary-foreground active:bg-primary active:text-primary-foreground"
-        to="/"
-      >
-        Voltar ao Dashboard
-      </Link>
+      <ActionButton to="/">Voltar ao Dashboard</ActionButton>
     </main>
   );
 }

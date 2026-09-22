@@ -2,8 +2,10 @@ import { CATEGORIES_TO_PT_BR, type Query } from "../types/routines.types";
 import { Search } from "lucide-react";
 
 export default function SearchBar({
+  query,
   setQuery,
 }: {
+  query: Query;
   setQuery: React.Dispatch<React.SetStateAction<Query>>;
 }) {
   const onTitleChange = (targetValue: Query["title"]) => {
@@ -32,11 +34,12 @@ export default function SearchBar({
           type="text"
           id="searchbar"
           className="w-full"
+          value={query.title}
           placeholder="Buscar Hábitos ou Tarefas..."
           onChange={(e) => onTitleChange(e.target.value)}
         />
       </label>
-      <ul className="flex flex-nowrap overflow-x-auto items-center gap-gap-md">
+      <ul className="flex flex-wrap gap-gap-md">
         {(
           [
             ["All", "Todos"],
@@ -45,10 +48,12 @@ export default function SearchBar({
             ...CATEGORIES_TO_PT_BR.entries(),
           ] as [Query["category"], string][]
         ).map(([value, category]) => (
-          <li key={`query-category-${value}-button`}>
+          <li className="flex-1" key={`query-category-${value}-button`}>
             <button
-              className="text-sm text-nowrap bg-surface px-[.5em] py-[.5em] main-border hover:cursor-pointer rounded-sm"
-              onClick={() => onCategoryChange(value)}
+              className={`transition-all duration-[.25s] w-full text-sm text-nowrap px-[.5em] py-[.5em] main-border hover:cursor-pointer rounded-sm hover:scale-[105%] active:scale-[95%] ${query.category === value ? "text-primary border-primary bg-primary-foreground" : "bg-surface"}`}
+              onClick={() =>
+                onCategoryChange(query.category !== value ? value : "All")
+              }
             >
               {category}
             </button>

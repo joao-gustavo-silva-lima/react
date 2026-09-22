@@ -10,12 +10,23 @@ import {
   type Query,
 } from "../types/routines.types";
 import { API_MESSAGES } from "../api/messages.api";
-import { checkCompletionDates } from "../utils/handle-completion-dates.utils";
+import {
+  checkCompletionDates,
+  type MarkedRoutines,
+} from "../utils/handle-completion-dates.utils";
 import SearchBar from "../components/SearchBar";
 import { formatDate } from "../utils/date-conversion.utils";
 import { useState } from "react";
 import filterRoutines from "../utils/filter-routines.utils";
 import Fallback from "./Fallback";
+import ActionButton from "../components/ActionButton";
+import {
+  ChevronDown,
+  Pencil,
+  Square,
+  SquareCheckBig,
+  Trash2,
+} from "lucide-react";
 
 export default function Index() {
   const [query, setQuery] = useState<Query>({
@@ -50,42 +61,72 @@ export default function Index() {
   return (
     <main className="contained flex flex-col gap-gap-lg">
       <h1 className="font-bold text-xl capitalize">{formatDate(new Date())}</h1>
-      <SearchBar setQuery={setQuery} />
-      <h3>Rotinas & Hábitos</h3>
-      <Link to="/new-routine">+ Criar uma nova rotina</Link>
+      <SearchBar query={query} setQuery={setQuery} />
+      <h3 className="text-lg font-semibold">Rotinas, Hábitos & Tarefas</h3>
+      <ActionButton to="/new-routine">+ Criar uma nova rotina</ActionButton>
       {filteredRoutines.length === 0 ? (
-        <p>Nenhuma rotina encontrada...</p>
+        query.title === "" && query.category === "All" ? (
+          <p className="w-full text-center text-text-secondary">
+            Nenhuma rotina foi registrada.{" "}
+            <Link
+              className="text-primary font-semibold hover:cursor-pointer hover:underline"
+              to={""}
+            >
+              Comece aqui!
+            </Link>
+          </p>
+        ) : (
+          <p className="w-full text-center text-text-secondary">
+            Nenhum hábito ou tarefa satisfaz a filtragem.{" "}
+            <button
+              className="text-primary font-semibold hover:cursor-pointer hover:underline"
+              onClick={() => setQuery({ title: "", category: "All" })}
+            >
+              Limpar a busca?
+            </button>
+          </p>
+        )
       ) : (
-        <ul>
+        <ul className="flex flex-col gap-gap-lg">
           {filteredRoutines.map((routine) => (
-            <li id={routine.id} key={routine.id}>
-              <div>
-                <h2>{routine.title}</h2>
-                {routine.streak > 0 && (
-                  <p>
-                    🔥 {routine.streak} Dia{routine.streak > 1 ? "s" : ""}
-                  </p>
-                )}
-                <p>Status: {routine.isComplete ? "✅" : "⏳"}</p>
-                <Link to={`${routine.id}/edit`}>Editar</Link>
-                <DeletionButton
-                  targetTitle={routine.title}
-                  ids={{
-                    routineId: routine.id!,
-                  }}
-                />
+            <li
+              className="flex flex-col gap-gap-sm"
+              id={routine.id}
+              key={routine.id}
+            >
+              <div className="flex flex-row flex-nowrap justify-between items-center gap-gap-sm">
+                <h2 className="text-center text-wrap uppercase font-medium text-text-secondary">
+                  {routine.title}
+                </h2>
+                <div className="flex flex-row flex-nowrap gap-gap-sm items-center">
+                  <EditionButton to={`${routine.id}/edit`} />
+                  <DeletionButton
+                    targetTitle={routine.title}
+                    ids={{
+                      routineId: routine.id!,
+                    }}
+                  />
+                </div>
               </div>
-              <ul>
+              <hr className="main-border" />
+              <div className="flex flex-row text-nowrap gap-gap-sm items-center">
+                <p
+                  className={
+                    routine.isComplete ? "text-primary" : "text-pendent"
+                  }
+                >
+                  {routine.isComplete ? "✅ Concluído" : "⏳ Pendente"}
+                </p>
+                <StreakBadge streak={routine.streak} />
+              </div>
+              <ul className="flex flex-col gap-gap-md">
                 {routine.habits.map((habit) => (
-                  <li id={habit.id} key={habit.id}>
-                    <div>
-                      <h3>{habit.title}</h3>
-                      {habit.streak > 0 && (
-                        <p>
-                          🔥 {habit.streak} Dia{habit.streak > 1 ? "s" : ""}
-                        </p>
-                      )}
-                      <p>Status: {habit.isComplete ? "✅" : "⏳"}</p>
+                  <li
+                    className="bg-surface p-card-p rounded-sm main-border"
+                    id={habit.id}
+                    key={habit.id}
+                  >
+                    <div className="flex flex-row flex-nowrap gap-gap-md">
                       {habit.subTasks.length === 0 && (
                         <DailyStatusToggleButton
                           ids={{
@@ -95,68 +136,44 @@ export default function Index() {
                           DTO={habit}
                         />
                       )}
-                      <Link to={`${routine.id}/${habit.id}/edit`}>Editar</Link>
-                      <DeletionButton
-                        targetTitle={habit.title}
-                        ids={{
-                          routineId: routine.id!,
-                          habitId: habit.id,
-                        }}
-                      />
+                      <h3 className="capitalize font-medium">{habit.title}</h3>
                     </div>
-                    <span>
-                      Categoria: {CATEGORIES_TO_PT_BR.get(habit.category)}
-                    </span>
-                    <ul>
-                      {habit.subTasks.map((subTask) => (
-                        <li id={subTask.id} key={subTask.id}>
-                          <h4>{subTask.title}</h4>
-                          {subTask.streak > 0 && (
-                            <p>
-                              🔥 {subTask.streak} Dia
-                              {subTask.streak > 1 ? "s" : ""}
-                            </p>
-                          )}
-                          <p>Status: {subTask.isComplete ? "✅" : "⏳"}</p>
-                          <DailyStatusToggleButton
-                            ids={{
-                              routineId: routine.id!,
-                              habitId: habit.id,
-                              subTaskId: subTask.id,
-                            }}
-                            DTO={subTask}
-                          />
-                          <Link
-                            to={`${routine.id}/${habit.id}/${subTask.id}/edit`}
-                          >
-                            Editar
-                          </Link>
-
-                          <DeletionButton
-                            targetTitle={subTask.title}
-                            ids={{
-                              routineId: routine.id!,
-                              habitId: habit.id,
-                              subTaskId: subTask.id,
-                            }}
-                          />
-                        </li>
-                      ))}
-                      {habit.subTasks.length < 10 && (
-                        <li>
-                          <Link to={`/${routine.id}/${habit.id}/new-sub-task`}>
-                            + Adicionar nova sub-tarefa
-                          </Link>
-                        </li>
-                      )}
-                    </ul>
+                    <div className="flex flex-row flex-wrap justify-between items-center gap-gap-sm">
+                      <div className="flex flex-row flex-nowrap items-center gap-gap-sm">
+                        <span className="text-text-secondary text-nowrap">
+                          {CATEGORIES_TO_PT_BR.get(habit.category)}
+                        </span>
+                        <StreakBadge streak={habit.streak} />
+                      </div>
+                      <div className="flex flex-row flex-nowrap items-center gap-gap-sm">
+                        <EditionButton
+                          border={true}
+                          to={`${routine.id}/${habit.id}/edit`}
+                        />
+                        <DeletionButton
+                          border={true}
+                          targetTitle={habit.title}
+                          ids={{
+                            routineId: routine.id!,
+                            habitId: habit.id,
+                          }}
+                        />
+                      </div>
+                    </div>
+                    {habit.subTasks.length > 0 && (
+                      <SubTasksDrawer
+                        habitId={habit.id!}
+                        routineId={routine.id!}
+                        subTasks={habit.subTasks}
+                      />
+                    )}
                   </li>
                 ))}
                 {routine.habits.length < 15 && (
                   <li>
-                    <Link to={`/${routine.id}/new-habit`}>
-                      + Adicionar novo hábito
-                    </Link>
+                    <ActionButton to={`/${routine.id}/new-habit`}>
+                      + Adicionar Novo Hábito
+                    </ActionButton>
                   </li>
                 )}
               </ul>
@@ -168,6 +185,61 @@ export default function Index() {
   );
 }
 
+function SubTasksDrawer({
+  habitId,
+  subTasks,
+  routineId,
+}: {
+  habitId: string;
+  routineId: string;
+  subTasks: MarkedRoutines[number]["habits"][number]["subTasks"];
+}) {
+  return (
+    <>
+      <hr className="my-gap-md main-border" />
+      <div className="flex flex-row flex-nowrap justify-between">
+        <span className="text-text-secondary">
+          Sub-tarefas: {subTasks.filter((subTask) => subTask.isComplete).length}
+          /{subTasks.length}
+        </span>
+        <ChevronDown width={20} />
+      </div>
+      <ul className="p-card-p">
+        {subTasks.map((subTask) => (
+          <li id={subTask.id} key={subTask.id}>
+            <h4>{subTask.title}</h4>
+            <StreakBadge streak={subTask.streak} />
+            <p>{subTask.isComplete ? "✅" : "⏳"}</p>
+            <DailyStatusToggleButton
+              ids={{
+                routineId: routineId,
+                habitId: habitId,
+                subTaskId: subTask.id,
+              }}
+              DTO={subTask}
+            />
+            <EditionButton to={`${routineId}/${habitId}/${subTask.id}/edit`} />
+            <DeletionButton
+              targetTitle={subTask.title}
+              ids={{
+                routineId: routineId,
+                habitId: habitId,
+                subTaskId: subTask.id,
+              }}
+            />
+          </li>
+        ))}
+        {subTasks.length < 10 && (
+          <li>
+            <Link to={`/${routineId}/${habitId}/new-sub-task`}>
+              + Adicionar nova sub-tarefa
+            </Link>
+          </li>
+        )}
+      </ul>
+    </>
+  );
+}
 function DailyStatusToggleButton({
   ids,
   DTO,
@@ -178,70 +250,94 @@ function DailyStatusToggleButton({
   const { mutate: toggleDailyStatus, isPending } =
     useToggleResourcesDailyStatus();
 
-  const DTOType = (() => {
-    if (Object.hasOwn(DTO, "habits")) {
-      return "Rotina";
+  const onClick = () => {
+    if (
+      isPending ||
+      !confirm(
+        `Confirmar ${DTO.isComplete ? "desfazimento" : "conclusão"} de "${DTO.title}"`,
+      )
+    ) {
+      return;
     }
 
-    if (Object.hasOwn(DTO, "subTasks")) {
-      return "Hábito";
-    }
-
-    return "Sub-Tarefa";
-  })();
+    toggleDailyStatus(
+      { ...ids },
+      {
+        onSettled(data, error) {
+          alert(API_MESSAGES.get((data?.code ?? error?.code)!));
+        },
+      },
+    );
+  };
 
   return (
-    <button
-      disabled={isPending}
-      onClick={() => {
-        if (
-          !confirm(
-            `Confirmar ${DTO.isComplete ? "desfazimento" : "conclusão"} de ${DTOType}`,
-          )
-        ) {
-          return;
-        }
-
-        toggleDailyStatus(
-          { ...ids },
-          {
-            onSettled(data, error) {
-              alert(API_MESSAGES.get((data?.code ?? error?.code)!));
-            },
-          },
-        );
-      }}
-    >
-      {DTO.isComplete ? "Desfazer" : "Concluir"} {DTOType}
+    <button onClick={onClick} className="button-basics">
+      {DTO.isComplete ? (
+        <SquareCheckBig width={20} color="#4ade80" />
+      ) : (
+        <Square width={20} color="#ffffff" />
+      )}
     </button>
   );
 }
 
-function DeletionButton({
-  targetTitle,
-  ids,
+function StreakBadge({ streak }: { streak: number }) {
+  return (
+    streak > 0 && (
+      <p className="text-nowrap text-streak px-[5px] py-[2.5px]">
+        🔥 {streak} Dia{streak > 1 ? "s" : ""}
+      </p>
+    )
+  );
+}
+
+function EditionButton({
+  to,
+  border = false,
 }: {
+  to: string;
+  border?: boolean;
+}) {
+  return (
+    <Link
+      className={`button-basics bg-surface bg-[red] p-[7.5px] rounded-sm ${border && "main-border"}`}
+      to={to}
+    >
+      <Pencil width={20} />
+    </Link>
+  );
+}
+
+function DeletionButton({
+  ids,
+  targetTitle,
+  border = false,
+}: {
+  border?: boolean;
   targetTitle: string;
   ids: { routineId: string; habitId?: string; subTaskId?: string };
 }) {
   const { mutate: deleteResource, isPending } = useDeleteResource();
 
+  const handleClick = () => {
+    if (!confirm(`Confirmar exclusão de "${targetTitle}"?`)) {
+      return;
+    }
+
+    deleteResource(ids, {
+      onSettled(data, error) {
+        alert(API_MESSAGES.get((data?.code ?? error?.code)!));
+      },
+    });
+  };
+
   return (
     <button
+      className={`button-basics bg-surface bg-[red] p-[7.5px] rounded-sm active:bg-danger-foreground ${border && "main-border border-danger"}`}
       disabled={isPending}
-      onClick={() => {
-        if (!confirm(`Confirmar exclusão de "${targetTitle}"?`)) {
-          return;
-        }
-
-        deleteResource(ids, {
-          onSettled(data, error) {
-            alert(API_MESSAGES.get((data?.code ?? error?.code)!));
-          },
-        });
-      }}
+      onClick={handleClick}
     >
-      Excluir
+      <Trash2 color="#ef4444" width={20} />
     </button>
   );
 }
