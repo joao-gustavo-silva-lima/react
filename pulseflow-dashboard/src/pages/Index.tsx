@@ -15,6 +15,7 @@ import SearchBar from "../components/SearchBar";
 import { formatDate } from "../utils/date-conversion.utils";
 import { useState } from "react";
 import filterRoutines from "../utils/filter-routines.utils";
+import Fallback from "./Fallback";
 
 export default function Index() {
   const [query, setQuery] = useState<Query>({
@@ -28,25 +29,27 @@ export default function Index() {
     error: routinesFetchingError,
   } = useFetchRoutines();
 
-  const markedRoutines = checkCompletionDates(routines ?? []);
-  const filteredRoutines = filterRoutines(query, markedRoutines);
+  const filteredRoutines = filterRoutines(
+    query,
+    checkCompletionDates(routines ?? []),
+  );
 
   if (isFetchingRoutines) {
     return <p>Carregando rotinas...</p>;
   }
 
   if (routinesFetchingError !== null) {
-    return (
-      <p>
-        {API_MESSAGES.get(routinesFetchingError.code) ??
-          "Algum erro ocorreu ao tentar buscar as rotinas..."}
-      </p>
-    );
+    <Fallback
+      message={
+        API_MESSAGES.get(routinesFetchingError.code) ??
+        "Algum erro ocorreu ao tentar buscar as rotinas..."
+      }
+    />;
   }
 
   return (
-    <>
-      <h1>{formatDate(new Date())}</h1>
+    <main className="contained flex flex-col gap-gap-lg">
+      <h1 className="font-bold text-xl capitalize">{formatDate(new Date())}</h1>
       <SearchBar setQuery={setQuery} />
       <h3>Rotinas & Hábitos</h3>
       <Link to="/new-routine">+ Criar uma nova rotina</Link>
@@ -161,7 +164,7 @@ export default function Index() {
           ))}
         </ul>
       )}
-    </>
+    </main>
   );
 }
 

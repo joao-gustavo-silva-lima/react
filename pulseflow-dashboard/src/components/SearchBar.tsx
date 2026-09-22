@@ -1,4 +1,5 @@
 import { CATEGORIES_TO_PT_BR, type Query } from "../types/routines.types";
+import { Search } from "lucide-react";
 
 export default function SearchBar({
   setQuery,
@@ -20,26 +21,37 @@ export default function SearchBar({
   };
 
   return (
-    <search>
-      <label htmlFor="searchbar">
-        🔎
+    <search className="flex flex-col gap-gap-md">
+      <label
+        className="flex flex-row flex-nowrap gap-gap-md bg-surface px-[.75em] py-[.5em] rounded-sm main-border"
+        htmlFor="searchbar"
+      >
+        <Search width={20} />
         <input
-          onChange={(e) => onTitleChange(e.target.value)}
+          max={50}
           type="text"
           id="searchbar"
+          className="w-full"
+          placeholder="Buscar Hábitos ou Tarefas..."
+          onChange={(e) => onTitleChange(e.target.value)}
         />
       </label>
-      <ul>
+      <ul className="flex flex-nowrap overflow-x-auto items-center gap-gap-md">
         {(
           [
             ["All", "Todos"],
-            ["Complete", "Concluídos"],
-            ["Pending", "Pendentes"],
+            ["Complete", "✅ Concluídos"],
+            ["Pending", "⏳ Pendentes"],
             ...CATEGORIES_TO_PT_BR.entries(),
           ] as [Query["category"], string][]
         ).map(([value, category]) => (
           <li key={`query-category-${value}-button`}>
-            <button onClick={() => onCategoryChange(value)}>{category}</button>
+            <button
+              className="text-sm text-nowrap bg-surface px-[.5em] py-[.5em] main-border hover:cursor-pointer rounded-sm"
+              onClick={() => onCategoryChange(value)}
+            >
+              {category}
+            </button>
           </li>
         ))}
       </ul>
