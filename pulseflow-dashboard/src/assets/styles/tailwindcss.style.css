@@ -37,9 +37,16 @@
   --text-lg: 1.125rem; /* Títulos de telas (Ex: RELATÓRIOS, NOVO HÁBITO) */
   --text-xl: 1.25rem; /* Título do Dashboard / Datas */
 
+  /* Font Weights (Espessuras de Fonte) */
+  --font-weight-normal: 400; /* Textos descritivos e placeholders (ex: "Beber 500ml de água", "Buscar hábitos...") */
+  --font-weight-medium: 500; /* Rótulos secundários e badges (ex: "Saúde", "5 dias", opções de filtro) */
+  --font-weight-semibold: 600; /* Títulos de cartões e itens de lista (ex: "Exercício Físico", "Ler 15 págs do livro") */
+  --font-weight-bold: 700;
+
   /* Espaçamento e Layout */
   --spacing-card-p: 1rem; /* Padding dos cards */
   --spacing-screen-px: 1.25rem; /* Padding lateral da tela principal */
+  --spacing-screen-py: 1rem; /* Padding vertical da tela principal */
   --spacing-gap-sm: 0.5rem; /* Distância entre tags/chips */
   --spacing-gap-md: 0.75rem; /* Distância entre elementos da lista */
   --spacing-gap-lg: 1.25rem; /* Distância entre seções */
@@ -57,10 +64,18 @@
   }
 
   body {
-    @apply w-full min-h-dvh text-text-primary bg-background;
+    @apply w-full min-h-dvh h-fit px-screen-px py-screen-py text-text-primary bg-background;
   }
 
   .main-border {
     @apply border-[1px] border-solid border-border;
+  }
+
+  .contained {
+    @apply w-full max-w-[1280px] m-auto;
+  }
+
+  .surface {
+    @apply bg-surface rounded-lg p-card-p;
   }
 }

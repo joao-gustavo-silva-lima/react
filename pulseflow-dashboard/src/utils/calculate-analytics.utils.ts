@@ -1,11 +1,11 @@
 import type { Routine } from "../types/routines.types";
 
 const heatLevelColors = new Map<number, string>([
-  [0, "#ffffff80"],
-  [2, "#033a16"],
-  [3, "#196c2e"],
-  [4, "#2ea043"],
-  [5, "#56d364"],
+  [0, "#ffffff15"],
+  [1, "#033a16"],
+  [2, "#196c2e"],
+  [3, "#2ea043"],
+  [4, "#56d364"],
 ]);
 
 export default function calculateAnalytics(routines: Routine[]) {
@@ -86,7 +86,7 @@ function calculateHeatLevel(
   }
 
   const percentage = (dailyContributtion / highestDailyContribution) * 100;
-  const level = Math.ceil(percentage / 20);
+  const level = Math.ceil(percentage / 22);
 
   return level;
 }
