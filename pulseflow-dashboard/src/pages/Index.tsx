@@ -87,7 +87,7 @@ export default function Index() {
           </p>
         )
       ) : (
-        <ul className="flex flex-col gap-gap-lg">
+        <ul className="flex flex-col flex-nowrap gap-gap-lg">
           {filteredRoutines.map((routine) => (
             <li
               className="flex flex-col gap-gap-sm"
@@ -99,8 +99,9 @@ export default function Index() {
                   {routine.title}
                 </h2>
                 <div className="flex flex-row flex-nowrap gap-gap-sm items-center">
-                  <EditionButton to={`${routine.id}/edit`} />
+                  <EditionButton border={true} to={`${routine.id}/edit`} />
                   <DeletionButton
+                    border={true}
                     targetTitle={routine.title}
                     ids={{
                       routineId: routine.id!,
@@ -170,7 +171,7 @@ export default function Index() {
                   </li>
                 ))}
                 {routine.habits.length < 15 && (
-                  <li>
+                  <li className="self-center">
                     <ActionButton to={`/${routine.id}/new-habit`}>
                       + Adicionar Novo Hábito
                     </ActionButton>
@@ -212,39 +213,54 @@ function SubTasksDrawer({
         </button>
       </div>
       <ul
-        className={`transition-all duration-[.25s] ${isOpen ? "max-h-[none] p-card-p" : "max-h-0 p-0"} overflow-y-hidden`}
+        className={`transition-all duration-[.25s] grid ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"} overflow-y-hidden`}
       >
-        {subTasks.map((subTask) => (
-          <li id={subTask.id} key={subTask.id}>
-            <h4>{subTask.title}</h4>
-            <StreakBadge streak={subTask.streak} />
-            <p>{subTask.isComplete ? "✅" : "⏳"}</p>
-            <DailyStatusToggleButton
-              ids={{
-                routineId: routineId,
-                habitId: habitId,
-                subTaskId: subTask.id,
-              }}
-              DTO={subTask}
-            />
-            <EditionButton to={`${routineId}/${habitId}/${subTask.id}/edit`} />
-            <DeletionButton
-              targetTitle={subTask.title}
-              ids={{
-                routineId: routineId,
-                habitId: habitId,
-                subTaskId: subTask.id,
-              }}
-            />
-          </li>
-        ))}
-        {subTasks.length < 10 && (
-          <li>
-            <Link to={`/${routineId}/${habitId}/new-sub-task`}>
-              + Adicionar nova sub-tarefa
-            </Link>
-          </li>
-        )}
+        <div className="flex flex-col gap-gap-md overflow-hidden">
+          {subTasks.map((subTask) => (
+            <li
+              className="flex flex-col flex-nowrap gap-gap-md border-b-[1px] border-solid border-border pb-gap-lg"
+              id={subTask.id}
+              key={subTask.id}
+            >
+              <div className="flex flex-row flex-nowrap items-center gap-gap-md">
+                <DailyStatusToggleButton
+                  ids={{
+                    routineId: routineId,
+                    habitId: habitId,
+                    subTaskId: subTask.id,
+                  }}
+                  DTO={subTask}
+                />
+                <h4 className="text-base w-full">- {subTask.title}</h4>
+              </div>
+              <div className="flex flex-row flex-wrap justify-between items-center">
+                <StreakBadge streak={subTask.streak} />
+                <div className="flex flex-row flex-nowrap gap-gap-sm items-center">
+                  <EditionButton
+                    border={true}
+                    to={`${routineId}/${habitId}/${subTask.id}/edit`}
+                  />
+                  <DeletionButton
+                    border={true}
+                    targetTitle={subTask.title}
+                    ids={{
+                      routineId,
+                      habitId,
+                      subTaskId: subTask.id,
+                    }}
+                  />
+                </div>
+              </div>
+            </li>
+          ))}
+          {subTasks.length < 10 && (
+            <li className="self-center py-gap-sm">
+              <ActionButton to={`/${routineId}/${habitId}/new-sub-task`}>
+                + Adicionar nova sub-tarefa
+              </ActionButton>
+            </li>
+          )}
+        </div>
       </ul>
     </>
   );
@@ -282,9 +298,9 @@ function DailyStatusToggleButton({
   return (
     <button onClick={onClick} className="button-basics">
       {DTO.isComplete ? (
-        <SquareCheckBig width={20} color="#4ade80" />
+        <SquareCheckBig width={22.5} color="#4ade80" />
       ) : (
-        <Square width={20} color="#ffffff" />
+        <Square width={22.5} color="#ffffff" />
       )}
     </button>
   );
