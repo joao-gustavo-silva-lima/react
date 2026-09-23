@@ -13,7 +13,7 @@ export default function ActionButton({
   onClick?: MouseEventHandler<HTMLButtonElement>;
 }) {
   const className =
-    "transition-all duration-[.125s] main-border border-primary font-medium text-primary px-[15px] py-[5px] rounded-md text-nowrap text-center bg-transparent  hover:bg-primary-foreground hover:border-primary-foreground active:bg-primary active:text-primary-foreground hover:cursor-pointer" +
+    "transition-all duration-[.125s] main-border border-primary font-medium text-primary px-[15px] py-[5px] rounded-md text-nowrap text-center bg-transparent  hover:bg-primary-foreground hover:border-primary-foreground active:bg-primary active:text-primary-foreground hover:cursor-pointer " +
     additionalClassName;
 
   return to ? (

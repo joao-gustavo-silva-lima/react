@@ -52,12 +52,14 @@ export default function Index() {
   }
 
   if (routinesFetchingError !== null) {
-    <Fallback
-      message={
-        API_MESSAGES.get(routinesFetchingError.code) ??
-        "Algum erro ocorreu ao tentar buscar as rotinas..."
-      }
-    />;
+    return (
+      <Fallback
+        message={
+          API_MESSAGES.get(routinesFetchingError.code) ??
+          "Algum erro ocorreu ao tentar buscar as rotinas..."
+        }
+      />
+    );
   }
 
   return (
