@@ -47,6 +47,7 @@
   --spacing-card-p: 1rem; /* Padding dos cards */
   --spacing-screen-px: 1.25rem; /* Padding lateral da tela principal */
   --spacing-screen-py: 1rem; /* Padding vertical da tela principal */
+  --spacing-gap-xs: 0.25rem;
   --spacing-gap-sm: 0.5rem; /* Distância entre tags/chips */
   --spacing-gap-md: 0.75rem; /* Distância entre elementos da lista */
   --spacing-gap-lg: 1.25rem; /* Distância entre seções */

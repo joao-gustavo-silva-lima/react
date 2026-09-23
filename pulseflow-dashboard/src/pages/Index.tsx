@@ -22,6 +22,8 @@ import Fallback from "./Fallback";
 import ActionButton from "../components/ActionButton";
 import {
   ChevronDown,
+  Flame,
+  Hourglass,
   Pencil,
   Square,
   SquareCheckBig,
@@ -110,14 +112,10 @@ export default function Index() {
                 </div>
               </div>
               <hr className="main-border" />
-              <div className="flex flex-row text-nowrap gap-gap-sm items-center">
-                <p
-                  className={
-                    routine.isComplete ? "text-primary" : "text-pendent"
-                  }
-                >
-                  {routine.isComplete ? "✅ Concluído" : "⏳ Pendente"}
-                </p>
+              <div className="flex flex-row text-nowrap gap-gap-md items-center">
+                <AncestralConclusionStatus
+                  isComplete={routine.isComplete ?? false}
+                />
                 <StreakBadge streak={routine.streak} />
               </div>
               <ul className="flex flex-col gap-gap-md">
@@ -127,14 +125,19 @@ export default function Index() {
                     id={habit.id}
                     key={habit.id}
                   >
-                    <div className="flex flex-row flex-nowrap gap-gap-md">
-                      {habit.subTasks.length === 0 && (
+                    <div className="flex flex-row flex-nowrap gap-gap-sm">
+                      {habit.subTasks.length === 0 ? (
                         <DailyStatusToggleButton
                           ids={{
                             routineId: routine.id!,
                             habitId: habit.id,
                           }}
                           DTO={habit}
+                        />
+                      ) : (
+                        <AncestralConclusionStatus
+                          noText={true}
+                          isComplete={habit.isComplete}
                         />
                       )}
                       <h3 className="capitalize font-medium">{habit.title}</h3>
@@ -186,6 +189,29 @@ export default function Index() {
   );
 }
 
+function AncestralConclusionStatus({
+  noText = false,
+  isComplete,
+}: {
+  noText?: boolean;
+  isComplete: boolean;
+}) {
+  return (
+    <div className="flex flex-row flex-nowrap items-center gap-gap-xs">
+      {isComplete ? (
+        <SquareCheckBig color="#4ade80" size={20} />
+      ) : (
+        <Hourglass color="#eab308" size={20} />
+      )}
+      {!noText && (
+        <p className={`text-${isComplete ? "primary" : "pendent"} text-nowrap`}>
+          {isComplete ? "Concluído" : "Pendente"}
+        </p>
+      )}
+    </div>
+  );
+}
+
 function SubTasksDrawer({
   habitId,
   subTasks,
@@ -209,7 +235,7 @@ function SubTasksDrawer({
           onClick={() => setIsOpen((i) => !i)}
           className={`button-basics p-[5px] rounded-lg aspect-square ${isOpen && "rotate-z-[180deg]"}`}
         >
-          <ChevronDown width={20} />
+          <ChevronDown size={20} />
         </button>
       </div>
       <ul
@@ -298,9 +324,9 @@ function DailyStatusToggleButton({
   return (
     <button onClick={onClick} className="button-basics">
       {DTO.isComplete ? (
-        <SquareCheckBig width={22.5} color="#4ade80" />
+        <SquareCheckBig size={22.5} color="#4ade80" />
       ) : (
-        <Square width={22.5} color="#ffffff" />
+        <Square size={22.5} color="#ffffff" />
       )}
     </button>
   );
@@ -309,9 +335,12 @@ function DailyStatusToggleButton({
 function StreakBadge({ streak }: { streak: number }) {
   return (
     streak > 0 && (
-      <p className="text-nowrap text-streak px-[5px] py-[2.5px]">
-        🔥 {streak} Dia{streak > 1 ? "s" : ""}
-      </p>
+      <div className="flex flex-row flex-nowrap items-center gap-gap-xs px-[5px] py-[2.5px]">
+        <Flame color="#f97316" size={22} />
+        <p className="text-nowrap text-streak">
+          {streak} Dia{streak > 1 ? "s" : ""}
+        </p>
+      </div>
     )
   );
 }
@@ -328,7 +357,7 @@ function EditionButton({
       className={`button-basics bg-surface bg-[red] p-[7.5px] rounded-sm ${border && "main-border"}`}
       to={to}
     >
-      <Pencil width={20} />
+      <Pencil size={20} />
     </Link>
   );
 }
@@ -362,7 +391,7 @@ function DeletionButton({
       disabled={isPending}
       onClick={handleClick}
     >
-      <Trash2 color="#ef4444" width={20} />
+      <Trash2 color="#ef4444" size={20} />
     </button>
   );
 }
