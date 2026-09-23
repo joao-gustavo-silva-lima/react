@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, Outlet } from "react-router";
 import {
   useDeleteResource,
   useFetchRoutines,
@@ -188,6 +188,7 @@ export default function Index() {
           ))}
         </ul>
       )}
+      <Outlet />
     </main>
   );
 }
