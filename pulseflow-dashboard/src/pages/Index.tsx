@@ -1,4 +1,4 @@
-import { Link, Outlet } from "react-router";
+import { Link, Outlet, useOutlet } from "react-router";
 import {
   useDeleteResource,
   useFetchRoutines,
@@ -16,7 +16,7 @@ import {
 } from "../utils/handle-completion-dates.utils";
 import SearchBar from "../components/SearchBar";
 import { formatDate } from "../utils/date-conversion.utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import filterRoutines from "../utils/filter-routines.utils";
 import Fallback from "./Fallback";
 import ActionButton from "../components/ActionButton";
@@ -32,6 +32,8 @@ import {
 } from "lucide-react";
 
 export default function Index() {
+  const outlet = useOutlet();
+
   const [query, setQuery] = useState<Query>({
     title: "",
     category: "All",
@@ -59,8 +61,15 @@ export default function Index() {
     );
   }
 
+  useEffect(() => {
+    document.body.classList[outlet ? "add" : "remove"]("no-scroll");
+
+    return () =>
+      document.body.classList[!outlet ? "add" : "remove"]("no-scroll");
+  }, [outlet]);
+
   return (
-    <main className="contained flex flex-col gap-gap-lg">
+    <main className={`contained flex flex-col gap-gap-lg`}>
       <h1 className="font-bold text-xl capitalize">{formatDate(new Date())}</h1>
       <SearchBar query={query} setQuery={setQuery} />
       <h3 className="text-lg font-semibold">Rotinas, Hábitos & Tarefas</h3>
@@ -195,7 +204,11 @@ export default function Index() {
         </>
       )}
 
-      <Outlet />
+      {outlet && (
+        <div className="fixed left-0 top-0 flex items-center justify-center w-full min-h-dvh bg-[#00000080]">
+          <Outlet />
+        </div>
+      )}
     </main>
   );
 }

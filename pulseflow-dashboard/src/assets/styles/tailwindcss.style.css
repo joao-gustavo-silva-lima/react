@@ -68,6 +68,10 @@
     @apply w-full min-h-dvh h-fit px-screen-px py-screen-py text-text-primary bg-background;
   }
 
+  body.no-scroll {
+    @apply overflow-hidden;
+  }
+
   .main-border {
     @apply border-[1px] border-solid border-border;
   }
