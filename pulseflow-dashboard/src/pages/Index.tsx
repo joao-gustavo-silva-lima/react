@@ -122,7 +122,7 @@ export default function Index() {
               <ul className="flex flex-col gap-gap-md">
                 {routine.habits.map((habit) => (
                   <li
-                    className="bg-surface p-card-p rounded-sm main-border"
+                    className="flex flex-col gap-gap-sm bg-surface p-card-p rounded-sm main-border"
                     id={habit.id}
                     key={habit.id}
                   >
@@ -194,17 +194,26 @@ function SubTasksDrawer({
   routineId: string;
   subTasks: MarkedRoutines[number]["habits"][number]["subTasks"];
 }) {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <>
-      <hr className="my-gap-md main-border" />
-      <div className="flex flex-row flex-nowrap justify-between">
+      <hr className="my-gap-sm main-border" />
+      <div className="flex flex-row flex-nowrap justify-between items-center">
         <span className="text-text-secondary">
           Sub-tarefas: {subTasks.filter((subTask) => subTask.isComplete).length}
           /{subTasks.length}
         </span>
-        <ChevronDown width={20} />
+        <button
+          onClick={() => setIsOpen((i) => !i)}
+          className={`button-basics p-[5px] rounded-lg aspect-square ${isOpen && "rotate-z-[180deg]"}`}
+        >
+          <ChevronDown width={20} />
+        </button>
       </div>
-      <ul className="p-card-p">
+      <ul
+        className={`transition-all duration-[.25s] ${isOpen ? "max-h-[none] p-card-p" : "max-h-0 p-0"} overflow-y-hidden`}
+      >
         {subTasks.map((subTask) => (
           <li id={subTask.id} key={subTask.id}>
             <h4>{subTask.title}</h4>
