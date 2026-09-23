@@ -83,7 +83,7 @@ export async function createResource({
       headers: {
         "content-type": "application/json",
       },
-      body: JSON.stringify(DTO, null, 2),
+      body: JSON.stringify({ ...DTO, date: getLocalDateISO() }, null, 2),
     },
   );
 }
@@ -124,6 +124,16 @@ export async function deleteResource({
     `${BASE_URL}${concatPath(true, routineId, habitId, subTaskId)}`,
     {
       method: "DELETE",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(
+        {
+          date: getLocalDateISO(),
+        },
+        null,
+        2,
+      ),
     },
   );
 }
