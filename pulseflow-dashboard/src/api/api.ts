@@ -5,6 +5,7 @@ import type {
   Routine,
   SubTask,
 } from "../types/routines.types";
+import { getLocalDateISO } from "../utils/date-conversion.utils";
 import { StatefulError } from "../utils/stateful-error.utils";
 
 export type DetailedResponse<T = undefined> = {
@@ -137,9 +138,19 @@ export async function toggleResourcesDailyStatus({
   subTaskId?: string;
 }) {
   return await request<DetailedResponse>(
-    `${BASE_URL}${concatPath(true, routineId, habitId, subTaskId)}/toggle-today`,
+    `${BASE_URL}${concatPath(true, routineId, habitId, subTaskId)}/toggle-date`,
     {
       method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(
+        {
+          date: getLocalDateISO(),
+        },
+        null,
+        2,
+      ),
     },
   );
 }

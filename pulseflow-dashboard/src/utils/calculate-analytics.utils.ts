@@ -1,4 +1,5 @@
 import type { Routine } from "../types/routines.types";
+import { getLocalDateISO } from "./date-conversion.utils";
 
 const heatLevelColors = new Map<number, string>([
   [0, "#ffffff15"],
@@ -62,7 +63,7 @@ function constructHeatMap(
   const currentDate = new Date(startDate);
 
   while (currentDate <= today) {
-    const isoDate = currentDate.toISOString().split("T")[0];
+    const isoDate = getLocalDateISO(currentDate);
 
     const count = contributions[isoDate] ?? 0;
     heatmapArray.push({
@@ -86,7 +87,7 @@ function calculateHeatLevel(
   }
 
   const percentage = (dailyContributtion / highestDailyContribution) * 100;
-  const level = Math.ceil(percentage / 22);
+  const level = Math.ceil(percentage / 25);
 
   return level;
 }
