@@ -83,4 +83,8 @@
   .button-basics {
     @apply transition-all duration-[.125s] hover:cursor-pointer hover:scale-[105%] active:scale-[95%];
   }
+
+  .button-basics-group {
+    @apply transition-all duration-[.125s] group-hover:cursor-pointer group-hover:scale-[105%] group-active:scale-[95%];
+  }
 }

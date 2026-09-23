@@ -28,6 +28,7 @@ import {
   Square,
   SquareCheckBig,
   Trash2,
+  Undo,
 } from "lucide-react";
 
 export default function Index() {
@@ -323,13 +324,25 @@ function DailyStatusToggleButton({
     );
   };
 
+  if (DTO.isComplete) {
+    return (
+      <button
+        onClick={onClick}
+        className="group flex flex-row flex-nowrap gap-gap-sm items-center hover:cursor-pointer"
+      >
+        <SquareCheckBig
+          className="transition-all duration-[.25s] group-hover:rotate-z-[-25deg] group-active:rotate-z-[5deg] group-hover:cursor-pointer"
+          size={22.5}
+          color="#4ade80"
+        />
+        <Undo className="button-basics-group" size={22.5} color="#ffffff" />
+      </button>
+    );
+  }
+
   return (
     <button onClick={onClick} className="button-basics">
-      {DTO.isComplete ? (
-        <SquareCheckBig size={22.5} color="#4ade80" />
-      ) : (
-        <Square size={22.5} color="#ffffff" />
-      )}
+      <Square size={22.5} color="#ffffff" />
     </button>
   );
 }
