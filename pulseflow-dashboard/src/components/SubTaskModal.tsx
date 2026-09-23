@@ -97,7 +97,13 @@ export default function SubTaskModal({ mode }: { mode: "create" | "patch" }) {
   };
 
   if (isFetchingRoutine || (mode === "patch" && isFetchingSubTask)) {
-    return <p>Carregando sub-tarefa...</p>;
+    return (
+      <div className="fixed inset-0 z-10 flex items-center justify-center bg-background/80 p-screen-px">
+        <p className="surface main-border w-full max-w-[560px] text-center text-text-secondary animate-pulse">
+          Carregando sub-tarefa...
+        </p>
+      </div>
+    );
   }
 
   if (
@@ -105,30 +111,62 @@ export default function SubTaskModal({ mode }: { mode: "create" | "patch" }) {
     subTaskFetchingError?.status === 404
   ) {
     return (
-      <p>
-        404 - {subTaskFetchingError ? "Sub-tarefa" : "Rotina"} não encontrada.
-      </p>
+      <div className="fixed inset-0 z-10 flex items-center justify-center bg-background/80 p-screen-px">
+        <p className="surface main-border w-full max-w-[560px] text-center text-danger">
+          404 - {subTaskFetchingError ? "Sub-tarefa" : "Rotina"} não encontrada.
+        </p>
+      </div>
     );
   }
 
   if (routineFetchingError || subTaskFetchingError) {
-    return <p>Não foi possível carregar a sub-tarefa.</p>;
+    return (
+      <div className="fixed inset-0 z-10 flex items-center justify-center bg-background/80 p-screen-px">
+        <p className="surface main-border w-full max-w-[560px] text-center text-danger">
+          Não foi possível carregar a sub-tarefa.
+        </p>
+      </div>
+    );
   }
 
   return (
-    <form
-      autoComplete="off"
-      onSubmit={handleSubmit(mode === "create" ? onSubmit : onSubmitPatch)}
-    >
-      <h2>{mode === "create" ? "NOVA SUB-TAREFA" : "EDITAR SUB-TAREFA"}</h2>
-      <fieldset>
-        <label htmlFor="">Título da Sub-Tarefa</label>
-        <input type="text" {...register("title")} />
-        {errors.title && <p>{errors.title.message}</p>}
-        <button disabled={mode === "patch" && isPatchingSubTask} type="submit">
-          {mode === "create" ? "Criar Nova Sub-Tarefa" : "Editar Sub-Tarefa"}
+    <div className="fixed inset-0 z-10 flex items-center justify-center overflow-y-auto bg-background/80 p-screen-px">
+      <form
+        autoComplete="off"
+        onSubmit={handleSubmit(mode === "create" ? onSubmit : onSubmitPatch)}
+        className="surface main-border flex w-full max-w-[560px] flex-col gap-gap-lg"
+      >
+        <div className="flex flex-col gap-gap-xs border-b-[1px] border-border pb-gap-md">
+          <p className="text-xs uppercase tracking-[0.12em] text-primary">
+            Tarefa dentro do hábito
+          </p>
+          <h2 className="text-lg font-semibold">
+            {mode === "create" ? "Nova sub-tarefa" : "Editar sub-tarefa"}
+          </h2>
+        </div>
+        <fieldset className="flex flex-col gap-gap-xs">
+          <label className="text-sm font-medium" htmlFor="sub-task-title">
+            Título da sub-tarefa
+          </label>
+          <input
+            className="w-full rounded-sm main-border bg-background px-[0.75rem] py-[0.625rem] text-sm placeholder:text-text-muted focus:border-primary"
+            id="sub-task-title"
+            placeholder="Ex.: Alongar por 10 minutos"
+            type="text"
+            {...register("title")}
+          />
+          {errors.title && (
+            <p className="text-xs text-danger">{errors.title.message}</p>
+          )}
+        </fieldset>
+        <button
+          className="w-full rounded-md bg-primary px-[1rem] py-[0.625rem] font-semibold text-primary-foreground transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+          disabled={mode === "patch" && isPatchingSubTask}
+          type="submit"
+        >
+          {mode === "create" ? "Criar nova sub-tarefa" : "Salvar alterações"}
         </button>
-      </fieldset>
-    </form>
+      </form>
+    </div>
   );
 }

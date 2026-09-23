@@ -107,7 +107,13 @@ export default function HabitModal({ mode }: { mode: "create" | "patch" }) {
   };
 
   if (isFetchingRoutine || (mode === "patch" && isFetchingHabit)) {
-    return <p>Carregando rotina...</p>;
+    return (
+      <div className="fixed inset-0 z-10 flex items-center justify-center bg-background/80 p-screen-px">
+        <p className="surface main-border w-full max-w-[560px] text-center text-text-secondary animate-pulse">
+          Carregando hábito...
+        </p>
+      </div>
+    );
   }
 
   if (
@@ -115,43 +121,60 @@ export default function HabitModal({ mode }: { mode: "create" | "patch" }) {
     habitFetchingError?.status === 404
   ) {
     return (
-      <p>404 - {habitFetchingError ? "Hábito" : "Rotina"} não encontrado.</p>
+      <div className="fixed inset-0 z-10 flex items-center justify-center bg-background/80 p-screen-px">
+        <p className="surface main-border w-full max-w-[560px] text-center text-danger">
+          404 - {habitFetchingError ? "Hábito" : "Rotina"} não encontrado.
+        </p>
+      </div>
     );
   }
 
   if (routineFetchingError || habitFetchingError) {
     return (
-      <p>
-        {API_MESSAGES.get((habitFetchingError ?? routineFetchingError)!.code) ??
-          "Não foi possível carregar o recurso."}
-      </p>
+      <div className="fixed inset-0 z-10 flex items-center justify-center bg-background/80 p-screen-px">
+        <p className="surface main-border w-full max-w-[560px] text-center text-danger">
+          {API_MESSAGES.get(
+            (habitFetchingError ?? routineFetchingError)!.code,
+          ) ?? "Não foi possível carregar o recurso."}
+        </p>
+      </div>
     );
   }
 
   return (
-    <form
-      autoComplete="off"
-      onSubmit={handleSubmit(mode === "create" ? onSubmit : onSubmitPatch)}
-    >
-      <h2>{mode === "create" ? "NOVO HÁBITO" : "EDITAR HÁBITO"}</h2>
-      <p>Rotina: {routine?.title}</p>
-      <HabitFormField
-        mode={mode}
-        fieldPrefix=""
-        errors={errors}
-        control={control}
-        trigger={trigger}
-        register={register}
-        subTaskFieldArrayProps={{
-          control,
-          name: "subTasks",
-        }}
-      />
-      <input
-        disabled={mode === "create" ? isCreatingHabit : isPatchingHabit}
-        type="submit"
-        value={mode === "create" ? "Criar Novo Hábito" : "Editar Hábito"}
-      />
-    </form>
+    <div className="fixed inset-0 z-10 flex items-center justify-center overflow-y-auto bg-background/80 p-screen-px">
+      <form
+        autoComplete="off"
+        onSubmit={handleSubmit(mode === "create" ? onSubmit : onSubmitPatch)}
+        className="surface main-border flex w-full max-w-[560px] flex-col gap-gap-lg"
+      >
+        <div className="flex flex-col gap-gap-xs border-b-[1px] border-border pb-gap-md">
+          <p className="text-xs uppercase tracking-[0.12em] text-primary">
+            Rotina: {routine?.title}
+          </p>
+          <h2 className="text-lg font-semibold">
+            {mode === "create" ? "Novo hábito" : "Editar hábito"}
+          </h2>
+        </div>
+        <HabitFormField
+          mode={mode}
+          fieldPrefix=""
+          errors={errors}
+          control={control}
+          trigger={trigger}
+          register={register}
+          subTaskFieldArrayProps={{
+            control,
+            name: "subTasks",
+          }}
+        />
+        <input
+          className="w-full rounded-md bg-primary px-[1rem] py-[0.625rem] font-semibold text-primary-foreground transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+          disabled={mode === "create" ? isCreatingHabit : isPatchingHabit}
+          type="submit"
+          value={mode === "create" ? "Criar novo hábito" : "Salvar alterações"}
+        />
+      </form>
+    </div>
   );
 }

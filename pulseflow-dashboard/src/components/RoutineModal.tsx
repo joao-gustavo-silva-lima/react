@@ -121,80 +121,128 @@ export default function RoutineModal({ mode }: { mode: "create" | "patch" }) {
   };
 
   if (mode === "patch" && isFetchingRoutine) {
-    return <p>Carregando rotina...</p>;
+    return (
+      <div className="fixed inset-0 z-10 flex items-center justify-center bg-background/80 p-screen-px">
+        <p className="surface main-border w-full max-w-[560px] text-center text-text-secondary animate-pulse">
+          Carregando rotina...
+        </p>
+      </div>
+    );
   }
 
   if (mode === "patch" && routineFetchingError?.status === 404) {
-    return <p>404 - Rotina não encontrada.</p>;
+    return (
+      <div className="fixed inset-0 z-10 flex items-center justify-center bg-background/80 p-screen-px">
+        <p className="surface main-border w-full max-w-[560px] text-center text-danger">
+          404 - Rotina não encontrada.
+        </p>
+      </div>
+    );
   }
 
   if (mode === "patch" && routineFetchingError) {
-    return <p>Não foi possível carregar a rotina.</p>;
+    return (
+      <div className="fixed inset-0 z-10 flex items-center justify-center bg-background/80 p-screen-px">
+        <p className="surface main-border w-full max-w-[560px] text-center text-danger">
+          Não foi possível carregar a rotina.
+        </p>
+      </div>
+    );
   }
 
   return (
-    <form
-      autoComplete="off"
-      onSubmit={handleSubmit(mode === "create" ? onSubmit : onSubmitPatch)}
-    >
-      <h2>{mode === "create" ? "NOVA ROTINA" : "EDITAR ROTINA"}</h2>
-      <fieldset>
-        <div>
-          <label htmlFor="routine-title">Título da Rotina</label>
-          <input type="text" id="routine-title" {...register("title")} />
-          {errors.title?.message && <p>{errors.title.message}</p>}
+    <div className="fixed inset-0 z-10 flex items-center justify-center overflow-y-auto bg-background/80 p-screen-px">
+      <form
+        autoComplete="off"
+        onSubmit={handleSubmit(mode === "create" ? onSubmit : onSubmitPatch)}
+        className="surface main-border flex w-full max-w-[560px] flex-col gap-gap-lg"
+      >
+        <div className="flex flex-col gap-gap-xs border-b-[1px] border-border pb-gap-md">
+          <p className="text-xs uppercase tracking-[0.12em] text-primary">
+            Rotinas, hábitos e tarefas
+          </p>
+          <h2 className="text-lg font-semibold">
+            {mode === "create" ? "Nova rotina" : "Editar rotina"}
+          </h2>
         </div>
-        {mode === "create" && (
-          <>
-            <p>Hábitos</p>
-            {fields.map((field, index) => (
-              <div key={field.id}>
-                <HabitFormField
-                  mode="create"
-                  errors={errors}
-                  trigger={trigger}
-                  control={control}
-                  register={register}
-                  fieldPrefix={`habits.${index}`}
-                  subTaskFieldArrayProps={{
-                    control,
-                    name: `habits.${index}.subTasks`,
-                  }}
-                />
-                {index > 0 && (
-                  <button type="button" onClick={() => remove(index)}>
-                    Remover hábito
-                  </button>
-                )}
+        <fieldset className="flex flex-col gap-gap-md">
+          <div className="flex flex-col gap-gap-xs">
+            <label className="text-sm font-medium" htmlFor="routine-title">
+              Título da rotina
+            </label>
+            <input
+              className="w-full rounded-sm main-border bg-background px-[0.75rem] py-[0.625rem] text-sm placeholder:text-text-muted focus:border-primary"
+              type="text"
+              id="routine-title"
+              {...register("title")}
+            />
+            {errors.title?.message && (
+              <p className="text-xs text-danger">{errors.title.message}</p>
+            )}
+          </div>
+          {mode === "create" && (
+            <>
+              <p className="text-sm font-medium text-text-secondary">Hábitos</p>
+              <div className="flex flex-col gap-gap-md">
+                {fields.map((field, index) => (
+                  <div
+                    className="rounded-md main-border bg-background/50 p-gap-md"
+                    key={field.id}
+                  >
+                    <HabitFormField
+                      mode="create"
+                      errors={errors}
+                      trigger={trigger}
+                      control={control}
+                      register={register}
+                      fieldPrefix={`habits.${index}`}
+                      subTaskFieldArrayProps={{
+                        control,
+                        name: `habits.${index}.subTasks`,
+                      }}
+                    />
+                    {index > 0 && (
+                      <button
+                        className="mt-gap-md text-xs text-danger hover:underline"
+                        type="button"
+                        onClick={() => remove(index)}
+                      >
+                        Remover hábito
+                      </button>
+                    )}
+                  </div>
+                ))}
               </div>
-            ))}
-            <button
-              disabled={fields.length >= 15 || errors.habits !== undefined}
-              type="button"
-              onClick={async () => {
-                const habitsAreValid = await trigger("habits");
+              <button
+                className="w-fit rounded-md main-border border-primary px-[0.75rem] py-[0.5rem] text-sm font-medium text-primary hover:bg-primary-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={fields.length >= 15 || errors.habits !== undefined}
+                type="button"
+                onClick={async () => {
+                  const habitsAreValid = await trigger("habits");
 
-                if (habitsAreValid) {
-                  append({ title: "" } as HabitFormInput);
-                }
-              }}
-            >
-              Criar Novo Hábito
-            </button>
-          </>
-        )}
-      </fieldset>
-      <input
-        disabled={
-          mode === "create"
-            ? isCreatingRoutine ||
-              fields.length === 0 ||
-              errors.habits !== undefined
-            : isPatchingRoutine
-        }
-        type="submit"
-        value={mode === "create" ? "Criar Nova Rotina" : "Editar Rotina"}
-      />
-    </form>
+                  if (habitsAreValid) {
+                    append({ title: "" } as HabitFormInput);
+                  }
+                }}
+              >
+                + Criar novo hábito
+              </button>
+            </>
+          )}
+        </fieldset>
+        <input
+          className="w-full rounded-md bg-primary px-[1rem] py-[0.625rem] font-semibold text-primary-foreground transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+          disabled={
+            mode === "create"
+              ? isCreatingRoutine ||
+                fields.length === 0 ||
+                errors.habits !== undefined
+              : isPatchingRoutine
+          }
+          type="submit"
+          value={mode === "create" ? "Criar nova rotina" : "Salvar alterações"}
+        />
+      </form>
+    </div>
   );
 }
