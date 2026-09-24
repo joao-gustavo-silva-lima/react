@@ -10,6 +10,7 @@ import Analytics from "./pages/Analytics";
 import Fallback from "./pages/Fallback";
 import Index from "./pages/Index";
 import Layout from "./components/Layout";
+import { Flip, ToastContainer } from "react-toastify";
 
 const queryClient = new QueryClient();
 
@@ -56,5 +57,18 @@ createRoot(document.getElementById("root")!).render(
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>
+    <ToastContainer
+      position="top-right"
+      autoClose={3000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick={false}
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme="dark"
+      transition={Flip}
+    />
   </StrictMode>,
 );

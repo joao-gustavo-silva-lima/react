@@ -16,6 +16,7 @@ import handleFormError from "../utils/handle-error.utils";
 import { useNavigate, useParams } from "react-router";
 import Fallback from "../pages/Fallback";
 import ActionButton from "./ActionButton";
+import { toast } from "react-toastify";
 
 export default function SubTaskModal({ mode }: { mode: "create" | "patch" }) {
   const { routineId, habitId, subTaskId } = useParams();
@@ -65,10 +66,10 @@ export default function SubTaskModal({ mode }: { mode: "create" | "patch" }) {
           handleFormError(
             error,
             setError,
-            "Um erro ocorreu durante a edição da sub-tarefa. Tente novamente depois.",
+            "Não foi possível atualizar a subtarefa. Verifique os dados e tente novamente.",
           ),
         onSuccess() {
-          alert("A sub-tarefa foi editada com sucesso.");
+          toast.success("Subtarefa atualizada com sucesso.");
           navigate(`/`);
         },
       },
@@ -83,13 +84,13 @@ export default function SubTaskModal({ mode }: { mode: "create" | "patch" }) {
           handleFormError(
             error,
             setError,
-            "Um erro ocorreu durante a criação da sub-tarefa. Tente novamente depois.",
+            "Não foi possível criar a subtarefa. Verifique os dados e tente novamente.",
           ),
         onSuccess(response) {
           const habitTitle = (response.data as SubTask)?.title;
 
-          alert(
-            `A sub-tarefa ${habitTitle ? `"${habitTitle}"` : ""} foi criado com sucesso.`,
+          toast.success(
+            `Subtarefa ${habitTitle ? `"${habitTitle}"` : ""} criada com sucesso.`,
           );
 
           navigate(`/`);
@@ -116,7 +117,9 @@ export default function SubTaskModal({ mode }: { mode: "create" | "patch" }) {
   }
 
   if (routineFetchingError || subTaskFetchingError) {
-    return <Fallback message="Não foi possível carregar os dados da sub-tarefa." />;
+    return (
+      <Fallback message="Não foi possível carregar os dados da sub-tarefa." />
+    );
   }
 
   return (
@@ -132,7 +135,7 @@ export default function SubTaskModal({ mode }: { mode: "create" | "patch" }) {
         {mode === "create" ? "Nova sub-tarefa" : "Editar sub-tarefa"}
       </h2>
       <fieldset className="flex flex-col gap-gap-xs">
-        <label className="text-sm font-medium" htmlFor="sub-task-title">
+        <label className="text-base font-medium" htmlFor="sub-task-title">
           Título da sub-tarefa
         </label>
         <input
@@ -143,7 +146,7 @@ export default function SubTaskModal({ mode }: { mode: "create" | "patch" }) {
           {...register("title")}
         />
         {errors.title && (
-          <p className="text-xs text-danger">{errors.title.message}</p>
+          <p className="text-sm text-danger">{errors.title.message}</p>
         )}
       </fieldset>
       <div className="flex flex-row flex-wrap justify-end gap-gap-sm">

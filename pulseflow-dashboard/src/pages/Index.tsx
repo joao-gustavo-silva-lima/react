@@ -31,6 +31,7 @@ import {
   Undo,
 } from "lucide-react";
 import useBodyScrollLock from "../hooks/useBodyScrollLock";
+import { toast } from "react-toastify";
 
 export default function Index() {
   const outlet = useOutlet();
@@ -355,8 +356,16 @@ function DailyStatusToggleButton({
     toggleDailyStatus(
       { ...ids },
       {
-        onSettled(data, error) {
-          alert(API_MESSAGES.get((data?.code ?? error?.code)!));
+        onError(error) {
+          toast.error(
+            API_MESSAGES.get(error.code) ??
+              "Não foi possível concluir esta ação. Tente novamente.",
+          );
+        },
+        onSuccess(data) {
+          toast.success(
+            API_MESSAGES.get(data.code) ?? "Operação concluída com sucesso.",
+          );
         },
       },
     );
@@ -432,8 +441,16 @@ function DeletionButton({
     }
 
     deleteResource(ids, {
-      onSettled(data, error) {
-        alert(API_MESSAGES.get((data?.code ?? error?.code)!));
+      onError(error) {
+        toast.error(
+          API_MESSAGES.get(error.code) ??
+            "Não foi possível concluir esta ação. Tente novamente.",
+        );
+      },
+      onSuccess(data) {
+        toast.success(
+          API_MESSAGES.get(data.code) ?? "Operação concluída com sucesso.",
+        );
       },
     });
   };

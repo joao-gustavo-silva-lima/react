@@ -24,6 +24,7 @@ import { useEffect } from "react";
 import Fallback from "../pages/Fallback";
 import ActionButton from "./ActionButton";
 import { Trash, X } from "lucide-react";
+import { toast } from "react-toastify";
 
 export default function RoutineModal({ mode }: { mode: "create" | "patch" }) {
   const { routineId } = useParams();
@@ -90,10 +91,10 @@ export default function RoutineModal({ mode }: { mode: "create" | "patch" }) {
           handleFormError(
             error,
             setError,
-            "Um erro ocorreu durante a edição da rotina. Tente novamente depois.",
+            "Não foi possível atualizar a rotina. Verifique os dados e tente novamente.",
           ),
         onSuccess() {
-          alert("A rotina foi editada com sucesso.");
+          toast.success("Rotina atualizada com sucesso.");
           navigate(`/`);
         },
       },
@@ -108,13 +109,13 @@ export default function RoutineModal({ mode }: { mode: "create" | "patch" }) {
           handleFormError(
             error,
             setError,
-            "Um erro ocorreu durante a criação da rotina. Tente novamente depois.",
+            "Não foi possível criar a rotina. Verifique os dados e tente novamente.",
           ),
         onSuccess(response) {
           const habitTitle = (response.data as Routine)?.title;
 
-          alert(
-            `A rotina ${habitTitle ? `"${habitTitle}"` : ""} foi criada com sucesso.`,
+          toast.success(
+            `Rotina ${habitTitle ? `"${habitTitle}"` : ""} criada com sucesso.`,
           );
 
           navigate(`/`);
@@ -134,11 +135,15 @@ export default function RoutineModal({ mode }: { mode: "create" | "patch" }) {
   }
 
   if (mode === "patch" && routineFetchingError?.status === 404) {
-    return <Fallback message="A rotina que você tentou editar não foi encontrada." />;
+    return (
+      <Fallback message="A rotina que você tentou editar não foi encontrada." />
+    );
   }
 
   if (mode === "patch" && routineFetchingError) {
-    return <Fallback message="Não foi possível carregar a rotina para edição." />;
+    return (
+      <Fallback message="Não foi possível carregar a rotina para edição." />
+    );
   }
 
   return (

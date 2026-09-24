@@ -18,6 +18,7 @@ import HabitFormField from "./HabitFormField";
 import handleFormError from "../utils/handle-error.utils";
 import ActionButton from "./ActionButton";
 import Fallback from "../pages/Fallback";
+import { toast } from "react-toastify";
 
 export default function HabitModal({ mode }: { mode: "create" | "patch" }) {
   const { routineId, habitId } = useParams();
@@ -75,9 +76,9 @@ export default function HabitModal({ mode }: { mode: "create" | "patch" }) {
             setError,
             "Um erro ocorreu durante a edição do hábito. Tente novamente depois.",
           ),
-        onSuccess(_) {
-          alert(
-            `O hábito ${title ? `"${title}"` : ""} foi criado com sucesso.`,
+        onSuccess() {
+          toast.success(
+            `Hábito ${title ? `"${title}"` : ""} atualizado com sucesso.`,
           );
 
           navigate(`/`);
@@ -93,13 +94,13 @@ export default function HabitModal({ mode }: { mode: "create" | "patch" }) {
           handleFormError(
             error,
             setError,
-            "Um erro ocorreu durante a criação do hábito. Tente novamente depois.",
+            "Não foi possível criar o hábito. Verifique os dados e tente novamente.",
           ),
         onSuccess(response) {
           const habitTitle = (response.data as Habit)?.title;
 
-          alert(
-            `O hábito ${habitTitle ? `"${habitTitle}"` : ""} foi criado com sucesso.`,
+          toast.success(
+            `Hábito ${habitTitle ? `"${habitTitle}"` : ""} criado com sucesso.`,
           );
 
           navigate(`/`);
