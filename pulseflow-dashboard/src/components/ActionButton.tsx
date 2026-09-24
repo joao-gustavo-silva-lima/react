@@ -1,19 +1,20 @@
-import type { MouseEventHandler, ReactNode } from "react";
 import { Link } from "react-router";
 
 export default function ActionButton({
   to,
-  onClick,
   children,
-  additionalClassName,
-}: {
+  additionalClassName = "",
+  ...props
+}: React.DetailedHTMLProps<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+> & {
   to?: string;
-  children: ReactNode;
+  children: React.ReactNode;
   additionalClassName?: string;
-  onClick?: MouseEventHandler<HTMLButtonElement>;
 }) {
   const className =
-    "transition-all duration-[.125s] main-border border-primary font-medium text-primary px-[15px] py-[5px] rounded-md text-nowrap text-center bg-transparent  hover:bg-primary-foreground hover:border-primary-foreground active:bg-primary active:text-primary-foreground hover:cursor-pointer " +
+    "transition-all duration-[.125s] main-border border-primary font-medium text-primary px-[15px] py-[5px] rounded-md text-nowrap text-center bg-transparent  not:disabled:hover:bg-primary-foreground not:disabled:hover:border-primary-foreground not:disabled:active:bg-primary not:disabled:active:text-primary-foreground hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed " +
     additionalClassName;
 
   return to ? (
@@ -21,7 +22,7 @@ export default function ActionButton({
       {children}
     </Link>
   ) : (
-    <button onClick={onClick} className={className}>
+    <button className={className} {...props}>
       {children}
     </button>
   );

@@ -57,6 +57,8 @@
   --radius-md: 0.75rem; /* Buttons pequenos, Toasts */
   --radius-lg: 1rem; /* Cards e Modais */
   --radius-full: 9999px; /* Badges, Floating Action Button, filtros superiores */
+
+  --breakpoint-bp-sm: 450px;
 }
 
 @layer base {
@@ -70,6 +72,10 @@
 
   body.no-scroll {
     @apply overflow-hidden;
+  }
+
+  select {
+    @apply cursor-pointer;
   }
 
   .main-border {
