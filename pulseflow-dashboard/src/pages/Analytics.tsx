@@ -8,12 +8,16 @@ export default function Analytics() {
   const { heatMap, categoriesDistribution, heatLevelColors } =
     calculateAnalytics(routines ?? []);
 
-  if (isError || routines === undefined) {
-    return <Fallback message="Não foi possível carregar os dados dos relatórios." />;
+  if (isError || (!isPending && routines === undefined)) {
+    return (
+      <Fallback message="Não foi possível carregar os dados dos relatórios." />
+    );
   }
 
-  if (routines.length === 0) {
-    return <Fallback message="Adicione uma rotina com hábitos para visualizar os relatórios." />;
+  if (routines && routines.length === 0) {
+    return (
+      <Fallback message="Adicione uma rotina com hábitos para visualizar os relatórios." />
+    );
   }
 
   return (

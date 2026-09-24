@@ -52,6 +52,8 @@ export default function Index() {
     checkCompletionDates(routines ?? []),
   );
 
+  const {} = useBodyScrollLock(outlet !== null);
+
   if (routinesFetchingError !== null) {
     return (
       <Fallback
@@ -62,8 +64,6 @@ export default function Index() {
       />
     );
   }
-
-  const {} = useBodyScrollLock(outlet !== null);
 
   return (
     <main className={`contained flex flex-col gap-gap-lg`}>
