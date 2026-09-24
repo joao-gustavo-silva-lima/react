@@ -58,7 +58,9 @@
   --radius-lg: 1rem; /* Cards e Modais */
   --radius-full: 9999px; /* Badges, Floating Action Button, filtros superiores */
 
+  --breakpoint-bp-min: 320px;
   --breakpoint-bp-sm: 450px;
+  --breakpoint-bp-lg: 950px;
 }
 
 @layer base {

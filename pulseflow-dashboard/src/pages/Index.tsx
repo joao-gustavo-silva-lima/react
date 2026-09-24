@@ -30,6 +30,7 @@ import {
   Trash2,
   Undo,
 } from "lucide-react";
+import useBodyScrollLock from "../hooks/useBodyScrollLock";
 
 export default function Index() {
   const outlet = useOutlet();
@@ -61,12 +62,7 @@ export default function Index() {
     );
   }
 
-  useEffect(() => {
-    document.body.classList[outlet ? "add" : "remove"]("no-scroll");
-
-    return () =>
-      document.body.classList[!outlet ? "add" : "remove"]("no-scroll");
-  }, [outlet]);
+  const {} = useBodyScrollLock(outlet !== null);
 
   return (
     <main className={`contained flex flex-col gap-gap-lg`}>
