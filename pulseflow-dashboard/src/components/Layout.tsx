@@ -7,7 +7,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useState } from "react";
-import { Link, NavLink, Outlet } from "react-router";
+import { Link, NavLink, Outlet, useLocation } from "react-router";
 import useBodyScrollLock from "../hooks/useBodyScrollLock";
 
 export default function Layout() {
@@ -19,10 +19,20 @@ export default function Layout() {
 
   const {} = useBodyScrollLock(isSideBarOpen);
 
+  const { pathname } = useLocation();
+
   return (
     <>
       <header className="contained flex flex-row items-center justify-between mb-screen-py">
-        <Link className="button-basics" to="/">
+        <Link
+          onClick={() => {
+            if (pathname === "/") {
+              location.reload();
+            }
+          }}
+          className="button-basics"
+          to="/"
+        >
           <img
             className="w-[45px]"
             src="/images/logo.png"
@@ -42,10 +52,15 @@ export default function Layout() {
           style={{
             transform: `translateX(${isSideBarOpen ? 0 : 100}%)`,
           }}
-          className={`transition-all duration-[.5s] fixed right-0 top-0 flex flex-col w-full max-w-[320px] bg-surface h-dvh main-border bp-min:rounded-l-lg p-card-p`}
+          className={`transition-all duration-[.5s] fixed right-0 top-0 flex flex-col w-full max-w-[320px] bg-surface h-dvh main-border bp-min:rounded-l-lg p-card-p shadow-xl`}
         >
           <div className="flex flex-row flex-nowrap items-center justify-between mb-[20px]">
             <Link
+              onClick={() => {
+                if (pathname === "/") {
+                  location.reload();
+                }
+              }}
               className="flex flex-row flex-nowrap items-center gap-gap-xs button-basics button-basics"
               to="/"
             >

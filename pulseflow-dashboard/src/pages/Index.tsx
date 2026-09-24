@@ -16,7 +16,7 @@ import {
 } from "../utils/handle-completion-dates.utils";
 import SearchBar from "../components/SearchBar";
 import { formatDate } from "../utils/date-conversion.utils";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import filterRoutines from "../utils/filter-routines.utils";
 import Fallback from "./Fallback";
 import ActionButton from "../components/ActionButton";

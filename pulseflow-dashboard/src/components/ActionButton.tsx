@@ -14,7 +14,7 @@ export default function ActionButton({
   additionalClassName?: string;
 }) {
   const className =
-    "transition-all duration-[.125s] main-border border-primary font-medium text-primary px-[15px] py-[5px] rounded-md text-nowrap text-center bg-transparent  not:disabled:hover:bg-primary-foreground not:disabled:hover:border-primary-foreground not:disabled:active:bg-primary not:disabled:active:text-primary-foreground hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed " +
+    "transition-all duration-[.125s] main-border border-primary font-medium text-primary px-[15px] py-[5px] rounded-md text-nowrap text-center bg-transparent  hover:bg-primary-foreground hover:border-primary-foreground active:bg-primary active:text-primary-foreground hover:cursor-pointer disabled:opacity-50 disabled:border-primary-foreground disabled:cursor-not-allowed " +
     additionalClassName;
 
   return to ? (
