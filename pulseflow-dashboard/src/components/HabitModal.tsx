@@ -124,7 +124,11 @@ export default function HabitModal({ mode }: { mode: "create" | "patch" }) {
   ) {
     return (
       <Fallback
-        message={`${habitFetchingError ? "Hábito" : "Rotina"} não disponível ou não existe.`}
+        message={
+          habitFetchingError
+            ? "O hábito não foi encontrado."
+            : "A rotina não foi encontrada."
+        }
       />
     );
   }
@@ -135,7 +139,7 @@ export default function HabitModal({ mode }: { mode: "create" | "patch" }) {
         message={
           API_MESSAGES.get(
             (habitFetchingError ?? routineFetchingError)?.code ?? "",
-          ) ?? "Não foi possível carregar o recurso."
+          ) ?? "Não foi possível carregar os dados para este formulário."
         }
       />
     );

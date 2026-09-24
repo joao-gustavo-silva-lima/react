@@ -112,11 +112,11 @@ export default function SubTaskModal({ mode }: { mode: "create" | "patch" }) {
     routineFetchingError?.status === 404 ||
     subTaskFetchingError?.status === 404
   ) {
-    return <Fallback message={`Recurso não disponível ou não existe.`} />;
+    return <Fallback message="A rotina ou sub-tarefa não foi encontrada." />;
   }
 
   if (routineFetchingError || subTaskFetchingError) {
-    return <Fallback message="Não foi possível carregar a sub-tarefa." />;
+    return <Fallback message="Não foi possível carregar os dados da sub-tarefa." />;
   }
 
   return (

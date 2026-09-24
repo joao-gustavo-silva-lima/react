@@ -134,13 +134,11 @@ export default function RoutineModal({ mode }: { mode: "create" | "patch" }) {
   }
 
   if (mode === "patch" && routineFetchingError?.status === 404) {
-    return <Fallback message="A rotina não foi encontrada ou não existe." />;
+    return <Fallback message="A rotina que você tentou editar não foi encontrada." />;
   }
 
   if (mode === "patch" && routineFetchingError) {
-    return (
-      <Fallback message="A rotina não conseguiu ser carregada para a edição." />
-    );
+    return <Fallback message="Não foi possível carregar a rotina para edição." />;
   }
 
   return (

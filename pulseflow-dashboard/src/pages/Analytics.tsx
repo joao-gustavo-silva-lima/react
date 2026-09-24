@@ -9,11 +9,11 @@ export default function Analytics() {
     calculateAnalytics(routines ?? []);
 
   if (isError || routines === undefined) {
-    return <Fallback message="Não foi possível carregar os relatórios." />;
+    return <Fallback message="Não foi possível carregar os dados dos relatórios." />;
   }
 
   if (routines.length === 0) {
-    return <Fallback message="Você ainda não possui hábitos registrados." />;
+    return <Fallback message="Adicione uma rotina com hábitos para visualizar os relatórios." />;
   }
 
   return (

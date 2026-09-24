@@ -34,7 +34,10 @@ export default function Router() {
           />
         </Route>
         <Route path="/analytics" element={<Analytics />} />
-        <Route path="*" element={<Fallback />} />
+        <Route
+          path="*"
+          element={<Fallback message="A página que você tentou acessar não foi encontrada." />}
+        />
       </Routes>
     </BrowserRouter>
   );

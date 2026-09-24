@@ -55,7 +55,7 @@ export default function Index() {
       <Fallback
         message={
           API_MESSAGES.get(routinesFetchingError.code) ??
-          "Algum erro ocorreu ao tentar buscar as rotinas..."
+          "Não foi possível carregar suas rotinas."
         }
       />
     );

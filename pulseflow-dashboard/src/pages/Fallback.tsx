@@ -1,7 +1,7 @@
 import { useLocation } from "react-router";
 import ActionButton from "../components/ActionButton";
 
-export default function Fallback({ message }: { message?: string }) {
+export default function Fallback({ message }: { message: string }) {
   const { pathname } = useLocation();
 
   return (
@@ -11,9 +11,7 @@ export default function Fallback({ message }: { message?: string }) {
         src="/public/images/fallback-hero.png"
         alt="Imagem de um bloco de notas. Imagem hero para a página de fallback."
       />
-      <p className="text-text-secondary text-base text-center">
-        {message ?? "Oops... Não queremos ficar por aqui."}
-      </p>
+      <p className="text-text-secondary text-base text-center">{message}</p>
       {pathname === "/" ? (
         <ActionButton onClick={() => location.reload()}>
           Recarregar Página
