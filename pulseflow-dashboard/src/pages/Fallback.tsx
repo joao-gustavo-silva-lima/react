@@ -8,7 +8,7 @@ export default function Fallback({ message }: { message: string }) {
     <main className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-full min-h-dvh bg-background flex flex-col justify-center items-center gap-gap-lg">
       <img
         className="w-[75px]"
-        src="/public/images/fallback-hero.png"
+        src="/images/fallback-hero.png"
         alt="Imagem de um bloco de notas. Imagem hero para a página de fallback."
       />
       <p className="text-text-secondary text-base text-center">{message}</p>

@@ -205,7 +205,7 @@ export default function Index() {
       )}
 
       {outlet && (
-        <div className="fixed left-0 top-0 flex items-center justify-center w-full min-h-dvh bg-[#00000080]">
+        <div className="fixed left-0 top-0 flex items-center justify-center w-full min-h-dvh bg-[#00000080] z-10">
           <Outlet />
         </div>
       )}
