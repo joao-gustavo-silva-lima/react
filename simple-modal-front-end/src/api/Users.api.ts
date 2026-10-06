@@ -2,6 +2,7 @@ import type {
   APIJSONResponse,
   LoginUser,
   RegisterUser,
+  User,
 } from "../types/User.types";
 import HttpError from "../utils/HttpError.utils";
 
@@ -34,10 +35,10 @@ export function logoutUser() {
 }
 
 export function fetchUser() {
-  return request("/users/auth/profile");
+  return request<User>("/users/auth/profile");
 }
 
-async function request<T>(
+async function request<T = any>(
   path: string,
   requestInit: RequestInit = {},
 ): Promise<APIJSONResponse<T>> {
