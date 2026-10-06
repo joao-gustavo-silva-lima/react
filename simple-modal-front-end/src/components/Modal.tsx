@@ -5,6 +5,7 @@ import {
   registerUserSchema,
 } from "../types/User.types";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Link } from "react-router-dom";
 
 export default function Modal({ mode }: { mode: "register" | "login" }) {
   const {
@@ -52,6 +53,11 @@ export default function Modal({ mode }: { mode: "register" | "login" }) {
             {errors.confirmPassword && <p>{errors.confirmPassword.message}</p>}
           </label>
         )}
+        <Link to={mode === "login" ? "/register" : "/"}>
+          {mode === "login"
+            ? "É a primeira vez? Registre-se aqui."
+            : "Já possui registro? Faça login aqui."}
+        </Link>
         <button type="submit">
           {mode === "login" ? "LOGIN" : "REGISTRAR"}
         </button>
