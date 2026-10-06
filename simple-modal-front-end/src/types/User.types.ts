@@ -30,29 +30,32 @@ export const userSchema = z.object({
     .transform(() => new Date().toISOString()),
 });
 
-export const registerUserSchema = userSchema.omit({
-  id: true,
-  createdAt: true,
-});
-
 export const loginUserSchema = userSchema.pick({
   email: true,
   password: true,
 });
 
+export const registerUserSchema = userSchema
+  .extend({
+    confirmPassword: z.string({ error: "CONFIRM_PASSWORD_MUST_BE_STRING" }),
+  })
+  .refine((data) => data.confirmPassword === data.password, {
+    error: "PASSWORDS_DONT_MATCH",
+    path: ["confirmPassword"],
+  });
+
+const modalUserSchema = userSchema
+  .extend({
+    confirmPassword: z
+      .string({ error: "CONFIRM_PASSWORD_MUST_BE_STRING" })
+      .optional(),
+  })
+  .exactPartial({ name: true });
+
 export type User = Omit<z.infer<typeof userSchema>, "password">;
+export type RegisterUser = z.input<typeof registerUserSchema>;
 export type LoginUser = z.infer<typeof loginUserSchema>;
-export type RegisterUser = z.infer<typeof registerUserSchema>;
-
-export type UserDB = Snakefy<User>;
-
-type CamelToSnakeCase<S extends string> = S extends `${infer L}${infer M}`
-  ? `${L extends Uppercase<L> ? `_${Lowercase<L>}` : L}${CamelToSnakeCase<M>}`
-  : S;
-
-type Snakefy<T extends Record<string, unknown>> = {
-  [K in keyof T as CamelToSnakeCase<Extract<K, string>>]: T[K];
-};
+export type ModalUserInputs = z.input<typeof modalUserSchema>;
 
 export type APIJSONResponse<DataType = undefined> = {
   code: string;

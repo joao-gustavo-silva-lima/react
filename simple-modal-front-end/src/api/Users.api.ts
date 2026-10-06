@@ -1,8 +1,8 @@
 import type {
   APIJSONResponse,
   LoginUser,
-  RegisterUser,
   User,
+  RegisterUser,
 } from "../types/User.types";
 import HttpError from "../utils/HttpError.utils";
 

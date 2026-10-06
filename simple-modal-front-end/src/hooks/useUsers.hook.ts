@@ -3,8 +3,8 @@ import * as UsersAPI from "../api/Users.api";
 import type {
   APIJSONResponse,
   LoginUser,
-  RegisterUser,
   User,
+  RegisterUser,
 } from "../types/User.types";
 import type HttpError from "../utils/HttpError.utils";
 
