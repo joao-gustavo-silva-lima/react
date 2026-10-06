@@ -30,13 +30,19 @@ export const userSchema = z.object({
     .transform(() => new Date().toISOString()),
 });
 
+export const registerUserSchema = userSchema.omit({
+  id: true,
+  createdAt: true,
+});
+
 export const loginUserSchema = userSchema.pick({
   email: true,
   password: true,
 });
 
 export type User = z.infer<typeof userSchema>;
-export type AuthUser = z.infer<typeof loginUserSchema>;
+export type LoginUser = z.infer<typeof loginUserSchema>;
+export type RegisterUser = Pick<User, "name" | "email" | "password">;
 
 export type UserDB = Snakefy<User>;
 
@@ -48,8 +54,8 @@ type Snakefy<T extends Record<string, unknown>> = {
   [K in keyof T as CamelToSnakeCase<Extract<K, string>>]: T[K];
 };
 
-export type APIJSONResponse<T = unknown> = {
+export type APIJSONResponse<DataType = undefined> = {
   code: string;
   message: string;
-  data?: T;
+  data?: DataType;
 };

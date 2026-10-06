@@ -1,11 +1,45 @@
-import type { APIJSONResponse } from "../types/User.types";
+import type {
+  APIJSONResponse,
+  LoginUser,
+  RegisterUser,
+} from "../types/User.types";
 import HttpError from "../utils/HttpError.utils";
 
 const BASE_URL = "http://localhost:9876";
 
+export function registerUser(user: RegisterUser) {
+  return request("/users/auth/register", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(user, null, 2),
+  });
+}
+
+export function loginUser(credentials: LoginUser) {
+  return request("users/auth/login", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(credentials, null, 2),
+  });
+}
+
+export function logoutUser() {
+  return request("users/auth/logout", {
+    method: "POST",
+  });
+}
+
+export function fetchUser() {
+  return request("/users/auth/profile");
+}
+
 async function request<T>(
   path: string,
-  requestInit: RequestInit,
+  requestInit: RequestInit = {},
 ): Promise<APIJSONResponse<T>> {
   const response = await fetch(`${BASE_URL}${path}`, {
     ...requestInit,
