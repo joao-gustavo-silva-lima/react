@@ -2,8 +2,9 @@ import { createRoot } from "react-dom/client";
 import { StrictMode } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Modal from "./components/Modal";
-import Index from "./pages/Index";
+import Layout from "./pages/Layout";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Profile from "./pages/Profile";
 
 const queryClient = new QueryClient();
 
@@ -12,10 +13,10 @@ createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />}>
+          <Route path="/" element={<Layout />}>
             <Route index element={<Modal mode="login" />} />
             <Route path="/register" element={<Modal mode="register" />} />
-            <Route path="/profile" element={<p>Boas-Vindas Novamente!</p>} />
+            <Route path="/profile" element={<Profile />} />
           </Route>
         </Routes>
       </BrowserRouter>
