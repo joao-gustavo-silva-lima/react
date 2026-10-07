@@ -15,7 +15,7 @@ export default function Profile() {
     isPending: isFetchingUser,
     isError,
     error,
-  } = useFetchUser();
+  } = useFetchUser(true);
 
   const { mutate: logoutUser, isPending: isLoginUserOut } = useLogoutUser();
 

@@ -52,7 +52,7 @@ async function request<T = APIJSONResponse>(
       ...requestInit.headers,
       Accept: "application/json",
     },
-  }).catch((error) => {
+  }).catch(() => {
     throw new HttpError(
       0,
       "SERVER_CONNECTION_ERROR",
