@@ -1,4 +1,9 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  QueryClient,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import * as UsersAPI from "../api/Users.api";
 import type {
   APIJSONResponse,
@@ -26,9 +31,15 @@ export function useLogoutUser() {
   });
 }
 
-export function useFetchUser(userId: string) {
+export function useFetchUser(blockRetry = false) {
+  const queryClient = useQueryClient();
+
   return useQuery<User, HttpError>({
     queryKey: ["user"],
-    enabled: Boolean(userId),
+    retry: blockRetry ? 0 : undefined,
+    queryFn: UsersAPI.fetchUser,
+    initialData: () => {
+      return queryClient.getQueryData(["user"]);
+    },
   });
 }

@@ -19,36 +19,40 @@ export function registerUser(user: RegisterUser) {
 }
 
 export function loginUser(credentials: LoginUser) {
-  return request("users/auth/login", {
+  return request("/users/auth/login", {
     method: "POST",
     headers: {
       "content-type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(credentials, null, 2),
   });
 }
 
 export function logoutUser() {
-  return request("users/auth/logout", {
+  return request("/users/auth/logout", {
     method: "POST",
+    credentials: "include",
   });
 }
 
 export function fetchUser() {
-  return request<User>("/users/auth/profile");
+  return request<User>("/users/auth/profile", {
+    credentials: "include",
+  });
 }
 
-async function request<T = any>(
+async function request<T = APIJSONResponse>(
   path: string,
   requestInit: RequestInit = {},
-): Promise<APIJSONResponse<T>> {
+): Promise<T> {
   const response = await fetch(`${BASE_URL}${path}`, {
     ...requestInit,
     headers: {
       ...requestInit.headers,
       Accept: "application/json",
     },
-  }).catch(() => {
+  }).catch((error) => {
     throw new HttpError(
       0,
       "SERVER_CONNECTION_ERROR",

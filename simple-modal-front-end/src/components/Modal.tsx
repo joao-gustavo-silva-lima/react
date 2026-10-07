@@ -4,10 +4,15 @@ import {
   type ModalUserInputs,
   registerUserSchema,
 } from "../types/User.types";
-import { useRegisterUser, useLoginUser } from "../hooks/useUsers.hook";
+import {
+  useRegisterUser,
+  useLoginUser,
+  useFetchUser,
+} from "../hooks/useUsers.hook";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
 import APIMessages from "../api/Users.api.messages";
+import { useEffect } from "react";
 
 export default function Modal({ mode }: { mode: "register" | "login" }) {
   const {
@@ -24,6 +29,8 @@ export default function Modal({ mode }: { mode: "register" | "login" }) {
 
   const navigate = useNavigate();
 
+  const { isFetching, isSuccess } = useFetchUser(true);
+
   const { mutate: registerUser, isPending: pendingRegister } =
     useRegisterUser();
   const { mutate: loginUser, isPending: pedingLogin } = useLoginUser();
@@ -33,8 +40,6 @@ export default function Modal({ mode }: { mode: "register" | "login" }) {
     email,
     password,
   }) => {
-    console.log(name, email, password);
-
     if (mode === "register") {
       registerUser(
         { name: name!, email, password, confirmPassword: password },
@@ -62,6 +67,7 @@ export default function Modal({ mode }: { mode: "register" | "login" }) {
         { email, password },
         {
           onError(error) {
+            console.error(error);
             alert(
               APIMessages.get(error.code) ??
                 "Um erro inesperado ocorreu. Tente novamente mais tarde.",
@@ -81,6 +87,16 @@ export default function Modal({ mode }: { mode: "register" | "login" }) {
       );
     }
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      navigate("/profile");
+    }
+  }, [isSuccess]);
+
+  if (isFetching) {
+    return <p>Verificando autenticação...</p>;
+  }
 
   return (
     <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
