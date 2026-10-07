@@ -41,6 +41,10 @@ export const loginUserSchema = userSchema.pick({
 });
 
 export const registerUserSchema = userSchema
+  .omit({
+    id: true,
+    createdAt: true,
+  })
   .extend({
     confirmPassword: z.string({
       error: APIMessages.get("CONFIRM_PASSWORD_MUST_BE_STRING"),
@@ -58,7 +62,7 @@ const modalUserSchema = userSchema
   .exactPartial({ name: true });
 
 export type User = Omit<z.infer<typeof userSchema>, "password">;
-export type RegisterUser = z.input<typeof registerUserSchema>;
+export type RegisterUser = z.infer<typeof registerUserSchema>;
 export type LoginUser = z.infer<typeof loginUserSchema>;
 export type ModalUserInputs = z.input<typeof modalUserSchema>;
 

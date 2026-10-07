@@ -43,6 +43,14 @@ const APIMessages = new Map<string, string>([
   ["USER_CREATED", "O usuário foi registrado com sucesso."],
   ["LOGIN_SUCCESS", "O login foi efetuado com sucesso."],
   ["LOGOUT_SUCCESS", "O logout foi efetuado com sucesso"],
+  [
+    "RESPONSE_IS_NOT_JSON",
+    "A resposta do servidor não foi reconhecida. Se o problema persistir, contate o suporte.",
+  ],
+  [
+    "UNEXPECTED_ERROR",
+    "Um erro inesperado ocorreu. Tente novamente mais tarde.",
+  ],
 ]);
 
 export default APIMessages;

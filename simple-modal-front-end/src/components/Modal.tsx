@@ -4,11 +4,14 @@ import {
   type ModalUserInputs,
   registerUserSchema,
 } from "../types/User.types";
+import { useRegisterUser, useLoginUser } from "../hooks/useUsers.hook";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import APIMessages from "../api/Users.api.messages";
 
 export default function Modal({ mode }: { mode: "register" | "login" }) {
   const {
+    reset,
     register,
     handleSubmit,
     formState: { errors },
@@ -19,7 +22,65 @@ export default function Modal({ mode }: { mode: "register" | "login" }) {
     ),
   });
 
-  const onSubmit: SubmitHandler<ModalUserInputs> = (data) => console.log(data);
+  const navigate = useNavigate();
+
+  const { mutate: registerUser, isPending: pendingRegister } =
+    useRegisterUser();
+  const { mutate: loginUser, isPending: pedingLogin } = useLoginUser();
+
+  const onSubmit: SubmitHandler<ModalUserInputs> = ({
+    name,
+    email,
+    password,
+  }) => {
+    console.log(name, email, password);
+
+    if (mode === "register") {
+      registerUser(
+        { name: name!, email, password, confirmPassword: password },
+        {
+          onError(error) {
+            alert(
+              APIMessages.get(error.code) ??
+                "Um erro inesperado ocorreu. Tente novamente mais tarde.",
+            );
+          },
+          onSuccess() {
+            const message = APIMessages.get("USER_CREATED");
+
+            if (message) {
+              alert(message);
+            }
+
+            reset();
+            navigate("/");
+          },
+        },
+      );
+    } else {
+      loginUser(
+        { email, password },
+        {
+          onError(error) {
+            alert(
+              APIMessages.get(error.code) ??
+                "Um erro inesperado ocorreu. Tente novamente mais tarde.",
+            );
+          },
+          onSuccess() {
+            const message = APIMessages.get("LOGIN_SUCCESS");
+
+            if (message) {
+              alert(message);
+            }
+
+            reset();
+            navigate("/profile");
+          },
+        },
+      );
+    }
+  };
 
   return (
     <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
@@ -58,7 +119,7 @@ export default function Modal({ mode }: { mode: "register" | "login" }) {
             ? "É a primeira vez? Registre-se aqui."
             : "Já possui registro? Faça login aqui."}
         </Link>
-        <button type="submit">
+        <button type="submit" disabled={pedingLogin || pendingRegister}>
           {mode === "login" ? "LOGIN" : "REGISTRAR"}
         </button>
       </fieldset>
