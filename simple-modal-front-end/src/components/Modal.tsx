@@ -110,7 +110,27 @@ export default function Modal({ mode }: { mode: "register" | "login" }) {
   }, [mode]);
 
   if (isFetching) {
-    return <p>Verificando autenticação...</p>;
+    return (
+      <div className="m-auto flex h-fit w-full max-w-[420px] animate-pulse flex-col gap-[15px] px-[25px] py-[15px]">
+        <div className="h-[28px] w-[120px] rounded-md bg-bg-surface" />
+        <div className="flex flex-col gap-[15px]">
+          <div className="flex flex-col gap-[6px]">
+            <div className="h-[14px] w-[46px] rounded-md bg-bg-surface" />
+            <div className="h-[40px] w-full rounded-md bg-bg-surface" />
+          </div>
+          <div className="flex flex-col gap-[6px]">
+            <div className="h-[14px] w-[46px] rounded-md bg-bg-surface" />
+            <div className="h-[40px] w-full rounded-md bg-bg-surface" />
+          </div>
+          <div className="flex flex-col gap-[6px]">
+            <div className="h-[14px] w-[46px] rounded-md bg-bg-surface" />
+            <div className="h-[40px] w-full rounded-md bg-bg-surface" />
+          </div>
+          <div className="h-[42px] w-full rounded-md bg-bg-surface" />
+          <div className="mx-auto h-[14px] w-[210px] rounded-md bg-bg-surface" />
+        </div>
+      </div>
+    );
   }
 
   return (

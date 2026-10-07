@@ -58,7 +58,29 @@ export default function Profile() {
   }, [isUnauthorized]);
 
   if (isFetchingUser) {
-    return <p>Carregando dados do perfil...</p>;
+    return (
+      <div className="contained flex flex-col gap-[16px] px-[15px] py-[24px] animate-pulse">
+        <div className="h-[28px] w-[120px] rounded-md bg-bg-surface" />
+        <div className="h-[18px] w-[240px] rounded-md bg-bg-surface" />
+        <div className="h-[1px] w-full bg-border-subtle" />
+        <div className="h-[14px] w-[140px] rounded-md bg-bg-surface" />
+        <div className="flex flex-col gap-[12px]">
+          <div className="flex items-center gap-[8px]">
+            <div className="h-[14px] w-[60px] rounded-md bg-bg-surface" />
+            <div className="h-[14px] w-[180px] rounded-md bg-bg-surface" />
+          </div>
+          <div className="flex items-center gap-[8px]">
+            <div className="h-[14px] w-[60px] rounded-md bg-bg-surface" />
+            <div className="h-[14px] w-[220px] rounded-md bg-bg-surface" />
+          </div>
+          <div className="flex items-center gap-[8px]">
+            <div className="h-[14px] w-[120px] rounded-md bg-bg-surface" />
+            <div className="h-[14px] w-[180px] rounded-md bg-bg-surface" />
+          </div>
+        </div>
+        <div className="mt-[10px] h-[36px] w-[110px] rounded-md bg-bg-surface" />
+      </div>
+    );
   }
 
   if (isUnauthorized) {
