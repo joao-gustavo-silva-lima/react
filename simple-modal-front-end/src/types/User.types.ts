@@ -55,11 +55,15 @@ export const registerUserSchema = userSchema
     path: ["confirmPassword"],
   });
 
-const modalUserSchema = userSchema
-  .extend({
-    confirmPassword: z.string().optional(),
+const modalUserSchema = z
+  .object({
+    ...loginUserSchema.shape,
+    ...registerUserSchema.shape,
   })
-  .exactPartial({ name: true });
+  .exactPartial({
+    name: true,
+    confirmPassword: true,
+  });
 
 export type User = Omit<z.infer<typeof userSchema>, "password">;
 export type RegisterUser = z.infer<typeof registerUserSchema>;
