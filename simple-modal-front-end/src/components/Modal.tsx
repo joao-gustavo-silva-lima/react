@@ -1,4 +1,8 @@
-import { useForm, type SubmitHandler } from "react-hook-form";
+import {
+  useForm,
+  type SubmitHandler,
+  type UseFormRegisterReturn,
+} from "react-hook-form";
 import {
   loginUserSchema,
   type ModalUserInputs,
@@ -106,48 +110,91 @@ export default function Modal({ mode }: { mode: "register" | "login" }) {
   }
 
   return (
-    <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
-      <h2>{mode === "login" ? "LOGIN" : "REGISTRO"}</h2>
-      <fieldset>
+    <form
+      className="flex flex-col gap-[15px] w-full max-w-[400px] m-auto px-[15px] py-[10px] h-fit overflow-y-auto"
+      autoComplete="off"
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      <h2 className="text-lg font-bold">
+        {mode === "login" ? "LOGIN" : "REGISTRO"}
+      </h2>
+      <fieldset className="flex flex-col flex-nowrap gap-[15px]">
         {mode === "register" && (
-          <label htmlFor="name">
-            <span>Nome</span>
-            <input type="text" {...register("name")} id="name" />
-            {errors.name && <p>{errors.name.message}</p>}
-          </label>
+          <InputBundle
+            id="name"
+            type="text"
+            title="Nome"
+            error={errors.name?.message}
+            registerReturn={register("name")}
+          />
         )}
-        <label htmlFor="email">
-          <span>Email</span>
-          <input type="text" {...register("email")} id="email" />
-          {errors.email && <p>{errors.email.message}</p>}
-        </label>
-        <label htmlFor="password">
-          <span>Senha</span>
-          <input type="password" {...register("password")} id="password" />
-          {errors.password && mode === "register" && (
-            <p>{errors.password.message}</p>
-          )}
-        </label>
+        <InputBundle
+          id="email"
+          title="Email"
+          type="text"
+          error={errors.email?.message}
+          registerReturn={register("email")}
+        />
+        <InputBundle
+          id="password"
+          title="Senha"
+          type="password"
+          error={mode === "login" ? undefined : errors.password?.message}
+          registerReturn={register("password")}
+        />
         {mode === "register" && (
-          <label htmlFor="confirm-password">
-            <span>Confirmar senha</span>
-            <input
-              type="password"
-              {...register("confirmPassword")}
-              id="password"
-            />
-            {errors.confirmPassword && <p>{errors.confirmPassword.message}</p>}
-          </label>
+          <InputBundle
+            id="confirm-password"
+            title="Confirmar senha"
+            type="password"
+            error={errors.confirmPassword?.message}
+            registerReturn={register("confirmPassword")}
+          />
         )}
-        <Link to={mode === "login" ? "/register" : "/"}>
+        <button
+          className="w-full px-[7.5px] py-[2.5px] bg-white text-black rounded-sm button-basics"
+          type="submit"
+          disabled={pedingLogin || pendingRegister}
+        >
+          {mode === "login" ? "LOGIN" : "REGISTRAR"}
+        </button>
+        <Link
+          className="m-auto text-sm underline text-[blue]"
+          to={mode === "login" ? "/register" : "/"}
+        >
           {mode === "login"
             ? "É a primeira vez? Registre-se aqui."
             : "Já possui registro? Faça login aqui."}
         </Link>
-        <button type="submit" disabled={pedingLogin || pendingRegister}>
-          {mode === "login" ? "LOGIN" : "REGISTRAR"}
-        </button>
       </fieldset>
     </form>
+  );
+}
+
+function InputBundle({
+  id,
+  type,
+  error,
+  title,
+  registerReturn,
+}: {
+  id: string;
+  title: string;
+  error: string | undefined;
+  type: React.HTMLInputTypeAttribute;
+  registerReturn: UseFormRegisterReturn;
+}) {
+  return (
+    <label className="flex flex-col flex-nowrap gap-[5px]" htmlFor={id}>
+      <span className=" text-nowrap">{title}</span>
+      <input
+        className="w-full border-[1px] border-solid border-white rounded-sm p-[5px] text-sm"
+        type={type}
+        placeholder={`${title}...`}
+        {...registerReturn}
+        id={id}
+      />
+      {error && <p className="text-xs text-[red]">{error}</p>}
+    </label>
   );
 }
