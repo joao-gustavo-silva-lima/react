@@ -45,6 +45,10 @@ const APIMessages = new Map<string, string>([
   ["LOGIN_SUCCESS", "O login foi efetuado com sucesso."],
   ["LOGOUT_SUCCESS", "O logout foi efetuado com sucesso."],
   [
+    "SERVER_CONNECTION_ERROR",
+    "A comunicação com o servidor falhou. Verifique a conexão e tente novamente.",
+  ],
+  [
     "RESPONSE_IS_NOT_JSON",
     "A resposta do servidor não foi reconhecida. Se o problema persistir, contate o suporte.",
   ],

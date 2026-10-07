@@ -30,7 +30,7 @@ createRoot(document.getElementById("root")!).render(
     </QueryClientProvider>
     <ToastContainer
       position="top-center"
-      autoClose={5000}
+      autoClose={3000}
       hideProgressBar={false}
       newestOnTop={false}
       closeOnClick
@@ -39,7 +39,7 @@ createRoot(document.getElementById("root")!).render(
       pauseOnFocusLoss
       draggable
       pauseOnHover={false}
-      theme="light"
+      theme="dark"
       transition={Slide}
     />
   </StrictMode>,
