@@ -6,7 +6,7 @@ import type {
 } from "../types/User.types";
 import HttpError from "../utils/HttpError.utils";
 
-const BASE_URL = "http://localhost:9876";
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 export function registerUser(user: RegisterUser) {
   return request("/users/auth/register", {
@@ -46,6 +46,14 @@ async function request<T = APIJSONResponse>(
   path: string,
   requestInit: RequestInit = {},
 ): Promise<T> {
+  if (BASE_URL === undefined) {
+    throw new HttpError(
+      0,
+      "MISSING_SERVER_ADDRESS",
+      "O endereço do servidor não foi definido. Contate o suporte.",
+    );
+  }
+
   const response = await fetch(`${BASE_URL}${path}`, {
     ...requestInit,
     headers: {

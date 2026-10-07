@@ -49,6 +49,10 @@ const APIMessages = new Map<string, string>([
     "A comunicação com o servidor falhou. Verifique a conexão e tente novamente.",
   ],
   [
+    "MISSING_SERVER_ADDRESS",
+    "O endereço do servidor não foi definido. Contate o suporte.",
+  ],
+  [
     "RESPONSE_IS_NOT_JSON",
     "A resposta do servidor não foi reconhecida. Se o problema persistir, contate o suporte.",
   ],
