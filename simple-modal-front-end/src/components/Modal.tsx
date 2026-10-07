@@ -140,7 +140,7 @@ export default function Modal({ mode }: { mode: "register" | "login" }) {
       onSubmit={handleSubmit(onSubmit)}
     >
       <h2 className="text-xl font-bold text-text-primary">
-        {mode === "login" ? "LOGIN" : "REGISTRO"}
+        {mode === "login" ? "LOGIN \u{1F511}" : "REGISTRO \u{1F4CB}"}
       </h2>
       <fieldset className="flex flex-col flex-nowrap gap-[15px]">
         {mode === "register" && (

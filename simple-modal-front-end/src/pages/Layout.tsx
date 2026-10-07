@@ -10,7 +10,7 @@ export default function Layout() {
             to="/"
           >
             <span className="text-xl font-bold tracking-tight">
-              SimpleModal
+              SimpleModal {"\u{1F44B}"}
             </span>
           </Link>
         </div>

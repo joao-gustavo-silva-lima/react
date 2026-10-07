@@ -98,13 +98,15 @@ export default function Profile() {
 
   return (
     <div className="contained flex flex-col gap-[10px] px-[25px] py-[15px]">
-      <h2 className="text-xl font-bold text-text-primary">PERFIL</h2>
+      <h2 className="text-xl font-bold text-text-primary">
+        {"\u{1F464}"} PERFIL
+      </h2>
       <p className="text-base font-semibold text-text-primary">
-        Boas-vindas novamente, {user.name.split(/\s+/)[0]}!
+        Boas-vindas novamente, {user.name.split(/\s+/)[0]}! {"\u{2728}"}
       </p>
       <hr className="border-t border-border-subtle" />
       <p className="text-sm font-semibold text-text-primary">
-        Dados do perfil:
+        DADOS DO PERFIL {"\u{1F50D}"}
       </p>
       <ul className="flex flex-col gap-[12px] text-sm text-text-primary">
         <li className="flex flex-row flex-wrap items-center gap-[6px]">
