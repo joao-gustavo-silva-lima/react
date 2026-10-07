@@ -6,6 +6,7 @@ import Layout from "./pages/Layout";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Profile from "./pages/Profile";
 import "./assets/styles/tailwind.style.css";
+import Fallback from "./pages/Fallback";
 
 const queryClient = new QueryClient();
 
@@ -18,6 +19,10 @@ createRoot(document.getElementById("root")!).render(
             <Route index element={<Modal mode="login" />} />
             <Route path="/register" element={<Modal mode="register" />} />
             <Route path="/profile" element={<Profile />} />
+            <Route
+              path="*"
+              element={<Fallback message="Página não encontrada." />}
+            />
           </Route>
         </Routes>
       </BrowserRouter>

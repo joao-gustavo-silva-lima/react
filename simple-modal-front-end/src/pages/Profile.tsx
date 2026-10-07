@@ -4,6 +4,7 @@ import isoDateFormatter from "../utils/IsoDateFormatter.utils";
 import { useEffect } from "react";
 import APIMessages from "../api/Users.api.messages";
 import { useQueryClient } from "@tanstack/react-query";
+import Fallback from "./Fallback";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -56,20 +57,20 @@ export default function Profile() {
     }
   }, [isUnauthorized]);
 
-  if (isUnauthorized) {
-    return <p>O que você faz aqui?!</p>;
-  }
-
   if (isFetchingUser) {
     return <p>Carregando dados do perfil...</p>;
   }
 
+  if (isUnauthorized) {
+    return <Fallback message="O que você está fazendo aqui?!" />;
+  }
+
   if ((!isUnauthorized && isError) || user === undefined) {
     return (
-      <p>
-        Um erro ocorreu ao tentar buscar os dados do perfil. Tente novamente
-        mais tarde.
-      </p>
+      <Fallback
+        message="Um erro ocorreu ao tentar buscar os dados do perfil. Tente novamente
+        mais tarde."
+      />
     );
   }
 
