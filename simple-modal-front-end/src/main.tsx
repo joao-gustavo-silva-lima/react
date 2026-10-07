@@ -5,6 +5,7 @@ import Modal from "./components/Modal";
 import Layout from "./pages/Layout";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Profile from "./pages/Profile";
+import "./assets/styles/tailwind.style.css";
 
 const queryClient = new QueryClient();
 
