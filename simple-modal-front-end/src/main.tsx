@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Profile from "./pages/Profile";
 import "./assets/styles/tailwind.style.css";
 import Fallback from "./pages/Fallback";
+import { Slide, ToastContainer } from "react-toastify";
 
 const queryClient = new QueryClient();
 
@@ -27,5 +28,19 @@ createRoot(document.getElementById("root")!).render(
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>
+    <ToastContainer
+      position="top-center"
+      autoClose={5000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      limit={3}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover={false}
+      theme="light"
+      transition={Slide}
+    />
   </StrictMode>,
 );

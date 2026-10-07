@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import APIMessages from "../api/Users.api.messages";
 import { useQueryClient } from "@tanstack/react-query";
 import Fallback from "./Fallback";
+import { toast } from "react-toastify";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -35,13 +36,13 @@ export default function Profile() {
           APIMessages.get(error.code) ||
           "Um erro ocorreu durante a tentativa de logout. Tente novamente mais tarde.";
 
-        alert(message);
+        toast.error(message);
       },
       onSuccess(response) {
         const message = APIMessages.get(response.code);
 
         if (message) {
-          alert(message);
+          toast.success(message);
         }
 
         queryClient.removeQueries({ queryKey: ["user"] });

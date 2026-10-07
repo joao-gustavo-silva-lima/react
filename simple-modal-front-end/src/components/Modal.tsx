@@ -17,6 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
 import APIMessages from "../api/Users.api.messages";
 import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 export default function Modal({ mode }: { mode: "register" | "login" }) {
   const {
@@ -50,7 +51,7 @@ export default function Modal({ mode }: { mode: "register" | "login" }) {
         { name: name!, email, password, confirmPassword: password },
         {
           onError(error) {
-            alert(
+            toast.error(
               APIMessages.get(error.code) ??
                 "Um erro inesperado ocorreu. Tente novamente mais tarde.",
             );
@@ -65,7 +66,7 @@ export default function Modal({ mode }: { mode: "register" | "login" }) {
             const message = APIMessages.get("USER_CREATED");
 
             if (message) {
-              alert(message);
+              toast.success(message);
             }
 
             reset();
@@ -79,7 +80,7 @@ export default function Modal({ mode }: { mode: "register" | "login" }) {
         {
           onError(error) {
             console.error(error);
-            alert(
+            toast.error(
               APIMessages.get(error.code) ??
                 "Um erro inesperado ocorreu. Tente novamente mais tarde.",
             );
@@ -88,7 +89,7 @@ export default function Modal({ mode }: { mode: "register" | "login" }) {
             const message = APIMessages.get("LOGIN_SUCCESS");
 
             if (message) {
-              alert(message);
+              toast.success(message);
             }
 
             reset();
