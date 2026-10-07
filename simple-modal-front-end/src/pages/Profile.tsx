@@ -1,16 +1,54 @@
 import { useNavigate } from "react-router-dom";
-import { useFetchUser } from "../hooks/useUsers.hook";
+import { useFetchUser, useLogoutUser } from "../hooks/useUsers.hook";
 import isoDateFormatter from "../utils/IsoDateFormatter.utils";
 import { useEffect } from "react";
+import APIMessages from "../api/Users.api.messages";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Profile() {
   const navigate = useNavigate();
 
-  const { data: user, isPending, isError, error } = useFetchUser();
+  const queryClient = useQueryClient();
+
+  const {
+    data: user,
+    isPending: isFetchingUser,
+    isError,
+    error,
+  } = useFetchUser();
+
+  const { mutate: logoutUser, isPending: isLoginUserOut } = useLogoutUser();
 
   const isUnauthorized =
     error?.code === "AUTH_TOKEN_REQUIRED" ||
     error?.code === "INVALID_AUTH_TOKEN";
+
+  const handleLogout = () => {
+    if (!confirm("Deseja realmente fazer logout?")) {
+      return;
+    }
+
+    logoutUser(undefined, {
+      onError(error) {
+        const message =
+          APIMessages.get(error.code) ||
+          "Um erro ocorreu durante a tentativa de logout. Tente novamente mais tarde.";
+
+        alert(message);
+      },
+      onSuccess(response) {
+        const message = APIMessages.get(response.code);
+
+        if (message) {
+          alert(message);
+        }
+
+        queryClient.removeQueries({ queryKey: ["user"] });
+        queryClient.invalidateQueries({ queryKey: ["user"] });
+        navigate("/");
+      },
+    });
+  };
 
   useEffect(() => {
     if (isUnauthorized) {
@@ -22,7 +60,7 @@ export default function Profile() {
     return <p>O que você faz aqui?!</p>;
   }
 
-  if (isPending) {
+  if (isFetchingUser) {
     return <p>Carregando dados do perfil...</p>;
   }
 
@@ -46,6 +84,9 @@ export default function Profile() {
         <li>Email: {user.email}</li>
         <li>Registrado em: {isoDateFormatter(user.createdAt)}</li>
       </ul>
+      <button disabled={isLoginUserOut} onClick={handleLogout}>
+        LOGOUT
+      </button>
     </>
   );
 }
