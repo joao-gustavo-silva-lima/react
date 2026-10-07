@@ -115,7 +115,7 @@
   }
 
   body {
-    @apply w-full min-h-dvh h-fit bg-black text-white;
+    @apply w-full min-h-dvh h-fit bg-bg-app text-text-primary;
   }
 
   .contained {

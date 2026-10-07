@@ -3,10 +3,15 @@ import { Link, Outlet } from "react-router-dom";
 export default function Layout() {
   return (
     <>
-      <header className="w-full bg-slate-dark">
-        <div className="contained flex flex-row flex-nowrap justify-between px-[15px] py-[10px]">
-          <Link className="button-basics" to="/">
-            <span className="text text-xl font-bold">SimpleModal</span>
+      <header className="w-full border-b border-border-subtle bg-bg-surface">
+        <div className="contained flex flex-row flex-nowrap items-center justify-between px-[25px] py-[15px]">
+          <Link
+            className="button-basics text-text-primary hover:text-brand-primary"
+            to="/"
+          >
+            <span className="text-xl font-bold tracking-tight">
+              SimpleModal
+            </span>
           </Link>
         </div>
       </header>

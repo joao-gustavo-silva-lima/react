@@ -105,17 +105,21 @@ export default function Modal({ mode }: { mode: "register" | "login" }) {
     }
   }, [isSuccess]);
 
+  useEffect(() => {
+    reset();
+  }, [mode]);
+
   if (isFetching) {
     return <p>Verificando autenticação...</p>;
   }
 
   return (
     <form
-      className="flex flex-col gap-[15px] w-full max-w-[400px] m-auto px-[15px] py-[10px] h-fit overflow-y-auto"
+      className="m-auto flex h-fit w-full max-w-[420px] flex-col gap-[15px] overflow-y-auto px-[25px] py-[15px]"
       autoComplete="off"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <h2 className="text-lg font-bold">
+      <h2 className="text-xl font-bold text-text-primary">
         {mode === "login" ? "LOGIN" : "REGISTRO"}
       </h2>
       <fieldset className="flex flex-col flex-nowrap gap-[15px]">
@@ -152,14 +156,14 @@ export default function Modal({ mode }: { mode: "register" | "login" }) {
           />
         )}
         <button
-          className="w-full px-[7.5px] py-[2.5px] bg-white text-black rounded-sm button-basics"
+          className="button-basics w-full rounded-md bg-brand-primary px-[12px] py-[10px] text-sm font-semibold text-text-on-brand hover:bg-brand-hover active:bg-brand-active"
           type="submit"
           disabled={pedingLogin || pendingRegister}
         >
           {mode === "login" ? "LOGIN" : "REGISTRAR"}
         </button>
         <Link
-          className="m-auto text-sm underline text-[blue]"
+          className="m-auto text-sm font-medium text-brand-primary underline transition-colors hover:text-brand-hover"
           to={mode === "login" ? "/register" : "/"}
         >
           {mode === "login"
@@ -185,16 +189,16 @@ function InputBundle({
   registerReturn: UseFormRegisterReturn;
 }) {
   return (
-    <label className="flex flex-col flex-nowrap gap-[5px]" htmlFor={id}>
-      <span className=" text-nowrap">{title}</span>
+    <label className="flex flex-col flex-nowrap gap-[6px]" htmlFor={id}>
+      <span className="text-sm font-medium text-text-secondary">{title}</span>
       <input
-        className="w-full border-[1px] border-solid border-white rounded-sm p-[5px] text-sm"
+        className="w-full rounded-md border border-border-default bg-bg-input px-[10px] py-[8px] text-sm text-text-primary placeholder:text-text-placeholder focus:border-border-focus focus:shadow-input-focus"
         type={type}
         placeholder={`${title}...`}
         {...registerReturn}
         id={id}
       />
-      {error && <p className="text-xs text-[red]">{error}</p>}
+      {error && <p className="text-xs text-error">{error}</p>}
     </label>
   );
 }

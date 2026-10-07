@@ -74,30 +74,33 @@ export default function Profile() {
   }
 
   return (
-    <div className="flex flex-col gap-[10px] contained px-[15px] py-[10px]">
-      <h2 className="text-lg font-bold">PERFIL</h2>
-      <span className="text-md font-semibold">
+    <div className="contained flex flex-col gap-[10px] px-[25px] py-[15px]">
+      <h2 className="text-xl font-bold text-text-primary">PERFIL</h2>
+      <p className="text-base font-semibold text-text-primary">
         Boas-vindas novamente, {user.name.split(/\s+/)[0]}!
-      </span>
-      <span className="font-semibold">Dados do perfil:</span>
-      <ul className="flex flex-col gap-[7.5px]">
-        <li className="flex flex-row flex-nowrap gap-[5px]">
-          <span className="font-semibold">Nome: </span>
-          <span className="text-normal">{user.name}</span>
+      </p>
+      <hr className="border-t border-border-subtle" />
+      <p className="text-sm font-semibold text-text-primary">
+        Dados do perfil:
+      </p>
+      <ul className="flex flex-col gap-[12px] text-sm text-text-primary">
+        <li className="flex flex-row flex-wrap items-center gap-[6px]">
+          <span className="font-semibold text-text-secondary">Nome:</span>
+          <span>{user.name}</span>
         </li>
-        <li className="flex flex-row flex-nowrap gap-[5px]">
-          <span className="font-semibold">Email: </span>
-          <span className="text-normal">{user.email}</span>
+        <li className="flex flex-row flex-wrap items-center gap-[6px]">
+          <span className="font-semibold text-text-secondary">Email:</span>
+          <span>{user.email}</span>
         </li>
-        <li className="flex flex-row flex-nowrap gap-[5px]">
-          <span className="font-semibold">Registrado em: </span>
-          <span className="text-normal">
-            {isoDateFormatter(user.createdAt)}
+        <li className="flex flex-row flex-wrap items-center gap-[6px]">
+          <span className="font-semibold text-text-secondary">
+            Registrado em:
           </span>
+          <span>{isoDateFormatter(user.createdAt)}</span>
         </li>
       </ul>
       <button
-        className="w-fit px-[7.5px] py-[2.5px] mt-[20px] bg-white text-black rounded-sm button-basics"
+        className="button-basics mt-[20px] w-fit rounded-md bg-brand-primary px-[16px] py-[8px] text-sm font-semibold text-text-on-brand hover:bg-brand-hover active:bg-brand-active"
         disabled={isLoginUserOut}
         onClick={handleLogout}
       >
