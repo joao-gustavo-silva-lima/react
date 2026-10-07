@@ -18,6 +18,7 @@ export default function Modal({ mode }: { mode: "register" | "login" }) {
   const {
     reset,
     register,
+    setError,
     handleSubmit,
     formState: { errors },
   } = useForm<ModalUserInputs, unknown, ModalUserInputs>({
@@ -49,6 +50,12 @@ export default function Modal({ mode }: { mode: "register" | "login" }) {
               APIMessages.get(error.code) ??
                 "Um erro inesperado ocorreu. Tente novamente mais tarde.",
             );
+
+            if (error.status === 409) {
+              setError("email", {
+                message: APIMessages.get("USER_ALREADY_EXISTS"),
+              });
+            }
           },
           onSuccess() {
             const message = APIMessages.get("USER_CREATED");
@@ -117,7 +124,9 @@ export default function Modal({ mode }: { mode: "register" | "login" }) {
         <label htmlFor="password">
           <span>Senha</span>
           <input type="password" {...register("password")} id="password" />
-          {errors.password && <p>{errors.password.message}</p>}
+          {errors.password && mode === "register" && (
+            <p>{errors.password.message}</p>
+          )}
         </label>
         {mode === "register" && (
           <label htmlFor="confirm-password">
