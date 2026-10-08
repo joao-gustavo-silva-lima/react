@@ -126,11 +126,11 @@ export default function Profile() {
         </li>
       </ul>
       <button
-        className="button-basics mt-[20px] w-fit rounded-md bg-brand-primary px-[16px] py-[8px] text-sm font-semibold text-text-on-brand hover:bg-brand-hover active:bg-brand-active"
+        className="button-basics disabled:cursor-progress w-fit text-center rounded-md bg-brand-primary px-[12px] py-[10px] text-sm font-semibold text-text-on-brand not-disabled:hover:bg-brand-hover not-disabled:active:bg-brand-active disabled:animate-pulse"
         disabled={isLoginUserOut}
         onClick={handleLogout}
       >
-        LOGOUT
+        {isLoginUserOut ? "\u{23F3}" : "LOGOUT"}
       </button>
     </div>
   );

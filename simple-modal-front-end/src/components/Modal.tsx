@@ -37,9 +37,11 @@ export default function Modal({ mode }: { mode: "register" | "login" }) {
 
   const { isFetching, isSuccess } = useFetchUser(true);
 
-  const { mutate: registerUser, isPending: pendingRegister } =
+  const { mutate: registerUser, isPending: isRegisterPending } =
     useRegisterUser();
-  const { mutate: loginUser, isPending: pedingLogin } = useLoginUser();
+  const { mutate: loginUser, isPending: isLoginPending } = useLoginUser();
+
+  const isModalPending = isRegisterPending || isLoginPending;
 
   const onSubmit: SubmitHandler<ModalUserInputs> = ({
     name,
@@ -177,11 +179,17 @@ export default function Modal({ mode }: { mode: "register" | "login" }) {
           />
         )}
         <button
-          className="button-basics w-full rounded-md bg-brand-primary px-[12px] py-[10px] text-sm font-semibold text-text-on-brand hover:bg-brand-hover active:bg-brand-active"
+          className="button-basics disabled:cursor-progress w-full disabled:w-fit text-center rounded-md m-auto bg-brand-primary px-[12px] py-[10px] text-sm font-semibold text-text-on-brand not-disabled:hover:bg-brand-hover not-disabled:active:bg-brand-active disabled:animate-pulse"
           type="submit"
-          disabled={pedingLogin || pendingRegister}
+          disabled={isModalPending}
         >
-          {mode === "login" ? "LOGIN" : "REGISTRAR"}
+          <span>
+            {isModalPending
+              ? "\u{23F3}"
+              : mode === "login"
+                ? "LOGIN"
+                : "REGISTRAR"}
+          </span>
         </button>
         <Link
           className="m-auto text-sm font-medium text-brand-primary underline transition-colors hover:text-brand-hover"

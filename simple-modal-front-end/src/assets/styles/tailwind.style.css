@@ -119,6 +119,6 @@
   }
 
   .button-basics {
-    @apply transition-all duration-[.25s] hover:scale-[105%] active:scale-[95%] hover:cursor-pointer;
+    @apply transition-all duration-[.25s] not-disabled:hover:scale-[105%] not-disabled:active:scale-[95%] not-disabled:hover:cursor-pointer;
   }
 }
