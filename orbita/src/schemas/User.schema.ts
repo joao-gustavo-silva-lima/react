@@ -76,6 +76,8 @@ export const userSchema = z.object({
   lastEdition: timestampSchema,
 });
 
+export const userWithoutPasswordSchema = userSchema.omit({ password: true });
+
 export const loginUserSchema = z
   .object({
     username: z.string().optional(),
@@ -100,7 +102,7 @@ export const deleteUserSchema = z.object({
   password: z.string(),
 });
 
-export type User = z.infer<typeof userSchema>;
+export type User = z.infer<typeof userWithoutPasswordSchema>;
 export type UserInput = z.infer<typeof createUserSchema>;
 export type LoginUserInput = z.infer<typeof loginUserSchema>;
 export type UpdateUserInput = z.infer<typeof updateUserSchema>;

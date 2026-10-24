@@ -2,12 +2,13 @@ import type {
   DeleteUserInput,
   LoginUserInput,
   UpdateUserInput,
+  User,
   UserInput,
 } from "../schemas/User.schema";
 import request from "./request.api";
 
 export function createUser(payload: UserInput) {
-  return request("/user/auth", {
+  return request<User>("/user/auth", {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(payload),
@@ -16,7 +17,7 @@ export function createUser(payload: UserInput) {
 }
 
 export function loginUser(payload: LoginUserInput) {
-  return request("/user/auth/login", {
+  return request<User>("/user/auth/login", {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(payload),
@@ -32,17 +33,17 @@ export function logoutUser() {
 }
 
 export function fetchUserProfile() {
-  return request("/user/auth/profile", {
+  return request<User>("/user/auth/profile", {
     credentials: "include",
   });
 }
 
 export function fetchUserByUsername(username: string) {
-  return request(`/user/${encodeURIComponent(username)}`);
+  return request<User>(`/user/${encodeURIComponent(username)}`);
 }
 
 export function updateUser(payload: UpdateUserInput) {
-  return request("/user/auth", {
+  return request<User>("/user/auth", {
     method: "PATCH",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(payload),
