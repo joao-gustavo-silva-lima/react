@@ -13,6 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateUser, useLoginUser } from "../hooks/useUser";
 import type { MutateOptions } from "@tanstack/react-query";
 import type HttpError from "../common/classes/HttpError";
+import { API_MESSAGES } from "../api/messages.api";
 
 export default function Modal({ mode }: { mode: "registro" | "login" }) {
   const isRegisterMode = mode === "registro";
@@ -27,6 +28,7 @@ export default function Modal({ mode }: { mode: "registro" | "login" }) {
 
   const {
     register,
+    setError,
     handleSubmit,
     formState: { errors },
   } = useForm<UserModalInputs, unknown, UserModalInputs>({
@@ -44,12 +46,39 @@ export default function Modal({ mode }: { mode: "registro" | "login" }) {
           navigate(`/perfil`);
         },
         onError(error) {
-          console.error(
-            `Erro de ${isRegisterMode ? "criação" : "login"} do usuário não reconhecido:`,
-            error,
-          );
+          const errorMessage = API_MESSAGES.get(error.code);
 
-          alert("Um erro ocorreu. Tente novamente mais tarde.");
+          if (errorMessage === undefined) {
+            console.error(
+              `Erro de ${isRegisterMode ? "criação" : "login"} do usuário não reconhecido:`,
+              error,
+            );
+          } else if (error.status === 409) {
+            setError("root", {
+              message:
+                errorMessage ??
+                "Algum dado inserido está indisponível. Tente novamente.",
+            });
+          } else if (error.status === 400 && error.details !== undefined) {
+            Object.entries(error.details).forEach(([field, errorCode]) => {
+              const isRecognizedField = Object.keys(
+                createUserSchema.shape,
+              ).includes(field);
+
+              setError(
+                isRecognizedField ? (field as keyof UserInput) : "root",
+                {
+                  message:
+                    API_MESSAGES.get(errorCode) ??
+                    "O dado inserido está indisponível.",
+                },
+              );
+            });
+          } else {
+            alert(
+              errorMessage ?? "Um erro ocorreu. Tente novamente mais tarde.",
+            );
+          }
         },
       };
 

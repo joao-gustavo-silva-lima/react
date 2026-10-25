@@ -1,4 +1,4 @@
-export const MESSAGES_API = new Map([
+export const API_MESSAGES = new Map([
   [
     "INVALID_CONTENT_TYPE",
     "O formato enviado não é aceito. Envie os dados como JSON.",
@@ -27,6 +27,7 @@ export const MESSAGES_API = new Map([
     "INVALID_AUTH_TOKEN",
     "Sua sessão expirou ou é inválida. Entre novamente para continuar.",
   ],
+  ["USER_CREATION_CONFLICT", "O email/usuário já está em uso."],
   ["USER_LOGOUT_SUCCESS", "Você saiu da sua conta."],
   ["USER_DELETION_SUCCESS", "Sua conta foi excluída com sucesso."],
   ["USERNAME_REQUIRED", "Informe seu nome de usuário."],

@@ -45,6 +45,8 @@ export default async function request<T = APIJSONResponse>(
       resJSON.code || "UNEXPECTED_ERROR",
       resJSON.message ||
         "Um erro inesperado ocorreu. Tente novamente mais tarde.",
+      undefined,
+      resJSON.details,
     );
   }
 
