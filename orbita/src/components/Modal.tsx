@@ -48,18 +48,16 @@ export default function Modal({ mode }: { mode: "registro" | "login" }) {
         onError(error) {
           const errorMessage = API_MESSAGES.get(error.code);
 
-          if (errorMessage === undefined) {
-            console.error(
-              `Erro de ${isRegisterMode ? "criação" : "login"} do usuário não reconhecido:`,
-              error,
-            );
-          } else if (error.status === 409) {
-            setError("root", {
-              message:
-                errorMessage ??
-                "Algum dado inserido está indisponível. Tente novamente.",
-            });
-          } else if (error.status === 400 && error.details !== undefined) {
+          if (error.status >= 400) {
+            if (error.details === undefined) {
+              setError("root", {
+                message:
+                  errorMessage ??
+                  "Algum dado inserido está indisponível. Tente novamente.",
+              });
+              return;
+            }
+
             Object.entries(error.details).forEach(([field, errorCode]) => {
               const isRecognizedField = Object.keys(
                 createUserSchema.shape,
@@ -75,6 +73,11 @@ export default function Modal({ mode }: { mode: "registro" | "login" }) {
               );
             });
           } else {
+            console.error(
+              `Erro de ${isRegisterMode ? "criação" : "login"} do usuário não reconhecido:`,
+              error,
+            );
+
             alert(
               errorMessage ?? "Um erro ocorreu. Tente novamente mais tarde.",
             );

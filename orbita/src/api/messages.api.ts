@@ -14,6 +14,18 @@ export const API_MESSAGES = new Map([
     "Ocorreu um erro interno do servidor. Tente novamente mais tarde.",
   ],
   [
+    "MISSING_SERVER_ADDRESS",
+    "O endereço do servidor não foi definido. Contate o suporte.",
+  ],
+  [
+    "SERVER_CONNECTION_ERROR",
+    "A comunicação com o servidor falhou. Verifique a conexão e tente novamente.",
+  ],
+  [
+    "RESPONSE_IS_NOT_JSON",
+    "A resposta do servidor não foi reconhecida. Se o problema persistir, contate o suporte.",
+  ],
+  [
     "UNEXPECTED_DATABASE_ERROR",
     "Não foi possível concluir a operação no banco de dados. Tente novamente mais tarde.",
   ],
@@ -64,10 +76,7 @@ export const API_MESSAGES = new Map([
     "PASSWORD_CONTAINS_WHITESPACE",
     "A senha não pode conter espaços ou outros espaços em branco.",
   ],
-  [
-    "LOGIN_REQUIRES_USERNAME_OR_EMAIL",
-    "Informe seu nome de usuário ou e-mail para entrar.",
-  ],
+  ["LOGIN_REQUIRES_USERNAME_OR_EMAIL", "Informe seu usuário para entrar."],
   [
     "USER_LOGIN_INVALID_CREDENTIALS",
     "Nome de usuário, e-mail ou senha incorretos.",
