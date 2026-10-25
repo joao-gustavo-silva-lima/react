@@ -78,16 +78,14 @@ export const userSchema = z.object({
 
 export const userWithoutPasswordSchema = userSchema.omit({ password: true });
 
-export const loginUserSchema = z
-  .object({
-    username: z.string().optional(),
-    email: z.string().optional(),
-    password: z.string(),
-  })
-  .refine((data) => data.username || data.email, {
-    error: "LOGIN_REQUIRES_USERNAME_OR_EMAIL",
-    path: ["username"],
-  });
+export const loginUserSchema = z.object({
+  username: z.string({
+    error: "USERNAME_REQUIRED",
+  }),
+  password: z.string({
+    error: "PASSWORD_REQUIRED",
+  }),
+});
 
 export const createUserSchema = userSchema.omit({
   id: true,
@@ -99,11 +97,25 @@ export const createUserSchema = userSchema.omit({
 export const updateUserSchema = createUserSchema.partial();
 
 export const deleteUserSchema = z.object({
-  password: z.string(),
+  password: z.string({
+    error: "PASSWORD_REQUIRED",
+  }),
 });
+
+const userModalSchema = z
+  .object({
+    ...createUserSchema.shape,
+    ...loginUserSchema.shape,
+  })
+  .exactPartial({
+    name: true,
+    email: true,
+  });
 
 export type User = z.infer<typeof userWithoutPasswordSchema>;
 export type UserInput = z.infer<typeof createUserSchema>;
 export type LoginUserInput = z.infer<typeof loginUserSchema>;
 export type UpdateUserInput = z.infer<typeof updateUserSchema>;
 export type DeleteUserInput = z.infer<typeof deleteUserSchema>;
+
+export type UserModalInputs = z.infer<typeof userModalSchema>;

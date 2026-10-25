@@ -1,12 +1,34 @@
 import { cloneElement, useState } from "react";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { Link } from "react-router-dom";
+import {
+  createUserSchema,
+  loginUserSchema,
+  type LoginUserInput,
+  type UserInput,
+  type UserModalInputs,
+} from "../schemas/User.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function Modal({ mode }: { mode: "registro" | "login" }) {
   const isRegisterMode = mode === "registro";
   const [isViewPrivate, setIsViewPrivate] = useState(true);
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<UserModalInputs, unknown, UserModalInputs>({
+    mode: "onChange",
+    resolver: zodResolver(isRegisterMode ? createUserSchema : loginUserSchema),
+  });
+
+  const onSubmit: SubmitHandler<UserModalInputs> = (data) => {
+    console.log(data);
+  };
+
   return (
-    <form>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <h3>{"\u{1F300}"} Orbita</h3>
       <h2>{isRegisterMode ? "Crie seu hub!" : "Bem-vindo de volta!"}</h2>
       <span>
@@ -17,20 +39,24 @@ export default function Modal({ mode }: { mode: "registro" | "login" }) {
       <fieldset>
         {isRegisterMode && (
           <>
-            <Input label="Nome Completo" error={"erro"}>
-              <input type="text" id="name" />
+            <Input label="Nome Completo" error={errors.name?.message}>
+              <input type="text" id="name" {...register("name")} />
             </Input>
-            <Input label="Email" error={"erro"}>
-              <input type="text" id="email" />
+            <Input label="Email" error={errors.email?.message}>
+              <input type="text" id="email" {...register("email")} />
             </Input>
           </>
         )}
-        <Input label="Usuário" error={"erro"}>
-          <input type="text" id="username" />
+        <Input label="Usuário" error={errors.username?.message}>
+          <input type="text" id="username" {...register("username")} />
         </Input>
-        <Input label="Senha" error={"erro"}>
+        <Input label="Senha" error={errors.password?.message}>
           <div>
-            <input type={isViewPrivate ? "password" : "text"} id="password" />
+            <input
+              type={isViewPrivate ? "password" : "text"}
+              id="password"
+              {...register("password")}
+            />
             <button
               type="button"
               onClick={() => setIsViewPrivate(!isViewPrivate)}
