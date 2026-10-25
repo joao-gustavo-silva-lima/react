@@ -1,9 +1,5 @@
 import HttpError from "../common/classes/HttpError";
-
-interface APIJSONResponse {
-  code: string;
-  message: string;
-}
+import type { APIJSONResponse } from "../common/types/api.types";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 

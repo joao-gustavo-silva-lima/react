@@ -1,19 +1,24 @@
 import { cloneElement, useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   loginUserSchema,
   createUserSchema,
   type UserModalInputs,
   type UserInput,
   type LoginUserInput,
+  type User,
 } from "../schemas/User.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateUser, useLoginUser } from "../hooks/useUser";
+import type { MutateOptions } from "@tanstack/react-query";
+import type HttpError from "../common/classes/HttpError";
 
 export default function Modal({ mode }: { mode: "registro" | "login" }) {
   const isRegisterMode = mode === "registro";
   const [isViewPrivate, setIsViewPrivate] = useState(true);
+
+  const navigate = useNavigate();
 
   const { mutate: createUser, isPending: isCreatingUser } = useCreateUser();
   const { mutate: loginUser, isPending: isLoggingUser } = useLoginUser();
@@ -30,10 +35,28 @@ export default function Modal({ mode }: { mode: "registro" | "login" }) {
   });
 
   const onSubmit: SubmitHandler<UserModalInputs> = (data) => {
+    const options: MutateOptions<User, HttpError, UserInput | LoginUserInput> =
+      {
+        onSuccess() {
+          alert(
+            `${isRegisterMode ? "A criação" : "O login"} do usuário ocorreu com sucesso.`,
+          );
+          navigate(`/perfil`);
+        },
+        onError(error) {
+          console.error(
+            `Erro de ${isRegisterMode ? "criação" : "login"} do usuário não reconhecido:`,
+            error,
+          );
+
+          alert("Um erro ocorreu. Tente novamente mais tarde.");
+        },
+      };
+
     if (isRegisterMode) {
-      createUser(data as UserInput, {});
+      createUser(data as UserInput, options);
     } else {
-      loginUser(data as LoginUserInput, {});
+      loginUser(data as LoginUserInput, options);
     }
   };
 
