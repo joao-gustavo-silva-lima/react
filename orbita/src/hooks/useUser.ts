@@ -50,9 +50,17 @@ export function useLogoutUser() {
 }
 
 export function useFetchUserProfile() {
+  const queryClient = useQueryClient();
+
   return useQuery<User, HttpError>({
     queryKey: ["user", "profile"],
     queryFn: userAPI.fetchUserProfile,
+    retry: (attempts, error) => {
+      return error.status !== 401 && error.status !== 403 && attempts <= 3;
+    },
+    initialData: () => {
+      return queryClient.getQueryData(["user, profile"]);
+    },
   });
 }
 
@@ -72,6 +80,11 @@ export function useUpdateUser() {
     mutationFn: userAPI.updateUser,
     onSuccess: (user) => {
       queryClient.setQueryData(["user", "profile"], user);
+    },
+    onError: (error) => {
+      if (error.status === 401 || error.status === 403) {
+        queryClient.clear();
+      }
     },
   });
 }
