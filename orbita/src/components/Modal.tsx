@@ -2,17 +2,23 @@ import { cloneElement, useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { Link } from "react-router-dom";
 import {
-  createUserSchema,
   loginUserSchema,
-  type LoginUserInput,
-  type UserInput,
+  createUserSchema,
   type UserModalInputs,
+  type UserInput,
+  type LoginUserInput,
 } from "../schemas/User.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useCreateUser, useLoginUser } from "../hooks/useUser";
 
 export default function Modal({ mode }: { mode: "registro" | "login" }) {
   const isRegisterMode = mode === "registro";
   const [isViewPrivate, setIsViewPrivate] = useState(true);
+
+  const { mutate: createUser, isPending: isCreatingUser } = useCreateUser();
+  const { mutate: loginUser, isPending: isLoggingUser } = useLoginUser();
+
+  const isModalPending = isCreatingUser || isLoggingUser;
 
   const {
     register,
@@ -24,7 +30,11 @@ export default function Modal({ mode }: { mode: "registro" | "login" }) {
   });
 
   const onSubmit: SubmitHandler<UserModalInputs> = (data) => {
-    console.log(data);
+    if (isRegisterMode) {
+      createUser(data as UserInput, {});
+    } else {
+      loginUser(data as LoginUserInput, {});
+    }
   };
 
   return (
@@ -65,8 +75,9 @@ export default function Modal({ mode }: { mode: "registro" | "login" }) {
             </button>
           </div>
         </Input>
-        <button type="submit">
-          {isRegisterMode ? "Criar Conta" : "Entrar"}
+        {errors.root && <span>{errors.root.message}</span>}
+        <button disabled={isModalPending} type="submit">
+          {isModalPending ? "..." : isRegisterMode ? "Criar Conta" : "Entrar"}
         </button>
       </fieldset>
       {isRegisterMode ? (
