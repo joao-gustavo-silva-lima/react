@@ -6,9 +6,10 @@ import {
   LinkIcon,
   MailIcon,
   PhoneIcon,
+  SquarePenIcon,
   type LucideIcon,
 } from "lucide-react";
-import type { Link as LinkT } from "../schemas/Link.schema";
+import type { Link, Link as LinkT } from "../schemas/Link.schema";
 import { useState } from "react";
 import ShareModal from "../components/ShareModal";
 import LinkModal from "../components/LinkModal";
@@ -17,6 +18,7 @@ export default function UserView() {
   const { username } = useParams();
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
+  const [updatingLink, setUpdatingLink] = useState<Link | null>(null);
 
   const isProfileView = username === undefined;
 
@@ -57,6 +59,15 @@ export default function UserView() {
           {user.links.map((link) => (
             <li key={link.id}>
               <Link link={link} />
+              <button
+                type="button"
+                onClick={() => {
+                  setUpdatingLink(link);
+                  setIsLinkModalOpen(true);
+                }}
+              >
+                <SquarePenIcon />
+              </button>
             </li>
           ))}
         </ul>
@@ -76,7 +87,13 @@ export default function UserView() {
         />
       )}
       {isProfileView && isLinkModalOpen && (
-        <LinkModal closeModal={() => setIsLinkModalOpen(false)} />
+        <LinkModal
+          updatingLink={updatingLink}
+          closeModal={() => {
+            setUpdatingLink(null);
+            setIsLinkModalOpen(false);
+          }}
+        />
       )}
     </>
   );
