@@ -1,11 +1,20 @@
 import { useParams } from "react-router-dom";
 import { useFetchUserByUsername, useFetchUserProfile } from "../hooks/useUser";
 import z, { ZodType } from "zod";
-import { LinkIcon, MailIcon, PhoneIcon, type LucideIcon } from "lucide-react";
-import type { Link } from "../schemas/Link.schema";
+import {
+  ForwardIcon,
+  LinkIcon,
+  MailIcon,
+  PhoneIcon,
+  type LucideIcon,
+} from "lucide-react";
+import type { Link as LinkT } from "../schemas/Link.schema";
+import { useState } from "react";
+import ShareModal from "../components/ShareModal";
 
 export default function UserView() {
   const { username } = useParams();
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   const isProfileView = username === undefined;
 
@@ -33,20 +42,32 @@ export default function UserView() {
   }
 
   return (
-    <main>
-      <span>{user.name}</span>
-      <span>@{user.username}</span>
-      <ul>
-        {user.links.map((link) => (
-          <li key={link.id}>
-            <Link link={link} />
-          </li>
-        ))}
-      </ul>
-      <span>
-        {"\u{1F300}"} Feito com <span>Orbita</span>
-      </span>
-    </main>
+    <>
+      <main>
+        <div>
+          <span>{user.name}</span>
+          <span>@{user.username}</span>
+          <button type="button">
+            <ForwardIcon />
+          </button>
+        </div>
+        <ul>
+          {user.links.map((link) => (
+            <li key={link.id}>
+              <Link link={link} />
+            </li>
+          ))}
+        </ul>
+        <span>
+          {"\u{1F300}"} Feito com <span>Orbita</span>
+        </span>
+      </main>
+      <ShareModal
+        username={user.username}
+        isOpen={isShareModalOpen}
+        setIsOpen={setIsShareModalOpen}
+      />
+    </>
   );
 }
 
@@ -66,7 +87,7 @@ function getLinkIcon(ref: string) {
   return LinkIcon;
 }
 
-function Link({ link }: { link: Link }) {
+function Link({ link }: { link: LinkT }) {
   const Icon = getLinkIcon(link.ref);
 
   if (Icon === null) {
