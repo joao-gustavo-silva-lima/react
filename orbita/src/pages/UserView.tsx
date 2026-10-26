@@ -11,10 +11,12 @@ import {
 import type { Link as LinkT } from "../schemas/Link.schema";
 import { useState } from "react";
 import ShareModal from "../components/ShareModal";
+import LinkModal from "../components/LinkModal";
 
 export default function UserView() {
   const { username } = useParams();
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
 
   const isProfileView = username === undefined;
 
@@ -47,7 +49,7 @@ export default function UserView() {
         <div>
           <span>{user.name}</span>
           <span>@{user.username}</span>
-          <button type="button">
+          <button type="button" onClick={() => setIsShareModalOpen(true)}>
             <ForwardIcon />
           </button>
         </div>
@@ -58,15 +60,24 @@ export default function UserView() {
             </li>
           ))}
         </ul>
+        {isProfileView && user.links.length < 10 && (
+          <button type="button" onClick={() => setIsLinkModalOpen(true)}>
+            Adicionar Link
+          </button>
+        )}
         <span>
           {"\u{1F300}"} Feito com <span>Orbita</span>
         </span>
       </main>
-      <ShareModal
-        username={user.username}
-        isOpen={isShareModalOpen}
-        setIsOpen={setIsShareModalOpen}
-      />
+      {isShareModalOpen && (
+        <ShareModal
+          username={user.username}
+          closeModal={() => setIsShareModalOpen(false)}
+        />
+      )}
+      {isProfileView && isLinkModalOpen && (
+        <LinkModal closeModal={() => setIsLinkModalOpen(false)} />
+      )}
     </>
   );
 }
@@ -92,7 +103,7 @@ function Link({ link }: { link: LinkT }) {
 
   if (Icon === null) {
     return (
-      <a href={link.ref}>
+      <a rel="noopener noreferrer" target="_blank" href={link.ref}>
         <img
           src={`https://www.google.com/s2/favicons?domain=${link.ref}&sz=64`}
           alt="Imagem do favicon relativo ao domínio da url contida no link."

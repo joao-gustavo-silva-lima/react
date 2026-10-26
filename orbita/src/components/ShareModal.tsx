@@ -2,13 +2,11 @@ import { XIcon } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 
 export default function ShareModal({
-  isOpen,
   username,
-  setIsOpen,
+  closeModal,
 }: {
-  isOpen: boolean;
   username: string;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  closeModal: () => void;
 }) {
   const shareLink = `${document.location.origin}/u/${username}`;
 
@@ -16,7 +14,7 @@ export default function ShareModal({
     <div>
       <div>
         <h2>Compartilhar seu hub</h2>
-        <button type="button" onClick={() => setIsOpen(false)}>
+        <button type="button" onClick={() => closeModal()}>
           <XIcon />
         </button>
       </div>

@@ -15,7 +15,7 @@ import type { MutateOptions } from "@tanstack/react-query";
 import type HttpError from "../common/classes/HttpError";
 import { API_MESSAGES } from "../api/messages.api";
 
-export default function Modal({ mode }: { mode: "registro" | "login" }) {
+export default function UserModal({ mode }: { mode: "registro" | "login" }) {
   const isRegisterMode = mode === "registro";
   const [isViewPrivate, setIsViewPrivate] = useState(true);
 
