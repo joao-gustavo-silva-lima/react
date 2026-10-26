@@ -1,9 +1,14 @@
-import { useParams } from "react-router-dom";
-import { useFetchUserByUsername, useFetchUserProfile } from "../hooks/useUser";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  useFetchUserByUsername,
+  useFetchUserProfile,
+  useLogoutUser,
+} from "../hooks/useUser";
 import z, { ZodType } from "zod";
 import {
   ForwardIcon,
   LinkIcon,
+  LogOutIcon,
   MailIcon,
   PhoneIcon,
   SquarePenIcon,
@@ -67,6 +72,44 @@ export default function UserView() {
     error,
   } = isProfileView ? useFetchUserProfile() : useFetchUserByUsername(username);
 
+  const { mutate: logoutUser, isPending: isLoggingUserOut } = useLogoutUser();
+
+  const navigate = useNavigate();
+
+  const onLogout = () => {
+    if (isDeletingLink || isLinkModalOpen || isShareModalOpen) {
+      alert(
+        "Aguarde a conclusão de outra ação antes de prosseguir com o logout...",
+      );
+      return;
+    }
+
+    if (!confirm(`Deseja fazer logout?`)) {
+      return;
+    }
+
+    logoutUser(undefined, {
+      onError: (error) => {
+        const errorMessage = API_MESSAGES.get(error.code);
+
+        if (errorMessage === undefined) {
+          alert(
+            "Um erro inesperado ocorreu ao tentar fazer login. Tente novamente mais tarde.",
+          );
+          return;
+        }
+
+        alert(errorMessage);
+      },
+      onSuccess: (data) => {
+        alert(
+          API_MESSAGES.get(data.code) ?? "O logout foi realizado com sucesso.",
+        );
+        navigate("/login");
+      },
+    });
+  };
+
   if (isFetching) {
     return <p>Carregando perfil do usuário...</p>;
   }
@@ -89,9 +132,17 @@ export default function UserView() {
         <div>
           <span>{user.name}</span>
           <span>@{user.username}</span>
-          <button type="button" onClick={() => setIsShareModalOpen(true)}>
-            <ForwardIcon />
-          </button>
+          <div>
+            <button
+              type="button"
+              onClick={isLoggingUserOut ? undefined : onLogout}
+            >
+              <LogOutIcon />
+            </button>
+            <button type="button" onClick={() => setIsShareModalOpen(true)}>
+              <ForwardIcon />
+            </button>
+          </div>
         </div>
         <ul>
           {user.links.map((link) => (

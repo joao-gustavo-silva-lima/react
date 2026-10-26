@@ -46,6 +46,9 @@ export function useLogoutUser() {
       });
       queryClient.clear();
     },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["user", "profile"] });
+    },
   });
 }
 
