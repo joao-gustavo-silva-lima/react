@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { Link, LinkInput, LinkUpdateInput } from "../schemas/Link.schema";
 import * as linkAPI from "../api/Link.api";
 import HttpError from "../common/classes/HttpError";
+import type { User } from "../schemas/User.schema";
 
 const userLinksQueryKey = ["user", "profile", "links"] as const;
 const linkQueryKey = (id: number) => [...userLinksQueryKey, id] as const;
@@ -12,10 +13,14 @@ export function useCreateLink() {
   return useMutation<Link, HttpError, LinkInput>({
     mutationKey: [...userLinksQueryKey, "create"],
     mutationFn: (payload: LinkInput) => linkAPI.createLink(payload),
-    onSuccess: (link) => {
-      queryClient.setQueryData(linkQueryKey(link.id), link);
-      queryClient.setQueryData<Link[]>(userLinksQueryKey, (links) =>
-        links ? [...links.filter((item) => item.id !== link.id), link] : links,
+    onSuccess: (newLink) => {
+      queryClient.setQueryData<User>(
+        ["user", "profile"],
+        (user) =>
+          user && {
+            ...user,
+            links: [...user.links, newLink],
+          },
       );
     },
   });
@@ -53,10 +58,16 @@ export function useUpdateLink() {
     mutationKey: [...userLinksQueryKey, "update"],
     mutationFn: ({ id, payload }: { id: number; payload: LinkUpdateInput }) =>
       linkAPI.updateLink(id, payload),
-    onSuccess: (link) => {
-      queryClient.setQueryData(linkQueryKey(link.id), link);
-      queryClient.setQueryData<Link[]>(userLinksQueryKey, (links) =>
-        links?.map((item) => (item.id === link.id ? link : item)),
+    onSuccess: (updatedLink) => {
+      queryClient.setQueryData<User>(
+        ["user", "profile"],
+        (user) =>
+          user && {
+            ...user,
+            links: user.links.map((link) =>
+              link.id === updatedLink.id ? updatedLink : link,
+            ),
+          },
       );
     },
   });

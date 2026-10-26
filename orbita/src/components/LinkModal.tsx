@@ -33,8 +33,10 @@ export default function LinkModal({
     ...(!isCreationModal && { defaultValues: { ...updatingLink } }),
   });
 
-  const { mutate: createLink } = useCreateLink();
-  const { mutate: updateLink } = useUpdateLink();
+  const { mutate: createLink, isPending: isCreatingLink } = useCreateLink();
+  const { mutate: updateLink, isPending: isUpdatingLink } = useUpdateLink();
+
+  const isModalPending = isCreatingLink || isUpdatingLink;
 
   const onSubmit: SubmitHandler<LinkInput> = (data) => {
     const options: MutateOptions<
@@ -99,7 +101,7 @@ export default function LinkModal({
     <form onSubmit={handleSubmit(onSubmit)}>
       <div>
         <h2>{isCreationModal ? "Adicionar" : "Editar"} Link</h2>
-        <button type="button" onClick={onClose}>
+        <button type="button" onClick={isModalPending ? undefined : onClose}>
           <XIcon />
         </button>
       </div>
@@ -112,12 +114,13 @@ export default function LinkModal({
             defaultValue={updatingLink?.title}
           />
         </Input>
-        <Input
-          label="Conteúdo"
-          error={errors.ref?.message}
-          {...register("ref")}
-        >
-          <input type="text" id="ref" defaultValue={updatingLink?.ref} />
+        <Input label="Conteúdo" error={errors.ref?.message}>
+          <input
+            type="text"
+            id="ref"
+            defaultValue={updatingLink?.ref}
+            {...register("ref")}
+          />
         </Input>
         <Input label="Visibilidade" error={errors.visibility?.message}>
           <div>
@@ -147,10 +150,12 @@ export default function LinkModal({
         </Input>
       </fieldset>
       <div>
-        <button type="button" onClick={onClose}>
+        <button type="button" onClick={isModalPending ? undefined : onClose}>
           Cancelar
         </button>
-        <button type="submit">Salvar</button>
+        <button type="submit" disabled={isModalPending}>
+          {isModalPending ? "..." : "Salvar"}
+        </button>
       </div>
     </form>
   );
