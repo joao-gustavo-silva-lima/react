@@ -7,12 +7,15 @@ import {
   MailIcon,
   PhoneIcon,
   SquarePenIcon,
+  TrashIcon,
   type LucideIcon,
 } from "lucide-react";
 import type { Link, Link as LinkT } from "../schemas/Link.schema";
 import { useState } from "react";
 import ShareModal from "../components/ShareModal";
 import LinkModal from "../components/LinkModal";
+import { useDeleteLink } from "../hooks/useLink";
+import { API_MESSAGES } from "../api/messages.api";
 
 export default function UserView() {
   const { username } = useParams();
@@ -21,6 +24,41 @@ export default function UserView() {
   const [updatingLink, setUpdatingLink] = useState<Link | null>(null);
 
   const isProfileView = username === undefined;
+
+  const { mutate: deleteLink, isPending: isDeletingLink } = useDeleteLink();
+
+  const onDeleteLink = (link: Link) => {
+    if (isDeletingLink || isLinkModalOpen || isShareModalOpen) {
+      alert(
+        "Aguarde a conclusão de outra ação antes de prosseguir com a remoção do link...",
+      );
+      return;
+    }
+
+    if (!confirm(`Deseja remover o link "${link.title}"?`)) {
+      return;
+    }
+
+    deleteLink(link.id, {
+      onError: (error) => {
+        const errorMessage = API_MESSAGES.get(error.code);
+
+        if (errorMessage === undefined) {
+          alert(
+            "Um erro inesperado ocorreu ao tentar remover o link. Tente novamente mais tarde.",
+          );
+          return;
+        }
+
+        alert(errorMessage);
+      },
+      onSuccess: (data) => {
+        alert(
+          API_MESSAGES.get(data.code) ?? "O link foi removido com sucesso.",
+        );
+      },
+    });
+  };
 
   const {
     data: user,
@@ -67,6 +105,9 @@ export default function UserView() {
                 }}
               >
                 <SquarePenIcon />
+              </button>
+              <button type="button" onClick={() => onDeleteLink(link)}>
+                <TrashIcon />
               </button>
             </li>
           ))}
