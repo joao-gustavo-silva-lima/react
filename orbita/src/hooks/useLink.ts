@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { Link, LinkInput, LinkUpdateInput } from "../schemas/Link.schema";
 import * as linkAPI from "../api/Link.api";
+import HttpError from "../common/classes/HttpError";
 
 const userLinksQueryKey = ["user", "profile", "links"] as const;
 const linkQueryKey = (id: number) => [...userLinksQueryKey, id] as const;
@@ -8,7 +9,7 @@ const linkQueryKey = (id: number) => [...userLinksQueryKey, id] as const;
 export function useCreateLink() {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useMutation<Link, HttpError, LinkInput>({
     mutationKey: [...userLinksQueryKey, "create"],
     mutationFn: (payload: LinkInput) => linkAPI.createLink(payload),
     onSuccess: (link) => {
@@ -48,7 +49,7 @@ export function useFetchLink(id: number) {
 export function useUpdateLink() {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useMutation<Link, HttpError, { id: number; payload: LinkInput }>({
     mutationKey: [...userLinksQueryKey, "update"],
     mutationFn: ({ id, payload }: { id: number; payload: LinkUpdateInput }) =>
       linkAPI.updateLink(id, payload),

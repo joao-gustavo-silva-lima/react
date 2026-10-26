@@ -7,6 +7,10 @@ import {
   type Link,
   type LinkInput,
 } from "../schemas/Link.schema";
+import { useCreateLink, useUpdateLink } from "../hooks/useLink";
+import type { MutateOptions } from "@tanstack/react-query";
+import type HttpError from "../common/classes/HttpError";
+import { API_MESSAGES } from "../api/messages.api";
 
 export default function LinkModal({
   updatingLink,
@@ -20,6 +24,7 @@ export default function LinkModal({
   const {
     reset,
     register,
+    setError,
     handleSubmit,
     formState: { errors },
   } = useForm({
@@ -28,8 +33,61 @@ export default function LinkModal({
     ...(!isCreationModal && { defaultValues: { ...updatingLink } }),
   });
 
+  const { mutate: createLink } = useCreateLink();
+  const { mutate: updateLink } = useUpdateLink();
+
   const onSubmit: SubmitHandler<LinkInput> = (data) => {
-    console.log(data);
+    const options: MutateOptions<
+      Link,
+      HttpError,
+      LinkInput | { id: number; payload: LinkInput }
+    > = {
+      onSuccess() {
+        alert(
+          `A ${isCreationModal ? "criação" : "edição"} do link ocorreu com sucesso.`,
+        );
+        closeModal();
+      },
+      onError(error) {
+        const errorMessage = API_MESSAGES.get(error.code);
+
+        if (error.status >= 400) {
+          if (error.details === undefined) {
+            setError("root", {
+              message:
+                errorMessage ??
+                "Algum dado inserido está indisponível. Tente novamente.",
+            });
+            return;
+          }
+
+          Object.entries(error.details).forEach(([field, errorCode]) => {
+            const isRecognizedField = Object.keys(
+              createLinkSchema.shape,
+            ).includes(field);
+
+            setError(isRecognizedField ? (field as keyof LinkInput) : "root", {
+              message:
+                API_MESSAGES.get(errorCode) ??
+                "O dado inserido está indisponível.",
+            });
+          });
+        } else {
+          console.error(
+            `Erro de ${isCreationModal ? "criação" : "edição"} do link não reconhecido:`,
+            error,
+          );
+
+          alert(errorMessage ?? "Um erro ocorreu. Tente novamente mais tarde.");
+        }
+      },
+    };
+
+    if (isCreationModal) {
+      createLink(data, options);
+    } else {
+      updateLink({ id: updatingLink.id, payload: data }, options);
+    }
   };
 
   const onClose = () => {
