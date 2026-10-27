@@ -133,12 +133,14 @@ export default function UserView() {
           <span>{user.name}</span>
           <span>@{user.username}</span>
           <div>
-            <button
-              type="button"
-              onClick={isLoggingUserOut ? undefined : onLogout}
-            >
-              <LogOutIcon />
-            </button>
+            {isProfileView && (
+              <button
+                type="button"
+                onClick={isLoggingUserOut ? undefined : onLogout}
+              >
+                <LogOutIcon />
+              </button>
+            )}
             <button type="button" onClick={() => setIsShareModalOpen(true)}>
               <ForwardIcon />
             </button>
@@ -148,18 +150,22 @@ export default function UserView() {
           {user.links.map((link) => (
             <li key={link.id}>
               <Link link={link} />
-              <button
-                type="button"
-                onClick={() => {
-                  setUpdatingLink(link);
-                  setIsLinkModalOpen(true);
-                }}
-              >
-                <SquarePenIcon />
-              </button>
-              <button type="button" onClick={() => onDeleteLink(link)}>
-                <TrashIcon />
-              </button>
+              {isProfileView && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setUpdatingLink(link);
+                      setIsLinkModalOpen(true);
+                    }}
+                  >
+                    <SquarePenIcon />
+                  </button>
+                  <button type="button" onClick={() => onDeleteLink(link)}>
+                    <TrashIcon />
+                  </button>
+                </>
+              )}
             </li>
           ))}
         </ul>
