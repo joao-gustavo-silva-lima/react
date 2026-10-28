@@ -1,36 +1,41 @@
 import * as z from "zod";
 
 import { timestampSchema, usernameSchema } from "./common.schema.js";
+import { API_MESSAGES } from "../api/messages.api.js";
 
 const titleSchema = z
   .string({
-    error: "TITLE_REQUIRED",
+    error: API_MESSAGES.get("TITLE_REQUIRED") ?? "Dado inválido.",
   })
   .trim()
   .min(1, {
-    error: "TITLE_REQUIRED",
+    error: API_MESSAGES.get("TITLE_REQUIRED") ?? "Dado inválido.",
   })
   .max(255, {
-    error: "TITLE_TOO_LONG",
+    error: API_MESSAGES.get("TITLE_TOO_LONG") ?? "Dado inválido.",
   });
 
 const refSchema = z
   .string({
-    error: "REFERENCE_REQUIRED",
+    error: API_MESSAGES.get("REFERENCE_REQUIRED") ?? "Dado inválido.",
   })
   .trim()
   .min(1, {
-    error: "REFERENCE_REQUIRED",
+    error: API_MESSAGES.get("REFERENCE_REQUIRED") ?? "Dado inválido.",
   })
   .max(255, {
-    error: "REFERENCE_TOO_LONG",
+    error: API_MESSAGES.get("REFERENCE_TOO_LONG") ?? "Dado inválido.",
   });
 
 const visibilitySchema = z
   .string({
-    error: "VISIBILITY_REQUIRED",
+    error: API_MESSAGES.get("VISIBILITY_REQUIRED") ?? "Dado inválido.",
   })
-  .pipe(z.enum(["PUBLIC", "PRIVATE"], { error: "INVALID_VISIBILITY" }));
+  .pipe(
+    z.enum(["PUBLIC", "PRIVATE"], {
+      error: API_MESSAGES.get("INVALID_VISIBILITY") ?? "Dado inválido.",
+    }),
+  );
 
 export const linkSchema = z.object({
   id: z.number().int().positive(),

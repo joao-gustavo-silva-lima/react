@@ -1,65 +1,68 @@
 import * as z from "zod";
 import { timestampSchema, usernameSchema } from "./common.schema.js";
 import { linkSchema } from "./Link.schema.js";
+import { API_MESSAGES } from "../api/messages.api.js";
 
 const uuidSchema = z.uuid({
-  error: "INVALID_UUID",
+  error: API_MESSAGES.get("INVALID_UUID") ?? "Dado inválido.",
 });
 
 const nameSchema = z
   .string({
-    error: "NAME_REQUIRED",
+    error: API_MESSAGES.get("NAME_REQUIRED") ?? "Dado inválido.",
   })
   .trim()
   .min(2, {
-    error: "NAME_TOO_SHORT",
+    error: API_MESSAGES.get("NAME_TOO_SHORT") ?? "Dado inválido.",
   })
   .max(255, {
-    error: "NAME_TOO_LONG",
+    error: API_MESSAGES.get("NAME_TOO_LONG") ?? "Dado inválido.",
   })
   .refine((value) => /\p{L}/u.test(value), {
-    error: "NAME_MUST_CONTAIN_LETTERS",
+    error: API_MESSAGES.get("NAME_MUST_CONTAIN_LETTERS") ?? "Dado inválido.",
   });
 
 const emailSchema = z
   .string({
-    error: "EMAIL_REQUIRED",
+    error: API_MESSAGES.get("EMAIL_REQUIRED") ?? "Dado inválido.",
   })
   .trim()
   .toLowerCase()
   .max(255, {
-    error: "EMAIL_TOO_LONG",
+    error: API_MESSAGES.get("EMAIL_TOO_LONG") ?? "Dado inválido.",
   })
   .pipe(
     z.email({
-      error: "EMAIL_INVALID_FORMAT",
+      error: API_MESSAGES.get("EMAIL_INVALID_FORMAT") ?? "Dado inválido.",
     }),
   );
 
 const passwordSchema = z
   .string({
-    error: "PASSWORD_REQUIRED",
+    error: API_MESSAGES.get("PASSWORD_REQUIRED") ?? "Dado inválido.",
   })
   .min(12, {
-    error: "PASSWORD_TOO_SHORT",
+    error: API_MESSAGES.get("PASSWORD_TOO_SHORT") ?? "Dado inválido.",
   })
   .max(72, {
-    error: "PASSWORD_TOO_LONG",
+    error: API_MESSAGES.get("PASSWORD_TOO_LONG") ?? "Dado inválido.",
   })
   .regex(/[a-z]/, {
-    error: "PASSWORD_MISSING_LOWERCASE",
+    error: API_MESSAGES.get("PASSWORD_MISSING_LOWERCASE") ?? "Dado inválido.",
   })
   .regex(/[A-Z]/, {
-    error: "PASSWORD_MISSING_UPPERCASE",
+    error: API_MESSAGES.get("PASSWORD_MISSING_UPPERCASE") ?? "Dado inválido.",
   })
   .regex(/[0-9]/, {
-    error: "PASSWORD_MISSING_NUMBER",
+    error: API_MESSAGES.get("PASSWORD_MISSING_NUMBER") ?? "Dado inválido.",
   })
   .regex(/[^A-Za-z0-9]/, {
-    error: "PASSWORD_MISSING_SPECIAL_CHARACTER",
+    error:
+      API_MESSAGES.get("PASSWORD_MISSING_SPECIAL_CHARACTER") ??
+      "Dado inválido.",
   })
   .refine((value) => !/\s/.test(value), {
-    error: "PASSWORD_CONTAINS_WHITESPACE",
+    error: API_MESSAGES.get("PASSWORD_CONTAINS_WHITESPACE") ?? "Dado inválido.",
   });
 
 const optionalPasswordSchema = z.preprocess(
@@ -85,10 +88,10 @@ export const userWithoutPasswordSchema = userSchema.omit({ password: true });
 
 export const loginUserSchema = z.object({
   username: z.string({
-    error: "USERNAME_REQUIRED",
+    error: API_MESSAGES.get("USERNAME_REQUIRED") ?? "Dado inválido.",
   }),
   password: z.string({
-    error: "PASSWORD_REQUIRED",
+    error: API_MESSAGES.get("PASSWORD_REQUIRED") ?? "Dado inválido.",
   }),
 });
 
@@ -102,13 +105,13 @@ export const createUserSchema = userSchema.omit({
 export const updateUserSchema = createUserSchema.partial().extend({
   password: optionalPasswordSchema,
   currentPassword: z.string({
-    error: "PASSWORD_REQUIRED",
+    error: API_MESSAGES.get("PASSWORD_REQUIRED") ?? "Dado inválido.",
   }),
 });
 
 export const deleteUserSchema = z.object({
   password: z.string({
-    error: "PASSWORD_REQUIRED",
+    error: API_MESSAGES.get("PASSWORD_REQUIRED") ?? "Dado inválido.",
   }),
 });
 

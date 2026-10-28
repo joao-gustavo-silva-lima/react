@@ -1,22 +1,23 @@
 import * as z from "zod";
+import { API_MESSAGES } from "../api/messages.api";
 
 export const usernameSchema = z
   .string({
-    error: "USERNAME_REQUIRED",
+    error: API_MESSAGES.get("USERNAME_REQUIRED") ?? "Dado inválido.",
   })
   .trim()
   .toLowerCase()
   .min(3, {
-    error: "USERNAME_TOO_SHORT",
+    error: API_MESSAGES.get("USERNAME_TOO_SHORT") ?? "Dado inválido.",
   })
   .max(30, {
-    error: "USERNAME_TOO_LONG",
+    error: API_MESSAGES.get("USERNAME_TOO_LONG") ?? "Dado inválido.",
   })
   .regex(/^[a-z0-9]+(?:[._-][a-z0-9]+)*$/, {
-    error: "USERNAME_INVALID_FORMAT",
+    error: API_MESSAGES.get("USERNAME_INVALID_FORMAT") ?? "Dado inválido.",
   });
 
 export const timestampSchema = z.iso.datetime({
   offset: true,
-  error: "INVALID_TIMESTAMP",
+  error: API_MESSAGES.get("INVALID_TIMESTAMP") ?? "Dado inválido.",
 });
