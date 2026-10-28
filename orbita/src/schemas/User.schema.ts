@@ -62,6 +62,11 @@ const passwordSchema = z
     error: "PASSWORD_CONTAINS_WHITESPACE",
   });
 
+const optionalPasswordSchema = z.preprocess(
+  (value) => (value === "" ? undefined : value),
+  passwordSchema.optional(),
+);
+
 export const userSchema = z.object({
   id: uuidSchema,
 
@@ -95,6 +100,7 @@ export const createUserSchema = userSchema.omit({
 });
 
 export const updateUserSchema = createUserSchema.partial().extend({
+  password: optionalPasswordSchema,
   currentPassword: z.string({
     error: "PASSWORD_REQUIRED",
   }),
