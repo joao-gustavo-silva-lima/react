@@ -86,6 +86,7 @@ export const API_MESSAGES = new Map([
     "USER_NOT_FOUND_FOR_UPDATE",
     "Não foi possível atualizar: usuário não encontrado.",
   ],
+  ["USER_UPDATE_FORBIDDEN", "Não foi possível atualizar: senha incorreta."],
   [
     "USER_UPDATE_NOT_ALLOWED_TOO_SOON",
     "Aguarde antes de alterar seus dados novamente.",

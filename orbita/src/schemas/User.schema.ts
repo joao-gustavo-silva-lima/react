@@ -94,7 +94,11 @@ export const createUserSchema = userSchema.omit({
   lastEdition: true,
 });
 
-export const updateUserSchema = createUserSchema.partial();
+export const updateUserSchema = createUserSchema.partial().extend({
+  currentPassword: z.string({
+    error: "PASSWORD_REQUIRED",
+  }),
+});
 
 export const deleteUserSchema = z.object({
   password: z.string({
@@ -106,11 +110,10 @@ const userModalSchema = z
   .object({
     ...createUserSchema.shape,
     ...loginUserSchema.shape,
+    ...updateUserSchema.shape,
+    ...deleteUserSchema.shape,
   })
-  .exactPartial({
-    name: true,
-    email: true,
-  });
+  .partial();
 
 export type User = z.infer<typeof userWithoutPasswordSchema>;
 export type UserInput = z.infer<typeof createUserSchema>;
