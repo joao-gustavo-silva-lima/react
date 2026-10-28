@@ -13,9 +13,8 @@ createRoot(document.getElementById("root")!).render(
       <p>Hello World!</p>
       <BrowserRouter>
         <Routes>
-          <Route path="/registro" element={<UserModal mode="registro" />} />
+          <Route path="/cadastro" element={<UserModal mode="cadastro" />} />
           <Route path="/login" element={<UserModal mode="login" />} />
-          <Route path="/perfil" element={<UserView />} />
           <Route path="/u/:username" element={<UserView />} />
         </Routes>
       </BrowserRouter>

@@ -15,8 +15,8 @@ import type { MutateOptions } from "@tanstack/react-query";
 import type HttpError from "../common/classes/HttpError";
 import { API_MESSAGES } from "../api/messages.api";
 
-export default function UserModal({ mode }: { mode: "registro" | "login" }) {
-  const isRegisterMode = mode === "registro";
+export default function UserModal({ mode }: { mode: "cadastro" | "login" }) {
+  const isRegisterMode = mode === "cadastro";
   const [isViewPrivate, setIsViewPrivate] = useState(true);
 
   const navigate = useNavigate();
@@ -39,11 +39,11 @@ export default function UserModal({ mode }: { mode: "registro" | "login" }) {
   const onSubmit: SubmitHandler<UserModalInputs> = (data) => {
     const options: MutateOptions<User, HttpError, UserInput | LoginUserInput> =
       {
-        onSuccess() {
+        onSuccess({ username: loginUsername }) {
           alert(
             `${isRegisterMode ? "A criação" : "O login"} do usuário ocorreu com sucesso.`,
           );
-          navigate(`/perfil`);
+          navigate(`/u/${loginUsername}`);
         },
         onError(error) {
           const errorMessage = API_MESSAGES.get(error.code);

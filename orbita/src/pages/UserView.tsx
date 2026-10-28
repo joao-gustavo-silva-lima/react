@@ -30,41 +30,6 @@ export default function UserView() {
 
   const isProfileView = username === undefined;
 
-  const { mutate: deleteLink, isPending: isDeletingLink } = useDeleteLink();
-
-  const onDeleteLink = (link: Link) => {
-    if (isDeletingLink || isLinkModalOpen || isShareModalOpen) {
-      alert(
-        "Aguarde a conclusão de outra ação antes de prosseguir com a remoção do link...",
-      );
-      return;
-    }
-
-    if (!confirm(`Deseja remover o link "${link.title}"?`)) {
-      return;
-    }
-
-    deleteLink(link.id, {
-      onError: (error) => {
-        const errorMessage = API_MESSAGES.get(error.code);
-
-        if (errorMessage === undefined) {
-          alert(
-            "Um erro inesperado ocorreu ao tentar remover o link. Tente novamente mais tarde.",
-          );
-          return;
-        }
-
-        alert(errorMessage);
-      },
-      onSuccess: (data) => {
-        alert(
-          API_MESSAGES.get(data.code) ?? "O link foi removido com sucesso.",
-        );
-      },
-    });
-  };
-
   const {
     data: user,
     isFetching,
@@ -77,7 +42,7 @@ export default function UserView() {
   const navigate = useNavigate();
 
   const onLogout = () => {
-    if (isDeletingLink || isLinkModalOpen || isShareModalOpen) {
+    if (isLinkModalOpen || isShareModalOpen) {
       alert(
         "Aguarde a conclusão de outra ação antes de prosseguir com o logout...",
       );
@@ -149,23 +114,14 @@ export default function UserView() {
         <ul>
           {user.links.map((link) => (
             <li key={link.id}>
-              <Link link={link} />
-              {isProfileView && (
-                <>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setUpdatingLink(link);
-                      setIsLinkModalOpen(true);
-                    }}
-                  >
-                    <SquarePenIcon />
-                  </button>
-                  <button type="button" onClick={() => onDeleteLink(link)}>
-                    <TrashIcon />
-                  </button>
-                </>
-              )}
+              <Link
+                link={link}
+                openEditingModal={() => {
+                  setUpdatingLink(link);
+                  setIsLinkModalOpen(true);
+                }}
+                isEditable={isProfileView}
+              />
             </li>
           ))}
         </ul>
@@ -213,19 +169,74 @@ function getLinkIcon(ref: string) {
   return LinkIcon;
 }
 
-function Link({ link }: { link: LinkT }) {
+function Link({
+  link,
+  isEditable,
+  openEditingModal,
+}: {
+  link: LinkT;
+  openEditingModal: () => void;
+  isEditable: boolean;
+}) {
   const Icon = getLinkIcon(link.ref);
+
+  const { mutate: deleteLink, isPending: isDeletingLink } = useDeleteLink();
+
+  const onDeleteLink = (link: Link) => {
+    if (isDeletingLink) {
+      alert(
+        "Aguarde a conclusão de outra ação antes de prosseguir com a remoção do link...",
+      );
+      return;
+    }
+
+    if (!confirm(`Deseja remover o link "${link.title}"?`)) {
+      return;
+    }
+
+    deleteLink(link.id, {
+      onError: (error) => {
+        const errorMessage = API_MESSAGES.get(error.code);
+
+        if (errorMessage === undefined) {
+          alert(
+            "Um erro inesperado ocorreu ao tentar remover o link. Tente novamente mais tarde.",
+          );
+          return;
+        }
+
+        alert(errorMessage);
+      },
+      onSuccess: (data) => {
+        alert(
+          API_MESSAGES.get(data.code) ?? "O link foi removido com sucesso.",
+        );
+      },
+    });
+  };
 
   if (Icon === null) {
     return (
-      <a rel="noopener noreferrer" target="_blank" href={link.ref}>
-        <img
-          src={`https://www.google.com/s2/favicons?domain=${link.ref}&sz=64`}
-          alt="Imagem do favicon relativo ao domínio da url contida no link."
-          width={25}
-        />
-        <span>{link.title}</span>
-      </a>
+      <>
+        <a rel="noopener noreferrer" target="_blank" href={link.ref}>
+          <img
+            src={`https://www.google.com/s2/favicons?domain=${link.ref}&sz=64`}
+            alt="Imagem do favicon relativo ao domínio da url contida no link."
+            width={25}
+          />
+          <span>{link.title}</span>
+        </a>
+        {isEditable && (
+          <>
+            <button type="button" onClick={openEditingModal}>
+              <SquarePenIcon />
+            </button>
+            <button type="button" onClick={() => onDeleteLink(link)}>
+              <TrashIcon />
+            </button>
+          </>
+        )}
+      </>
     );
   }
 
