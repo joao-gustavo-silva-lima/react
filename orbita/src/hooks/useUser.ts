@@ -65,6 +65,9 @@ export function useFetchUserByUsername(username: string, enabled = true) {
   return useQuery<User, HttpError>({
     queryKey: ["user", "username", username],
     queryFn: () => userAPI.fetchUserByUsername(username),
+    retry: (attempts, error) => {
+      return error.status !== 404 || attempts <= 3;
+    },
     enabled: Boolean(username) && enabled,
   });
 }
@@ -75,6 +78,17 @@ export function useUpdateUser() {
   return useMutation<User, HttpError, UpdateUserInput>({
     mutationKey: ["user", "update"],
     mutationFn: userAPI.updateUser,
+    onMutate: () => {
+      const updatingUser = queryClient.getQueryData<User>(["user", "profile"]);
+
+      if (updatingUser === undefined) {
+        return;
+      }
+
+      queryClient.invalidateQueries({
+        queryKey: ["user", "username", updatingUser.username],
+      });
+    },
     onSuccess: (user) => {
       queryClient.setQueryData(["user", "profile"], user);
     },
@@ -82,6 +96,9 @@ export function useUpdateUser() {
       if (error.status === 401 || error.status === 403) {
         queryClient.clear();
       }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["user", "profile"] });
     },
   });
 }
