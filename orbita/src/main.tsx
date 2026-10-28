@@ -16,7 +16,16 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/" element={<MainLayout />}>
             <Route path="/cadastro" element={<UserModal mode="cadastro" />} />
             <Route path="/login" element={<UserModal mode="login" />} />
-            <Route path="/u/:username" element={<UserView />} />
+            <Route path="/u/:username" element={<UserView />}>
+              <Route
+                path="/u/:username/editar"
+                element={<UserModal mode="edição" />}
+              />
+              <Route
+                path="/u/:username/excluir"
+                element={<UserModal mode="exclusão" />}
+              />
+            </Route>
           </Route>
         </Routes>
       </BrowserRouter>

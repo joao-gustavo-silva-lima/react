@@ -1,4 +1,9 @@
-import { useNavigate, useParams } from "react-router-dom";
+import {
+  useNavigate,
+  useParams,
+  Link as LinkTo,
+  Outlet,
+} from "react-router-dom";
 import {
   useFetchUserByUsername,
   useFetchUserProfile,
@@ -96,18 +101,38 @@ export default function UserView() {
           <span>@{user.username}</span>
           <div>
             {isProfileView && (
-              <button
-                type="button"
-                onClick={isLoggingUserOut ? undefined : onLogout}
-              >
-                <LogOutIcon />
-              </button>
+              <LinkTo to={`/u/${user.username}/editar`}>
+                <SquarePenIcon />
+              </LinkTo>
             )}
             <button type="button" onClick={() => setIsShareModalOpen(true)}>
               <ForwardIcon />
             </button>
+            {isProfileView && (
+              <>
+                <LinkTo to={`/u/${user.username}/excluir`}>
+                  <TrashIcon />
+                </LinkTo>
+                <button
+                  type="button"
+                  onClick={isLoggingUserOut ? undefined : onLogout}
+                >
+                  <LogOutIcon />
+                </button>
+              </>
+            )}
           </div>
         </div>
+        {user.links.length === 0 && (
+          <span>
+            Parece que esse hub não possui nenhum link em Orbita.{" "}
+            {isProfileView && (
+              <button type="button" onClick={() => setIsLinkModalOpen(true)}>
+                Comece por aqui!
+              </button>
+            )}
+          </span>
+        )}
         <ul>
           {user.links.map((link) => (
             <li key={link.id}>
@@ -146,6 +171,7 @@ export default function UserView() {
           }}
         />
       )}
+      {isProfileView && <Outlet context={{ user }} />}
     </>
   );
 }
@@ -238,12 +264,24 @@ function Link({
   }
 
   return (
-    <button
-      type="button"
-      onClick={async () => await navigator.clipboard.writeText(link.ref)}
-    >
-      <Icon />
-      <span>{link.title}</span>
-    </button>
+    <>
+      <button
+        type="button"
+        onClick={async () => await navigator.clipboard.writeText(link.ref)}
+      >
+        <Icon />
+        <span>{link.title}</span>
+      </button>
+      {isEditable && (
+        <>
+          <button type="button" onClick={openEditingModal}>
+            <SquarePenIcon />
+          </button>
+          <button type="button" onClick={() => onDeleteLink(link)}>
+            <TrashIcon />
+          </button>
+        </>
+      )}
+    </>
   );
 }

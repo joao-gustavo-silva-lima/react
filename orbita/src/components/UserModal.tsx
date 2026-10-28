@@ -1,11 +1,11 @@
-import { cloneElement, useState } from "react";
+import { cloneElement, useEffect, useState } from "react";
 import {
   useForm,
   type Resolver,
   type SubmitHandler,
   type UseFormRegisterReturn,
 } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import {
   createUserSchema,
   deleteUserSchema,
@@ -29,22 +29,22 @@ import type { MutateOptions } from "@tanstack/react-query";
 import type HttpError from "../common/classes/HttpError";
 import { API_MESSAGES } from "../api/messages.api";
 import type { APIJSONResponse } from "../common/types/api.types";
+import { XIcon } from "lucide-react";
 
 type UserModalMode = "cadastro" | "login" | "edição" | "exclusão";
 
-export default function UserModal({
-  mode,
-  user,
-}: {
-  mode: UserModalMode;
-  user?: User;
-}) {
+export default function UserModal({ mode }: { mode: UserModalMode }) {
   const navigate = useNavigate();
 
   const isRegisterMode = mode === "cadastro";
   const isLoginMode = mode === "login";
   const isEditMode = mode === "edição";
   const isDeleteMode = mode === "exclusão";
+
+  const { user } =
+    isEditMode || isDeleteMode
+      ? useOutletContext<{ user: User }>()
+      : { user: null };
 
   const { mutate: createUser, isPending: isCreatingUser } = useCreateUser();
   const { mutate: loginUser, isPending: isLoggingUser } = useLoginUser();
@@ -62,6 +62,7 @@ export default function UserModal({
         : deleteUserSchema;
 
   const {
+    reset,
     register,
     setError,
     handleSubmit,
@@ -163,9 +164,24 @@ export default function UserModal({
     deleteUser(data as DeleteUserInput, options);
   };
 
+  useEffect(() => {
+    if ((isEditMode || isDeleteMode) && user === null) {
+      navigate("/login");
+    }
+
+    reset();
+  }, [user, mode]);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      {!isDeleteMode && <h3>{"\u{1F300}"} Orbita</h3>}
+      <div>
+        {!(isDeleteMode || isEditMode) && <h3>{"\u{1F300}"} Orbita</h3>}
+        {(isDeleteMode || isEditMode) && (
+          <Link to={`/u/${user?.username}`}>
+            <XIcon />
+          </Link>
+        )}
+      </div>
       <h2>
         {isRegisterMode
           ? "Crie seu hub!"
@@ -204,7 +220,7 @@ export default function UserModal({
           <PasswordInput register={() => register("password")} />
         </Input>
         {isEditMode && (
-          <Input label="Senha Atual" error={errors.password?.message}>
+          <Input label="Senha Atual" error={errors.currentPassword?.message}>
             <PasswordInput register={() => register("currentPassword")} />
           </Input>
         )}
