@@ -28,14 +28,15 @@ export default function UserView() {
   const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
   const [updatingLink, setUpdatingLink] = useState<Link | null>(null);
 
-  const isProfileView = username === undefined;
-
+  const privateUserQuery = useFetchUserProfile();
+  const isProfileView = privateUserQuery.data?.username === username!;
+  const publicUserQuery = useFetchUserByUsername(username!, !isProfileView);
   const {
     data: user,
     isFetching,
     isError,
     error,
-  } = isProfileView ? useFetchUserProfile() : useFetchUserByUsername(username);
+  } = isProfileView ? privateUserQuery : publicUserQuery;
 
   const { mutate: logoutUser, isPending: isLoggingUserOut } = useLogoutUser();
 
@@ -67,10 +68,10 @@ export default function UserView() {
         alert(errorMessage);
       },
       onSuccess: (data) => {
+        navigate("/login");
         alert(
           API_MESSAGES.get(data.code) ?? "O logout foi realizado com sucesso.",
         );
-        navigate("/login");
       },
     });
   };
@@ -81,13 +82,9 @@ export default function UserView() {
 
   if (error?.status === 404) {
     return <p>Usuário não encontrado.</p>;
-  } else if (error?.status === 401 || error?.status === 403) {
-    document.location = `${document.location.origin}/login`;
-
-    return <p>O que você está fazendo aqui?!</p>;
   }
 
-  if (isError || user === undefined) {
+  if (isError || user == null) {
     return <p>Ocorreu um erro ao tentar carregar o perfil do usuário.</p>;
   }
 

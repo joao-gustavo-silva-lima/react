@@ -41,13 +41,7 @@ export function useLogoutUser() {
     mutationKey: ["user", "logout"],
     mutationFn: userAPI.logoutUser,
     onSuccess: () => {
-      queryClient.removeQueries({
-        queryKey: ["user", "profile"],
-      });
-      queryClient.clear();
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["user", "profile"] });
+      queryClient.setQueryData<User | null>(["user", "profile"], null);
     },
   });
 }
@@ -55,7 +49,7 @@ export function useLogoutUser() {
 export function useFetchUserProfile() {
   const queryClient = useQueryClient();
 
-  return useQuery<User, HttpError>({
+  return useQuery<User | null, HttpError>({
     queryKey: ["user", "profile"],
     queryFn: userAPI.fetchUserProfile,
     retry: (attempts, error) => {
@@ -67,11 +61,11 @@ export function useFetchUserProfile() {
   });
 }
 
-export function useFetchUserByUsername(username: string) {
+export function useFetchUserByUsername(username: string, enabled = true) {
   return useQuery<User, HttpError>({
     queryKey: ["user", "username", username],
     queryFn: () => userAPI.fetchUserByUsername(username),
-    enabled: Boolean(username),
+    enabled: Boolean(username) && enabled,
   });
 }
 
