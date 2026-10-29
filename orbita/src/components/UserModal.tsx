@@ -86,25 +86,25 @@ export default function UserModal({ mode }: { mode: UserModalMode }) {
 
     if (error.status >= 400) {
       if (error.details === undefined) {
-        setError("root", {
-          message:
-            errorMessage ??
+        alert(
+          errorMessage ??
             "Algum dado inserido está indisponível. Tente novamente.",
-        });
+        );
         return;
       }
 
       Object.entries(error.details).forEach(([field, errorCode]) => {
         const isRecognizedField = Object.keys(schema.shape).includes(field);
 
-        setError(
-          isRecognizedField ? (field as keyof UserModalInputs) : "root",
-          {
-            message:
-              API_MESSAGES.get(errorCode) ??
-              "O dado inserido está indisponível.",
-          },
-        );
+        if (!isRecognizedField) {
+          alert("Um campo não identificado apresentou um erro.");
+          return;
+        }
+
+        setError(field as keyof UserModalInputs, {
+          message:
+            API_MESSAGES.get(errorCode) ?? "O dado inserido está indisponível.",
+        });
       });
       return;
     }
@@ -226,7 +226,15 @@ export default function UserModal({ mode }: { mode: UserModalMode }) {
         )}
         {errors.root && <span>{errors.root.message}</span>}
         <button disabled={isModalPending} type="submit">
-          {isModalPending ? "..." : isRegisterMode ? "Criar Conta" : "Entrar"}
+          {isModalPending
+            ? "..."
+            : isRegisterMode
+              ? "Criar Conta"
+              : isLoginMode
+                ? "Entrar"
+                : isEditMode
+                  ? "Salvar"
+                  : "Excluir"}
         </button>
       </fieldset>
       {isRegisterMode && (

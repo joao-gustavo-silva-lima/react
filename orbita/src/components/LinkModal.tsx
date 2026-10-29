@@ -55,11 +55,10 @@ export default function LinkModal({
 
         if (error.status >= 400) {
           if (error.details === undefined) {
-            setError("root", {
-              message:
-                errorMessage ??
+            alert(
+              errorMessage ??
                 "Algum dado inserido está indisponível. Tente novamente.",
-            });
+            );
             return;
           }
 
@@ -68,7 +67,12 @@ export default function LinkModal({
               createLinkSchema.shape,
             ).includes(field);
 
-            setError(isRecognizedField ? (field as keyof LinkInput) : "root", {
+            if (!isRecognizedField) {
+              alert("Um campo não identificado apresentou um erro.");
+              return;
+            }
+
+            setError(field as keyof LinkInput, {
               message:
                 API_MESSAGES.get(errorCode) ??
                 "O dado inserido está indisponível.",
