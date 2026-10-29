@@ -1,5 +1,17 @@
+import { useEffect } from "react";
+import { useFetchUserProfile } from "../hooks/useUser";
+import { useNavigate } from "react-router-dom";
+
 export default function Join({ modal }: { modal: React.ReactNode }) {
-  //This page should redirect to  /u/username when user is logged in
+  const navigate = useNavigate();
+
+  const { data: authenticatedUser, isSuccess } = useFetchUserProfile();
+
+  useEffect(() => {
+    if (isSuccess && authenticatedUser !== null) {
+      navigate(`/u/${authenticatedUser.username}`);
+    }
+  }, [authenticatedUser]);
 
   return (
     <main>
