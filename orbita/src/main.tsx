@@ -7,6 +7,7 @@ import UserView from "./pages/UserView";
 import MainLayout from "./layouts/MainLayout";
 import Home from "./pages/Home";
 import Join from "./pages/Join";
+import "./assets/styles/tailwind.style.css";
 
 const queryClient = new QueryClient();
 
