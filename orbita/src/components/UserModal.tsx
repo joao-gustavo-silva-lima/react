@@ -29,7 +29,7 @@ import type { MutateOptions } from "@tanstack/react-query";
 import type HttpError from "../common/classes/HttpError";
 import { API_MESSAGES } from "../api/messages.api";
 import type { APIJSONResponse } from "../common/types/api.types";
-import { OrbitIcon, XIcon } from "lucide-react";
+import { EyeIcon, EyeOffIcon, OrbitIcon, XIcon } from "lucide-react";
 
 type UserModalMode = "cadastro" | "login" | "edição" | "exclusão";
 
@@ -269,7 +269,7 @@ function PasswordInput({
         type="button"
         onClick={() => setIsPasswordRevealed(!isPasswordRevealed)}
       >
-        {"\u{1F441}"}
+        {isPasswordRevealed ? <EyeIcon /> : <EyeOffIcon />}
       </button>
     </div>
   );

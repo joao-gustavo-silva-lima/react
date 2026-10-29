@@ -13,17 +13,5 @@ export default function Join({ modal }: { modal: React.ReactNode }) {
     }
   }, [authenticatedUser]);
 
-  return (
-    <main>
-      <div>
-        <p>Conecte seu mundo em um só lugar.</p>
-        <p>
-          Links, contatos e redes sociais. Tudo no seu perfil hub, de forma
-          rápida, simples e personalizada.
-        </p>
-        <img src="../../public/hero.ignore.png" alt="" />
-      </div>
-      {modal}
-    </main>
-  );
+  return modal;
 }
