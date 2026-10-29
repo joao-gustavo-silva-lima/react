@@ -1,5 +1,6 @@
 import { Link, Outlet } from "react-router-dom";
 import { useFetchUserProfile } from "../hooks/useUser";
+import { OrbitIcon } from "lucide-react";
 
 export default function MainLayout() {
   const { data: authenticatedUser, isSuccess } = useFetchUserProfile();
@@ -7,7 +8,22 @@ export default function MainLayout() {
   return (
     <>
       <header>
-        <Link to="/">{"\u{1F300}"} Orbita</Link>
+        <div>
+          <Link to="/">
+            <OrbitIcon />
+            <span>Orbita</span>
+          </Link>
+          <nav>
+            {[
+              ["Recursos", "/#recursos"],
+              ["Funcionamento", "/#funcionamento"],
+            ].map(([label, to], index) => (
+              <Link key={`header__nav__link--${index}`} to={to}>
+                {label}
+              </Link>
+            ))}
+          </nav>
+        </div>
         {isSuccess && authenticatedUser ? (
           <Link to={`/u/${authenticatedUser.username}`}>Perfil</Link>
         ) : (
@@ -17,7 +33,9 @@ export default function MainLayout() {
           </div>
         )}
       </header>
-      <Outlet />
+      <div>
+        <Outlet />
+      </div>
     </>
   );
 }

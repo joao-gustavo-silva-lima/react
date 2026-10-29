@@ -15,6 +15,7 @@ import {
   LinkIcon,
   LogOutIcon,
   MailIcon,
+  OrbitIcon,
   PhoneIcon,
   SquarePenIcon,
   TrashIcon,
@@ -153,7 +154,7 @@ export default function UserView() {
           </button>
         )}
         <span>
-          {"\u{1F300}"} Feito com <span>Orbita</span>
+          <OrbitIcon /> Feito com <span>Orbita</span>
         </span>
       </main>
       {isShareModalOpen && (

@@ -5,6 +5,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import UserModal from "./components/UserModal";
 import UserView from "./pages/UserView";
 import MainLayout from "./layouts/MainLayout";
+import Home from "./pages/Home";
+import Join from "./pages/Join";
 
 const queryClient = new QueryClient();
 
@@ -14,8 +16,15 @@ createRoot(document.getElementById("root")!).render(
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<MainLayout />}>
-            <Route path="/cadastro" element={<UserModal mode="cadastro" />} />
-            <Route path="/login" element={<UserModal mode="login" />} />
+            <Route index element={<Home />} />
+            <Route
+              path="/cadastro"
+              element={<Join modal={<UserModal mode="cadastro" />} />}
+            />
+            <Route
+              path="/login"
+              element={<Join modal={<UserModal mode="login" />} />}
+            />
             <Route path="/u/:username" element={<UserView />}>
               <Route
                 path="/u/:username/editar"

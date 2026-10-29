@@ -29,7 +29,7 @@ import type { MutateOptions } from "@tanstack/react-query";
 import type HttpError from "../common/classes/HttpError";
 import { API_MESSAGES } from "../api/messages.api";
 import type { APIJSONResponse } from "../common/types/api.types";
-import { XIcon } from "lucide-react";
+import { OrbitIcon, XIcon } from "lucide-react";
 
 type UserModalMode = "cadastro" | "login" | "edição" | "exclusão";
 
@@ -175,7 +175,7 @@ export default function UserModal({ mode }: { mode: UserModalMode }) {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div>
-        {!(isDeleteMode || isEditMode) && <h3>{"\u{1F300}"} Orbita</h3>}
+        {!(isDeleteMode || isEditMode) && <h3>{<OrbitIcon />} Orbita</h3>}
         {(isDeleteMode || isEditMode) && (
           <Link to={`/u/${user?.username}`}>
             <XIcon />
