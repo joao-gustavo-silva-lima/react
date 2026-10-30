@@ -173,16 +173,21 @@ export default function UserModal({ mode }: { mode: UserModalMode }) {
   }, [user, mode]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div>
-        {!(isDeleteMode || isEditMode) && <h3>{<OrbitIcon />} Orbita</h3>}
-        {(isDeleteMode || isEditMode) && (
-          <Link to={`/u/${user?.username}`}>
-            <XIcon />
-          </Link>
-        )}
-      </div>
-      <h2>
+    <form
+      className="flex flex-col gap-control justify-center max-w-[400px] m-auto"
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      {!(isDeleteMode || isEditMode) && (
+        <h3 className="flex flex-nowrap items-center gap-[5px] m-auto text-xl font-bold mb-container">
+          {<OrbitIcon className="text-primary" />} Orbita
+        </h3>
+      )}
+      {(isDeleteMode || isEditMode) && (
+        <Link to={`/u/${user?.username}`}>
+          <XIcon />
+        </Link>
+      )}
+      <h2 className="text-2xl font-medium">
         {isRegisterMode
           ? "Crie seu hub!"
           : isLoginMode
@@ -191,7 +196,7 @@ export default function UserModal({ mode }: { mode: UserModalMode }) {
               ? "Edite seu perfil"
               : "Excluir conta"}
       </h2>
-      <span>
+      <span className="text-muted">
         {isRegisterMode
           ? "É rápido e gratuito."
           : isLoginMode
@@ -200,20 +205,35 @@ export default function UserModal({ mode }: { mode: UserModalMode }) {
               ? "Atualize os dados da sua conta."
               : "Essa ação não pode ser desfeita."}
       </span>
-      <fieldset>
+      <fieldset className="flex flex-col gap-element">
         {(isRegisterMode || isEditMode) && (
           <Input label="Nome Completo" error={errors.name?.message}>
-            <input type="text" id="name" {...register("name")} />
+            <input
+              type="text"
+              placeholder="Digite seu nome..."
+              id="name"
+              {...register("name")}
+            />
           </Input>
         )}
         {(isRegisterMode || isEditMode) && (
           <Input label="Email" error={errors.email?.message}>
-            <input type="text" id="email" {...register("email")} />
+            <input
+              type="text"
+              placeholder="seu@email.com"
+              id="email"
+              {...register("email")}
+            />
           </Input>
         )}
         {(isRegisterMode || isLoginMode || isEditMode) && (
           <Input label="Usuário" error={errors.username?.message}>
-            <input type="text" id="username" {...register("username")} />
+            <input
+              type="text"
+              placeholder="Digite seu usuário..."
+              id="username"
+              {...register("username")}
+            />
           </Input>
         )}
         <Input label="Senha" error={errors.password?.message}>
@@ -224,8 +244,11 @@ export default function UserModal({ mode }: { mode: UserModalMode }) {
             <PasswordInput register={() => register("currentPassword")} />
           </Input>
         )}
-        {errors.root && <span>{errors.root.message}</span>}
-        <button disabled={isModalPending} type="submit">
+        <button
+          className="button-behaviour--filled !w-full !rounded-control mt-container"
+          disabled={isModalPending}
+          type="submit"
+        >
           {isModalPending
             ? "..."
             : isRegisterMode
@@ -237,14 +260,15 @@ export default function UserModal({ mode }: { mode: UserModalMode }) {
                   : "Excluir"}
         </button>
       </fieldset>
-      {isRegisterMode && (
-        <span>
-          Já tem uma conta? <Link to="/login">Entrar</Link>
-        </span>
-      )}{" "}
-      {isLoginMode && (
-        <span>
-          Não tem uma conta? <Link to="/cadastro">Criar conta</Link>
+      {(isRegisterMode || isLoginMode) && (
+        <span className="m-auto mt-container text-muted">
+          {isRegisterMode ? `Já tem uma conta?` : `Não tem uma conta?`}{" "}
+          <Link
+            className="text-primary hover:underline font-medium"
+            to={isRegisterMode ? "/login" : "/cadastro"}
+          >
+            {isRegisterMode ? "Entrar" : "Criar conta"}
+          </Link>
         </span>
       )}
     </form>
@@ -259,17 +283,20 @@ function PasswordInput({
   const [isPasswordRevealed, setIsPasswordRevealed] = useState(false);
 
   return (
-    <div>
+    <div className="relative">
       <input
         type={isPasswordRevealed ? "text" : "password"}
         id="password"
+        className="w-full bg-surface border-1 border-border p-control rounded-control"
+        placeholder="Digite sua senha..."
         {...register()}
       />
       <button
+        className="absolute translate-y-[-50%] right-0 top-[50%] button-behaviour"
         type="button"
         onClick={() => setIsPasswordRevealed(!isPasswordRevealed)}
       >
-        {isPasswordRevealed ? <EyeIcon /> : <EyeOffIcon />}
+        {isPasswordRevealed ? <EyeOffIcon /> : <EyeIcon />}
       </button>
     </div>
   );
@@ -285,12 +312,14 @@ function Input({
   children: React.ReactElement<{ id?: string; className?: string }>;
 }) {
   return (
-    <label htmlFor={children.props.id}>
+    <label className="flex flex-col gap-[1.5px]" htmlFor={children.props.id}>
       <span>{label}</span>
       {cloneElement(children, {
-        className: children.props.className ?? "",
+        className:
+          children.props.className ??
+          "bg-surface border-1 border-border p-control rounded-control",
       })}
-      {error && <p>{error}</p>}
+      {error && <p className="text-sm text-danger">{error}</p>}
     </label>
   );
 }

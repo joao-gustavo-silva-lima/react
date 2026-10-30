@@ -13,5 +13,5 @@ export default function Join({ modal }: { modal: React.ReactNode }) {
     }
   }, [authenticatedUser]);
 
-  return modal;
+  return <div className="contained pt-[120px]">{modal}</div>;
 }
