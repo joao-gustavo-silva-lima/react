@@ -42,6 +42,8 @@
   /* Sombras */
   --shadow-card: 0 8px 30px rgb(0 0 0 / 20%);
   --shadow-glow: 0 0 30px rgb(99 91 255 / 25%);
+
+  --breakpoint-bp-sm: 400px;
 }
 
 @layer base {
@@ -50,7 +52,7 @@
   }
 
   body {
-    @apply w-full min-h-dvh bg-bg text-text text-nowrap truncate;
+    @apply w-full min-h-dvh bg-bg text-text;
   }
 
   .contained {

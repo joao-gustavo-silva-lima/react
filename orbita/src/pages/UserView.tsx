@@ -12,7 +12,6 @@ import {
 } from "../hooks/useUser";
 import z, { ZodType } from "zod";
 import {
-  ChevronRightIcon,
   CopyIcon,
   ExternalLinkIcon,
   ForwardIcon,
@@ -103,7 +102,7 @@ export default function UserView() {
 
   return (
     <>
-      <main className="contained flex flex-col items-center  min-h-dvh pt-[160px] gap-container pb-[60px]">
+      <main className="contained flex flex-col items-center  min-h-dvh pt-[160px] gap-container">
         <div className="relative flex flex-col items-center p-container pt-[50px] rounded-card bg-linear-to-b from-elevated to-transparent">
           <div className="absolute top-[-40px] flex justify-center items-center w-[80px] aspect-square rounded-full bg-linear-to-br from-primary to-accent mb-control">
             <span className="text-center text-2xl font-bold">
@@ -189,7 +188,7 @@ export default function UserView() {
             Adicionar Link
           </button>
         )}
-        <div className="absolute bottom-container flex flex-nowrap gap-[5px]">
+        <div className=" flex flex-nowrap gap-[5px]">
           <OrbitIcon className="text-primary" />{" "}
           <span className="text-muted">
             Feito com <span className="text-text font-medium">Orbita</span>
@@ -311,7 +310,7 @@ function Link({
         <button
           className={className}
           type="button"
-          onMouseUp={async () => {
+          onClick={async () => {
             await navigator.clipboard.writeText(link.ref);
             alert(
               `O conteúdo de "${link.title}" foi copiado para a área de transferência.`,
