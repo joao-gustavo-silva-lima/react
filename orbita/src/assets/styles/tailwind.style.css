@@ -50,7 +50,7 @@
   }
 
   body {
-    @apply w-full min-h-dvh bg-bg text-text;
+    @apply w-full min-h-dvh bg-bg text-text text-nowrap truncate;
   }
 
   .contained {
@@ -62,6 +62,6 @@
   }
 
   .button-behaviour--filled {
-    @apply transition-all duration-[.125s] w-fit hover:scale-[105%] active:scale-[95%] hover:cursor-pointer bg-primary active:bg-primary-hover font-bold px-[20px] py-[10px] text-center rounded-pill;
+    @apply transition-all duration-[.125s] w-fit hover:scale-[105%] active:scale-[95%] hover:cursor-pointer bg-linear-to-r from-primary to-accent not-active:hover:from-accent active:to-primary font-bold px-[20px] py-[10px] text-center rounded-pill;
   }
 }

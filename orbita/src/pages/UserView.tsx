@@ -3,6 +3,7 @@ import {
   useParams,
   Link as LinkTo,
   Outlet,
+  useOutlet,
 } from "react-router-dom";
 import {
   useFetchUserByUsername,
@@ -11,6 +12,9 @@ import {
 } from "../hooks/useUser";
 import z, { ZodType } from "zod";
 import {
+  ChevronRightIcon,
+  CopyIcon,
+  ExternalLinkIcon,
   ForwardIcon,
   LinkIcon,
   LogOutIcon,
@@ -27,6 +31,7 @@ import ShareModal from "../components/ShareModal";
 import LinkModal from "../components/LinkModal";
 import { useDeleteLink } from "../hooks/useLink";
 import { API_MESSAGES } from "../api/messages.api";
+import Overlay from "../components/Overlay";
 
 export default function UserView() {
   const { username } = useParams();
@@ -47,6 +52,8 @@ export default function UserView() {
   const { mutate: logoutUser, isPending: isLoggingUserOut } = useLogoutUser();
 
   const navigate = useNavigate();
+
+  const isOutlet = useOutlet() !== null;
 
   const onLogout = () => {
     if (isLinkModalOpen || isShareModalOpen) {
@@ -96,25 +103,46 @@ export default function UserView() {
 
   return (
     <>
-      <main>
-        <div>
-          <span>{user.name}</span>
-          <span>@{user.username}</span>
-          <div>
+      <main className="contained flex flex-col items-center  min-h-dvh pt-[160px] gap-container pb-[60px]">
+        <div className="relative flex flex-col items-center p-container pt-[50px] rounded-card bg-linear-to-b from-elevated to-transparent">
+          <div className="absolute top-[-40px] flex justify-center items-center w-[80px] aspect-square rounded-full bg-linear-to-br from-primary to-accent mb-control">
+            <span className="text-center text-2xl font-bold">
+              {user.name.trim()[0].toUpperCase() ?? "@"}
+            </span>
+          </div>
+          <span className="text-lg font-bold">{user.name}</span>
+          <span className="text-muted font-medium">@{user.username}</span>
+          <div
+            className="flex flex-nowrap items-center justify-center mt-card gap-element
+          
+            [&>*]:bg-elevated [&>*]:p-[7.5px] [&>*]:rounded-control
+          "
+          >
             {isProfileView && (
-              <LinkTo to={`/u/${user.username}/editar`}>
+              <LinkTo
+                className="button-behaviour hover:text-primary active:text-primary-hover"
+                to={`/u/${user.username}/editar`}
+              >
                 <SquarePenIcon />
               </LinkTo>
             )}
-            <button type="button" onClick={() => setIsShareModalOpen(true)}>
+            <button
+              className="button-behaviour hover:text-primary active:text-primary-hover"
+              type="button"
+              onClick={() => setIsShareModalOpen(true)}
+            >
               <ForwardIcon />
             </button>
             {isProfileView && (
               <>
-                <LinkTo to={`/u/${user.username}/excluir`}>
+                <LinkTo
+                  className="button-behaviour hover:text-primary active:text-primary-hover"
+                  to={`/u/${user.username}/excluir`}
+                >
                   <TrashIcon />
                 </LinkTo>
                 <button
+                  className="button-behaviour hover:text-primary active:text-primary-hover"
                   type="button"
                   onClick={isLoggingUserOut ? undefined : onLogout}
                 >
@@ -124,20 +152,24 @@ export default function UserView() {
             )}
           </div>
         </div>
-        {user.links.length === 0 && (
-          <span>
+        {user.links.length === 0 ? (
+          <span className="text-center text-muted">
             Parece que esse hub não possui nenhum link em Orbita.{" "}
             {isProfileView && (
-              <button type="button" onClick={() => setIsLinkModalOpen(true)}>
+              <button
+                className="text-primary font-medium hover:underline hover:cursor-pointer"
+                type="button"
+                onClick={() => setIsLinkModalOpen(true)}
+              >
                 Comece por aqui!
               </button>
             )}
           </span>
-        )}
-        <ul>
-          {user.links.map((link) => (
-            <li key={link.id}>
+        ) : (
+          <ul className="flex flex-col w-full max-w-[400px] gap-element">
+            {user.links.map((link) => (
               <Link
+                key={`user-link-${link.id}`}
                 link={link}
                 openEditingModal={() => {
                   setUpdatingLink(link);
@@ -145,34 +177,49 @@ export default function UserView() {
                 }}
                 isEditable={isProfileView}
               />
-            </li>
-          ))}
-        </ul>
+            ))}
+          </ul>
+        )}
         {isProfileView && user.links.length < 10 && (
-          <button type="button" onClick={() => setIsLinkModalOpen(true)}>
+          <button
+            className="button-behaviour--filled w-full max-w-[400px] rounded-card"
+            type="button"
+            onClick={() => setIsLinkModalOpen(true)}
+          >
             Adicionar Link
           </button>
         )}
-        <span>
-          <OrbitIcon /> Feito com <span>Orbita</span>
-        </span>
+        <div className="absolute bottom-container flex flex-nowrap gap-[5px]">
+          <OrbitIcon className="text-primary" />{" "}
+          <span className="text-muted">
+            Feito com <span className="text-text font-medium">Orbita</span>
+          </span>
+        </div>
       </main>
       {isShareModalOpen && (
-        <ShareModal
-          username={user.username}
-          closeModal={() => setIsShareModalOpen(false)}
-        />
+        <Overlay>
+          <ShareModal
+            username={user.username}
+            closeModal={() => setIsShareModalOpen(false)}
+          />
+        </Overlay>
       )}
       {isProfileView && isLinkModalOpen && (
-        <LinkModal
-          updatingLink={updatingLink}
-          closeModal={() => {
-            setUpdatingLink(null);
-            setIsLinkModalOpen(false);
-          }}
-        />
+        <Overlay>
+          <LinkModal
+            updatingLink={updatingLink}
+            closeModal={() => {
+              setUpdatingLink(null);
+              setIsLinkModalOpen(false);
+            }}
+          />
+        </Overlay>
       )}
-      {isProfileView && <Outlet context={{ user }} />}
+      {isProfileView && isOutlet && (
+        <Overlay>
+          <Outlet context={{ user }} />
+        </Overlay>
+      )}
     </>
   );
 }
@@ -202,6 +249,8 @@ function Link({
   openEditingModal: () => void;
   isEditable: boolean;
 }) {
+  const className = `flex flex-nowrap justify-between items-center gap-element bg-elevated flex-1 rounded-card p-control font-medium button-behaviour [&>div]:flex [&>div]:gap-control [&>div]:[&>span]:truncate`;
+
   const Icon = getLinkIcon(link.ref);
 
   const { mutate: deleteLink, isPending: isDeletingLink } = useDeleteLink();
@@ -239,50 +288,62 @@ function Link({
     });
   };
 
-  if (Icon === null) {
-    return (
-      <>
-        <a rel="noopener noreferrer" target="_blank" href={link.ref}>
-          <img
-            src={`https://www.google.com/s2/favicons?domain=${link.ref}&sz=64`}
-            alt="Imagem do favicon relativo ao domínio da url contida no link."
-            width={25}
-          />
-          <span>{link.title}</span>
-        </a>
-        {isEditable && (
-          <>
-            <button type="button" onClick={openEditingModal}>
-              <SquarePenIcon />
-            </button>
-            <button type="button" onClick={() => onDeleteLink(link)}>
-              <TrashIcon />
-            </button>
-          </>
-        )}
-      </>
-    );
-  }
-
   return (
-    <>
-      <button
-        type="button"
-        onClick={async () => await navigator.clipboard.writeText(link.ref)}
-      >
-        <Icon />
-        <span>{link.title}</span>
-      </button>
+    <li className="flex flex-nowrap gap-control">
+      {Icon === null ? (
+        <a
+          className={className}
+          rel="noopener noreferrer"
+          target="_blank"
+          href={link.ref}
+        >
+          <div>
+            <img
+              src={`https://www.google.com/s2/favicons?domain=${link.ref}&sz=64`}
+              alt="Imagem do favicon relativo ao domínio da url contida no link."
+              width={25}
+            />
+            <span>{link.title}</span>
+          </div>
+          <ExternalLinkIcon size={20} />
+        </a>
+      ) : (
+        <button
+          className={className}
+          type="button"
+          onMouseUp={async () => {
+            await navigator.clipboard.writeText(link.ref);
+            alert(
+              `O conteúdo de "${link.title}" foi copiado para a área de transferência.`,
+            );
+          }}
+        >
+          <div>
+            <Icon />
+            <span>{link.title}</span>
+          </div>
+          <CopyIcon size={18} />
+        </button>
+      )}
+
       {isEditable && (
         <>
-          <button type="button" onClick={openEditingModal}>
-            <SquarePenIcon />
+          <button
+            className="button-behaviour text-muted"
+            type="button"
+            onClick={openEditingModal}
+          >
+            <SquarePenIcon size={20} />
           </button>
-          <button type="button" onClick={() => onDeleteLink(link)}>
-            <TrashIcon />
+          <button
+            className="button-behaviour text-muted"
+            type="button"
+            onClick={() => onDeleteLink(link)}
+          >
+            <TrashIcon size={20} />
           </button>
         </>
       )}
-    </>
+    </li>
   );
 }
