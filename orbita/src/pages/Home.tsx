@@ -14,8 +14,9 @@ export default function Home() {
       <main className="contained flex flex-wrap items-center justify-between gap-container w-full min-h-dvh">
         <div className="flex flex-col flex-1 max-w-[450px] gap-container">
           <p className="text-hero/14 font-bold">
-            Todos os seus <span className="text-primary">links e contatos</span>{" "}
-            em <span className="text-accent">um só lugar.</span>
+            Todos os seus{" "}
+            <span className="brand-gradient-text">links e contatos</span> em{" "}
+            <span className="brand-gradient-text">um só lugar.</span>
           </p>
           <p className="font-medium text-justify text-muted">
             Orbita é o seu profile hubing. Reúna seus links, redes sociais,

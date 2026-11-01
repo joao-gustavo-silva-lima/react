@@ -8,6 +8,7 @@ import MainLayout from "./layouts/MainLayout";
 import Home from "./pages/Home";
 import Join from "./pages/Join";
 import "./assets/styles/tailwind.style.css";
+import Fallback from "./pages/Fallback";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,16 @@ createRoot(document.getElementById("root")!).render(
                 element={<UserModal mode="exclusão" />}
               />
             </Route>
+            <Route
+              path="*"
+              element={
+                <Fallback
+                  code={404}
+                  headline={`Ops! Parece que você se perdeu.`}
+                  subHeadline="A página que você está procurando não existe, foi removida ou talvez tenha sido digitada incorretamente."
+                />
+              }
+            />
           </Route>
         </Routes>
       </BrowserRouter>

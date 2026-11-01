@@ -31,6 +31,7 @@ import LinkModal from "../components/LinkModal";
 import { useDeleteLink } from "../hooks/useLink";
 import { API_MESSAGES } from "../api/messages.api";
 import Overlay from "../components/Overlay";
+import Fallback from "./Fallback";
 
 export default function UserView() {
   const { username } = useParams();
@@ -89,15 +90,31 @@ export default function UserView() {
   };
 
   if (isFetching) {
-    return <p>Carregando perfil do usuário...</p>;
+    return <UserViewSkeleton />;
   }
 
   if (error?.status === 404) {
-    return <p>Usuário não encontrado.</p>;
+    return (
+      <Fallback
+        code={404}
+        headline={"O usuário não foi encontrado."}
+        subHeadline={
+          "O usuário que você pesquisou não existe, foi removido ou talvez tenha sido digitado incorretamente."
+        }
+      />
+    );
   }
 
   if (isError || user == null) {
-    return <p>Ocorreu um erro ao tentar carregar o perfil do usuário.</p>;
+    return (
+      <Fallback
+        code={500}
+        headline={"Ops! Erro ao carregar perfil do usuário."}
+        subHeadline={
+          "O carregamento do perfil do usuário apresentou um erro inesperado. Tente novamente mais tarde."
+        }
+      />
+    );
   }
 
   return (
@@ -220,6 +237,37 @@ export default function UserView() {
         </Overlay>
       )}
     </>
+  );
+}
+
+function UserViewSkeleton() {
+  return (
+    <main
+      className="contained flex min-h-dvh flex-col items-center gap-container pt-[160px]"
+      aria-busy="true"
+      aria-label="Carregando perfil do usuário"
+    >
+      <div className="relative flex w-full max-w-[260px] flex-col items-center rounded-card bg-linear-to-b from-elevated to-transparent p-container pt-[50px]">
+        <div className="absolute top-[-40px] aspect-square w-[80px] animate-pulse rounded-full bg-elevated" />
+        <div className="h-6 w-32 animate-pulse rounded-control bg-elevated" />
+        <div className="mt-1 h-5 w-24 animate-pulse rounded-control bg-elevated" />
+        <div className="mt-card flex gap-element">
+          <div className="h-9 w-9 animate-pulse rounded-control bg-elevated" />
+          <div className="h-9 w-9 animate-pulse rounded-control bg-elevated" />
+          <div className="h-9 w-9 animate-pulse rounded-control bg-elevated" />
+        </div>
+      </div>
+      <ul className="flex w-full max-w-[400px] flex-col gap-element">
+        {[1, 2, 3].map((link) => (
+          <li
+            className="h-[50px] w-full animate-pulse rounded-card bg-elevated"
+            key={`user-link-skeleton-${link}`}
+          />
+        ))}
+      </ul>
+      <div className="h-11 w-full max-w-[400px] animate-pulse rounded-card bg-elevated" />
+      <div className="h-6 w-32 animate-pulse rounded-control bg-elevated" />
+    </main>
   );
 }
 

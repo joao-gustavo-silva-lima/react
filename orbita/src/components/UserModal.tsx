@@ -174,7 +174,7 @@ export default function UserModal({ mode }: { mode: UserModalMode }) {
 
   return (
     <form
-      className={`flex flex-col gap-control  h-fit max-h-dvh w-full max-w-[400px] p-container m-auto ${(isDeleteMode || isEditMode) && "bg-elevated"} bp-sm:rounded-modal ${(isDeleteMode || isEditMode) && "overflow-y-auto"}`}
+      className={`flex flex-col gap-control min-h-dvh bp-sm:min-h-[0px] h-fit max-h-dvh w-full max-w-[400px] p-container m-auto ${(isDeleteMode || isEditMode) && "bg-elevated"} bp-sm:rounded-modal ${(isDeleteMode || isEditMode) && "overflow-y-auto"}`}
       onSubmit={handleSubmit(onSubmit)}
     >
       {!(isDeleteMode || isEditMode) && (

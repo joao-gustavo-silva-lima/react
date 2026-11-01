@@ -59,6 +59,10 @@
     @apply overflow-y-hidden;
   }
 
+  .brand-gradient-text {
+    @apply bg-linear-to-r from-primary to-accent bg-clip-text text-transparent w-fit;
+  }
+
   .contained {
     @apply w-full max-w-[1280px] m-auto p-container;
   }

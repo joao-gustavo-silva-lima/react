@@ -19,6 +19,7 @@ export function useCreateUser() {
     onSuccess: (user) => {
       queryClient.setQueryData(["user", "profile"], user);
     },
+    retry: (attempts) => attempts < 3,
   });
 }
 
@@ -31,6 +32,7 @@ export function useLoginUser() {
     onSuccess: (user) => {
       queryClient.setQueryData(["user", "profile"], user);
     },
+    retry: (attempts) => attempts < 3,
   });
 }
 
@@ -43,6 +45,7 @@ export function useLogoutUser() {
     onSuccess: () => {
       queryClient.setQueryData<User | null>(["user", "profile"], null);
     },
+    retry: (attempts) => attempts < 3,
   });
 }
 
@@ -100,6 +103,7 @@ export function useUpdateUser() {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["user", "profile"] });
     },
+    retry: (attempts) => attempts < 3,
   });
 }
 
@@ -115,5 +119,6 @@ export function useDeleteUser() {
       });
       queryClient.clear();
     },
+    retry: (attempts) => attempts < 3,
   });
 }
