@@ -27,8 +27,8 @@ export default function Home() {
           </Link>
         </div>
         <img
-          className="flex-1 max-w-[500px]"
-          src="/hero.ignore.png"
+          className="flex-1 max-w-[625px]"
+          src="/home-hero.png"
           alt="Imagem principal da página principal."
         />
       </main>

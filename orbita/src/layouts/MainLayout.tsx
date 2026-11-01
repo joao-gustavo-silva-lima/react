@@ -51,6 +51,38 @@ export default function MainLayout() {
         </div>
       </header>
       <Outlet />
+      <footer className=" bg-surface">
+        <div className="contained flex flex-wrap justify-between items-center text-muted text-sm gap-container">
+          <div className="flex flex-nowrap items-start gap-element">
+            <OrbitIcon className="text-primary" size={30} />
+            <div className="flex flex-col">
+              <span className="brand-gradient-text text-base font-bold">
+                Orbita
+              </span>
+              <span>Seu perfil, suas conexões, sem limites.</span>
+            </div>
+          </div>
+          <nav className="flex flex-wrap gap-element items-center underline">
+            {[
+              ["Início", "/"],
+              ["Recursos", "/#recursos"],
+              ["Funcionamento", "/#funcionamento"],
+            ].map(([label, to], index) => (
+              <Link
+                className="button-behaviour hover:text-primary active:text-primary-hover"
+                key={`header__nav__link--${index}`}
+                to={to}
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
+          <span className="font-medium">
+            &copy; {new Date().getFullYear()} Orbita. Todos os direitos
+            reservados.
+          </span>
+        </div>
+      </footer>
     </>
   );
 }

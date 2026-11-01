@@ -11,7 +11,7 @@ export default function Fallback({
   subHeadline: string | React.ReactNode;
 }) {
   return (
-    <main className="contained flex flex-wrap items-center justify-center pt-[120px] gap-container">
+    <main className="contained flex flex-wrap items-center justify-center pt-[120px] min-h-dvh gap-container">
       <div className="flex flex-col gap-element max-w-[400px]">
         <p className="brand-gradient-text text-[6em]/32 font-bold w-fit">
           {code}
