@@ -174,7 +174,7 @@ export default function UserModal({ mode }: { mode: UserModalMode }) {
 
   return (
     <form
-      className="flex flex-col gap-control justify-center max-w-[400px] m-auto"
+      className={`flex flex-col gap-control  h-fit max-h-dvh w-full max-w-[400px] p-container m-auto ${(isDeleteMode || isEditMode) && "bg-elevated"} bp-sm:rounded-modal ${(isDeleteMode || isEditMode) && "overflow-y-auto"}`}
       onSubmit={handleSubmit(onSubmit)}
     >
       {!(isDeleteMode || isEditMode) && (
@@ -182,20 +182,22 @@ export default function UserModal({ mode }: { mode: UserModalMode }) {
           {<OrbitIcon className="text-primary" />} Orbita
         </h3>
       )}
-      {(isDeleteMode || isEditMode) && (
-        <Link to={`/u/${user?.username}`}>
-          <XIcon />
-        </Link>
-      )}
-      <h2 className="text-2xl font-medium">
-        {isRegisterMode
-          ? "Crie seu hub!"
-          : isLoginMode
-            ? "Bem-vindo de volta!"
-            : isEditMode
-              ? "Edite seu perfil"
-              : "Excluir conta"}
-      </h2>
+      <div className="flex flex-nowrap items-center justify-between">
+        <h2 className="text-2xl font-medium truncate">
+          {isRegisterMode
+            ? "Crie seu hub!"
+            : isLoginMode
+              ? "Bem-vindo de volta!"
+              : isEditMode
+                ? "Edite seu perfil"
+                : "Excluir conta"}
+        </h2>
+        {(isDeleteMode || isEditMode) && (
+          <Link className="button-behaviour" to={`/u/${user?.username}`}>
+            <XIcon />
+          </Link>
+        )}
+      </div>
       <span className="text-muted">
         {isRegisterMode
           ? "É rápido e gratuito."
@@ -261,7 +263,7 @@ export default function UserModal({ mode }: { mode: UserModalMode }) {
         </button>
       </fieldset>
       {(isRegisterMode || isLoginMode) && (
-        <span className="m-auto mt-container text-muted">
+        <span className="m-auto mt-container text-muted text-center">
           {isRegisterMode ? `Já tem uma conta?` : `Não tem uma conta?`}{" "}
           <Link
             className="text-primary hover:underline font-medium"

@@ -103,7 +103,7 @@ export default function UserView() {
   return (
     <>
       <main className="contained flex flex-col items-center  min-h-dvh pt-[160px] gap-container">
-        <div className="relative flex flex-col items-center p-container pt-[50px] rounded-card bg-linear-to-b from-elevated to-transparent">
+        <div className="relative flex flex-col items-center p-container pt-[50px] max-w-[260px] rounded-card bg-linear-to-b from-elevated to-transparent">
           <div className="absolute top-[-40px] flex justify-center items-center w-[80px] aspect-square rounded-full bg-linear-to-br from-primary to-accent mb-control">
             <span className="text-center text-2xl font-bold">
               {user.name.trim()[0].toUpperCase() ?? "@"}
@@ -165,7 +165,7 @@ export default function UserView() {
             )}
           </span>
         ) : (
-          <ul className="flex flex-col w-full max-w-[400px] gap-element">
+          <ul className="flex flex-col gap-element">
             {user.links.map((link) => (
               <Link
                 key={`user-link-${link.id}`}
@@ -248,7 +248,7 @@ function Link({
   openEditingModal: () => void;
   isEditable: boolean;
 }) {
-  const className = `flex flex-nowrap justify-between items-center gap-element bg-elevated flex-1 rounded-card p-control font-medium button-behaviour [&>div]:flex [&>div]:gap-control [&>div]:[&>span]:truncate`;
+  const className = `flex items-center flex-nowrap justify-between bg-elevated gap-control w-full rounded-card p-control font-medium button-behaviour`;
 
   const Icon = getLinkIcon(link.ref);
 
@@ -288,7 +288,7 @@ function Link({
   };
 
   return (
-    <li className="flex flex-nowrap gap-control">
+    <li className="flex items-center flex-nowrap gap-control w-full max-w-[400px]">
       {Icon === null ? (
         <a
           className={className}
@@ -296,15 +296,13 @@ function Link({
           target="_blank"
           href={link.ref}
         >
-          <div>
-            <img
-              src={`https://www.google.com/s2/favicons?domain=${link.ref}&sz=64`}
-              alt="Imagem do favicon relativo ao domínio da url contida no link."
-              width={25}
-            />
-            <span>{link.title}</span>
-          </div>
-          <ExternalLinkIcon size={20} />
+          <img
+            src={`https://www.google.com/s2/favicons?domain=${link.ref}&sz=64`}
+            alt="Imagem do favicon relativo ao domínio da url contida no link."
+            width={20}
+          />
+          <span className="w-full truncate overflow-hidden">{link.title}</span>
+          <ExternalLinkIcon className="min-w-[20px]" size={20} />
         </a>
       ) : (
         <button
@@ -317,11 +315,9 @@ function Link({
             );
           }}
         >
-          <div>
-            <Icon />
-            <span>{link.title}</span>
-          </div>
-          <CopyIcon size={18} />
+          <Icon className="min-w-[20px]" />
+          <span className="w-full truncate text-left">{link.title}</span>
+          <CopyIcon className="min-w-[20px]" size={20} />
         </button>
       )}
 

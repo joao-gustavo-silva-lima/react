@@ -15,9 +15,9 @@ export default function Home() {
         <div className="flex flex-col flex-1 max-w-[450px] gap-container">
           <p className="text-hero/14 font-bold">
             Todos os seus <span className="text-primary">links e contatos</span>{" "}
-            em <span className="text-primary">um só lugar.</span>
+            em <span className="text-accent">um só lugar.</span>
           </p>
-          <p className="font-medium text-justify">
+          <p className="font-medium text-justify text-muted">
             Orbita é o seu profile hubing. Reúna seus links, redes sociais,
             contatos e muito mais em um hub simples e rápido.
           </p>
@@ -27,7 +27,7 @@ export default function Home() {
         </div>
         <img
           className="flex-1 max-w-[500px]"
-          src="../../public/hero.ignore.png"
+          src="/hero.ignore.png"
           alt="Imagem principal da página principal."
         />
       </main>

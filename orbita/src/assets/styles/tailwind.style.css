@@ -55,6 +55,10 @@
     @apply w-full min-h-dvh bg-bg text-text;
   }
 
+  body.no-scroll {
+    @apply overflow-y-hidden;
+  }
+
   .contained {
     @apply w-full max-w-[1280px] m-auto p-container;
   }

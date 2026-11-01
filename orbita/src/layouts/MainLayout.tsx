@@ -7,7 +7,7 @@ export default function MainLayout() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 bg-bg shadow-card w-full">
+      <header className="fixed top-0 left-0 bg-bg shadow-card w-full z-5">
         <div className="contained flex flex-nowrap justify-between items-center gap-container">
           <div className="flex flex-nowrap items-center gap-container">
             <Link
