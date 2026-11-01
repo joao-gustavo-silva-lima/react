@@ -174,7 +174,7 @@ export default function UserModal({ mode }: { mode: UserModalMode }) {
 
   return (
     <form
-      className={`flex flex-col gap-control min-h-dvh bp-sm:min-h-[0px] h-fit max-h-dvh w-full max-w-[400px] p-container m-auto ${(isDeleteMode || isEditMode) && "bg-elevated"} bp-sm:rounded-modal ${(isDeleteMode || isEditMode) && "overflow-y-auto"}`}
+      className={`flex flex-col gap-control min-h-dvh bp-sm:min-h-[0px] h-fit max-h-dvh w-full max-w-[400px] ${(isDeleteMode || isEditMode) && "p-container"} m-auto ${(isDeleteMode || isEditMode) && "bg-elevated"} bp-sm:rounded-modal ${(isDeleteMode || isEditMode) && "overflow-y-auto"}`}
       onSubmit={handleSubmit(onSubmit)}
     >
       {!(isDeleteMode || isEditMode) && (
@@ -246,21 +246,32 @@ export default function UserModal({ mode }: { mode: UserModalMode }) {
             <PasswordInput register={() => register("currentPassword")} />
           </Input>
         )}
-        <button
-          className="button-behaviour--filled !w-full !rounded-control mt-container"
-          disabled={isModalPending}
-          type="submit"
-        >
-          {isModalPending
-            ? "..."
-            : isRegisterMode
-              ? "Criar Conta"
-              : isLoginMode
-                ? "Entrar"
-                : isEditMode
-                  ? "Salvar"
-                  : "Excluir"}
-        </button>
+        <div className="flex flex-col-reverse gap-control">
+          {(isEditMode || isDeleteMode) && (
+            <Link
+              to={`/u/${user?.username}`}
+              className="button-behaviour w-full rounded-control border-1 border-border hover:border-primary hover:bg-surface"
+              type="button"
+            >
+              Cancelar
+            </Link>
+          )}
+          <button
+            className="button-behaviour--filled !w-full !rounded-control mt-container"
+            disabled={isModalPending}
+            type="submit"
+          >
+            {isModalPending
+              ? "..."
+              : isRegisterMode
+                ? "Criar Conta"
+                : isLoginMode
+                  ? "Entrar"
+                  : isEditMode
+                    ? "Salvar"
+                    : "Excluir"}
+          </button>
+        </div>
       </fieldset>
       {(isRegisterMode || isLoginMode) && (
         <span className="m-auto mt-container text-muted text-center">

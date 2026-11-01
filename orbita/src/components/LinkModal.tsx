@@ -102,18 +102,33 @@ export default function LinkModal({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div>
-        <h2>{isCreationModal ? "Adicionar" : "Editar"} Link</h2>
-        <button type="button" onClick={isModalPending ? undefined : onClose}>
+    <form
+      className="flex min-h-dvh h-fit max-h-dvh w-full max-w-[400px] flex-col gap-control overflow-y-auto bg-elevated p-container bp-sm:min-h-[0px] bp-sm:rounded-modal"
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      <div className="flex flex-nowrap items-center justify-between">
+        <h2 className="truncate text-2xl font-medium">
+          {isCreationModal ? "Adicionar Link" : "Editar Link"}
+        </h2>
+        <button
+          className="button-behaviour"
+          type="button"
+          onClick={isModalPending ? undefined : onClose}
+        >
           <XIcon />
         </button>
       </div>
-      <fieldset>
+      <span className="text-muted">
+        {isCreationModal
+          ? "Adicione um novo link ao seu hub."
+          : "Atualize os dados do seu link."}
+      </span>
+      <fieldset className="flex flex-col gap-element">
         <Input label="Título" error={errors.title?.message}>
           <input
             type="text"
             id="title"
+            placeholder="Digite um título..."
             {...register("title")}
             defaultValue={updatingLink?.title}
           />
@@ -122,14 +137,16 @@ export default function LinkModal({
           <input
             type="text"
             id="ref"
+            placeholder="https://..."
             defaultValue={updatingLink?.ref}
             {...register("ref")}
           />
         </Input>
         <Input label="Visibilidade" error={errors.visibility?.message}>
-          <div>
-            <div>
+          <div className="flex flex-wrap gap-element">
+            <label className="flex items-center gap-control">
               <input
+                className="accent-primary"
                 type="radio"
                 id="visibility--public"
                 value={"PUBLIC"}
@@ -138,26 +155,35 @@ export default function LinkModal({
                 }
                 {...register("visibility")}
               />
-              <label htmlFor="visibility--public">Público</label>
-            </div>
-            <div>
+              Público
+            </label>
+            <label className="flex items-center gap-control">
               <input
+                className="accent-primary"
                 type="radio"
                 id="visibility--private"
                 value={"PRIVATE"}
-                {...register("visibility")}
                 defaultChecked={updatingLink?.visibility === "PRIVATE"}
+                {...register("visibility")}
               />
-              <label htmlFor="visibility--private">Privado</label>
-            </div>
+              Privado
+            </label>
           </div>
         </Input>
       </fieldset>
-      <div>
-        <button type="button" onClick={isModalPending ? undefined : onClose}>
+      <div className="mt-container flex flex-col-reverse gap-control">
+        <button
+          className="button-behaviour w-full rounded-control border-1 border-border px-container hover:border-primary hover:bg-surface"
+          type="button"
+          onClick={isModalPending ? undefined : onClose}
+        >
           Cancelar
         </button>
-        <button type="submit" disabled={isModalPending}>
+        <button
+          className="button-behaviour--filled w-full !rounded-control"
+          type="submit"
+          disabled={isModalPending}
+        >
           {isModalPending ? "..." : "Salvar"}
         </button>
       </div>
@@ -172,15 +198,17 @@ function Input({
 }: {
   label: string;
   error: string | undefined;
-  children: React.ReactElement<React.InputHTMLAttributes<HTMLInputElement>>;
+  children: React.ReactElement<{ id?: string; className?: string }>;
 }) {
   return (
-    <label htmlFor={children.props.id}>
+    <div className="flex flex-col gap-[1.5px]">
       <span>{label}</span>
       {cloneElement(children, {
-        className: children.props.className ?? "",
+        className:
+          children.props.className ??
+          "bg-surface border-1 border-border p-control rounded-control",
       })}
-      {error && <p>{error}</p>}
-    </label>
+      {error && <p className="text-sm text-danger">{error}</p>}
+    </div>
   );
 }
