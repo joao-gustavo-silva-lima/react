@@ -11,8 +11,8 @@ import { Link } from "react-router-dom";
 export default function Home() {
   return (
     <>
-      <main className="contained flex flex-wrap items-center justify-between gap-container w-full min-h-dvh">
-        <div className="flex flex-col flex-1 max-w-[450px] gap-container">
+      <main className="contained flex flex-wrap items-center justify-between gap-container w-full min-h-dvh pt-[120px]">
+        <div className="flex flex-col w-full max-w-[450px] gap-container">
           <p className="text-hero/14 font-bold">
             Todos os seus{" "}
             <span className="brand-gradient-text">links e contatos</span> em{" "}
@@ -27,7 +27,7 @@ export default function Home() {
           </Link>
         </div>
         <img
-          className="flex-1 max-w-[625px]"
+          className="flex-1 w-full max-w-[625px] mt-container"
           src="/home-hero.png"
           alt="Imagem principal da página principal."
         />
@@ -93,7 +93,7 @@ function CardList({
     );
 
   return (
-    <ListElement className="flex items-center gap-container justify-between">
+    <ListElement className="flex flex-wrap items-center gap-container justify-between">
       {list.map(([Icon, title, description], index) => (
         <li
           className={`flex flex-${ordered ? "col" : "row"} gap-element`}
