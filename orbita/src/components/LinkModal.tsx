@@ -11,6 +11,7 @@ import { useCreateLink, useUpdateLink } from "../hooks/useLink";
 import type { MutateOptions } from "@tanstack/react-query";
 import type HttpError from "../common/classes/HttpError";
 import { API_MESSAGES } from "../api/messages.api";
+import { toast } from "react-toastify";
 
 export default function LinkModal({
   updatingLink,
@@ -45,7 +46,7 @@ export default function LinkModal({
       LinkInput | { id: number; payload: LinkInput }
     > = {
       onSuccess() {
-        alert(
+        toast.success(
           `A ${isCreationModal ? "criação" : "edição"} do link ocorreu com sucesso.`,
         );
         closeModal();
@@ -55,7 +56,7 @@ export default function LinkModal({
 
         if (error.status >= 400) {
           if (error.details === undefined) {
-            alert(
+            toast.error(
               errorMessage ??
                 "Algum dado inserido está indisponível. Tente novamente.",
             );
@@ -68,7 +69,7 @@ export default function LinkModal({
             ).includes(field);
 
             if (!isRecognizedField) {
-              alert("Um campo não identificado apresentou um erro.");
+              toast.error("Um campo não identificado apresentou um erro.");
               return;
             }
 
@@ -84,7 +85,9 @@ export default function LinkModal({
             error,
           );
 
-          alert(errorMessage ?? "Um erro ocorreu. Tente novamente mais tarde.");
+          toast.error(
+            errorMessage ?? "Um erro ocorreu. Tente novamente mais tarde.",
+          );
         }
       },
     };

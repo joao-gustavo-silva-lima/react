@@ -30,6 +30,7 @@ import type HttpError from "../common/classes/HttpError";
 import { API_MESSAGES } from "../api/messages.api";
 import type { APIJSONResponse } from "../common/types/api.types";
 import { EyeIcon, EyeOffIcon, OrbitIcon, XIcon } from "lucide-react";
+import { toast } from "react-toastify";
 
 type UserModalMode = "cadastro" | "login" | "edição" | "exclusão";
 
@@ -86,7 +87,7 @@ export default function UserModal({ mode }: { mode: UserModalMode }) {
 
     if (error.status >= 400) {
       if (error.details === undefined) {
-        alert(
+        toast.error(
           errorMessage ??
             "Algum dado inserido está indisponível. Tente novamente.",
         );
@@ -97,7 +98,7 @@ export default function UserModal({ mode }: { mode: UserModalMode }) {
         const isRecognizedField = Object.keys(schema.shape).includes(field);
 
         if (!isRecognizedField) {
-          alert("Um campo não identificado apresentou um erro.");
+          toast.error("Um campo não identificado apresentou um erro.");
           return;
         }
 
@@ -110,14 +111,14 @@ export default function UserModal({ mode }: { mode: UserModalMode }) {
     }
 
     console.error(`Erro de ${operation} do usuário não reconhecido:`, error);
-    alert(errorMessage ?? "Um erro ocorreu. Tente novamente mais tarde.");
+    toast.error(errorMessage ?? "Um erro ocorreu. Tente novamente mais tarde.");
   };
 
   const onSubmit: SubmitHandler<UserModalInputs> = (data) => {
     if (isRegisterMode) {
       const options: MutateOptions<User, HttpError, UserInput> = {
         onSuccess({ username }) {
-          alert("A criação do usuário ocorreu com sucesso.");
+          toast.success("A criação do usuário ocorreu com sucesso.");
           navigate(`/u/${username}`);
         },
         onError: (error) => handleError(error, "criação"),
@@ -129,7 +130,7 @@ export default function UserModal({ mode }: { mode: UserModalMode }) {
     if (isLoginMode) {
       const options: MutateOptions<User, HttpError, LoginUserInput> = {
         onSuccess({ username }) {
-          alert("O login do usuário ocorreu com sucesso.");
+          toast.success("O login do usuário ocorreu com sucesso.");
           navigate(`/u/${username}`);
         },
         onError: (error) => handleError(error, "login"),
@@ -141,7 +142,7 @@ export default function UserModal({ mode }: { mode: UserModalMode }) {
     if (isEditMode) {
       const options: MutateOptions<User, HttpError, UpdateUserInput> = {
         onSuccess({ username }) {
-          alert("A edição do usuário ocorreu com sucesso.");
+          toast.success("A edição do usuário ocorreu com sucesso.");
           navigate(`/u/${username}`);
         },
         onError: (error) => handleError(error, "edição"),
@@ -153,7 +154,7 @@ export default function UserModal({ mode }: { mode: UserModalMode }) {
     const options: MutateOptions<APIJSONResponse, HttpError, DeleteUserInput> =
       {
         onSuccess(response) {
-          alert(
+          toast.success(
             API_MESSAGES.get(response.code) ??
               "Sua conta foi excluída com sucesso.",
           );

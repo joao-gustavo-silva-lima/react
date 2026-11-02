@@ -1,5 +1,6 @@
 import { XIcon } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
+import { toast } from "react-toastify";
 
 export default function ShareModal({
   username,
@@ -37,7 +38,9 @@ export default function ShareModal({
           type="button"
           onClick={async () => {
             await navigator.clipboard.writeText(shareLink);
-            alert("Endereço URL do hub copiado para a área de transferência.");
+            toast.info(
+              "Endereço URL do hub copiado para a área de transferência.",
+            );
           }}
         >
           Copiar

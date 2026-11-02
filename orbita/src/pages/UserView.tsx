@@ -32,6 +32,7 @@ import { useDeleteLink } from "../hooks/useLink";
 import { API_MESSAGES } from "../api/messages.api";
 import Overlay from "../components/Overlay";
 import Fallback from "./Fallback";
+import { toast } from "react-toastify";
 
 export default function UserView() {
   const { username } = useParams();
@@ -57,7 +58,7 @@ export default function UserView() {
 
   const onLogout = () => {
     if (isLinkModalOpen || isShareModalOpen) {
-      alert(
+      toast.warn(
         "Aguarde a conclusão de outra ação antes de prosseguir com o logout...",
       );
       return;
@@ -71,18 +72,14 @@ export default function UserView() {
       onError: (error) => {
         const errorMessage = API_MESSAGES.get(error.code);
 
-        if (errorMessage === undefined) {
-          alert(
+        toast.error(
+          errorMessage ??
             "Um erro inesperado ocorreu ao tentar fazer login. Tente novamente mais tarde.",
-          );
-          return;
-        }
-
-        alert(errorMessage);
+        );
       },
       onSuccess: (data) => {
         navigate("/login");
-        alert(
+        toast.success(
           API_MESSAGES.get(data.code) ?? "O logout foi realizado com sucesso.",
         );
       },
@@ -304,7 +301,7 @@ function Link({
 
   const onDeleteLink = (link: Link) => {
     if (isDeletingLink) {
-      alert(
+      toast.warn(
         "Aguarde a conclusão de outra ação antes de prosseguir com a remoção do link...",
       );
       return;
@@ -318,17 +315,13 @@ function Link({
       onError: (error) => {
         const errorMessage = API_MESSAGES.get(error.code);
 
-        if (errorMessage === undefined) {
-          alert(
+        toast.error(
+          errorMessage ??
             "Um erro inesperado ocorreu ao tentar remover o link. Tente novamente mais tarde.",
-          );
-          return;
-        }
-
-        alert(errorMessage);
+        );
       },
       onSuccess: (data) => {
-        alert(
+        toast.success(
           API_MESSAGES.get(data.code) ?? "O link foi removido com sucesso.",
         );
       },
@@ -358,7 +351,7 @@ function Link({
           type="button"
           onClick={async () => {
             await navigator.clipboard.writeText(link.ref);
-            alert(
+            toast.info(
               `O conteúdo de "${link.title}" foi copiado para a área de transferência.`,
             );
           }}

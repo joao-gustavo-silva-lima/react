@@ -9,6 +9,7 @@ import Home from "./pages/Home";
 import Join from "./pages/Join";
 import "./assets/styles/tailwind.style.css";
 import Fallback from "./pages/Fallback";
+import { ToastContainer, Zoom } from "react-toastify";
 
 const queryClient = new QueryClient();
 
@@ -51,5 +52,18 @@ createRoot(document.getElementById("root")!).render(
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>
+    <ToastContainer
+      position="top-center"
+      autoClose={3000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick={false}
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme="dark"
+      transition={Zoom}
+    />
   </StrictMode>,
 );
