@@ -90,7 +90,7 @@ function MetricCard({
   );
 }
 
-function calculateMetrics(links: Link[]): Metrics {
+export function calculateMetrics(links: Link[]): Metrics {
   const quantities = {
     numOfLinks: links.length,
     numOfClicks: 0,

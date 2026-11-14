@@ -1,0 +1,55 @@
+import { cleanup, render, screen } from "@testing-library/react";
+import { beforeEach, describe, expect, test } from "vitest";
+import { Link } from "../types/links.types";
+import Metrics from "./Metrics";
+
+beforeEach(() => {
+  cleanup();
+});
+
+describe("Metrics Component", () => {
+  const links: Link[] = [
+    {
+      id: "1",
+      title: "React Docs",
+      url: "https://react.dev",
+      category: "desenvolvimento",
+      tags: ["react"],
+      clicks: 5,
+      createdAt: "2026-01-15",
+    },
+    {
+      id: "2",
+      title: "TypeScript Docs",
+      url: "https://www.typescriptlang.org",
+      category: "desenvolvimento",
+      tags: ["typescript"],
+      clicks: 3,
+      createdAt: "2026-01-16",
+    },
+    {
+      id: "3",
+      title: "Design System",
+      url: "https://example.com/design",
+      category: "design",
+      tags: [],
+      clicks: 1,
+      createdAt: "2026-01-17",
+    },
+  ];
+
+  test("should render correct metrics when links are provided", () => {
+    render(<Metrics links={links} isQuerying={false} />);
+
+    expect(screen.getByText(/total de links/i)).toBeInTheDocument();
+    expect(screen.getByText("3")).toBeInTheDocument();
+
+    expect(screen.getByText(/total de clicks/i)).toBeInTheDocument();
+    expect(screen.getByText("9")).toBeInTheDocument();
+
+    expect(screen.getByText(/categoria popular/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/desenvolvimento \(2 links\)/i),
+    ).toBeInTheDocument();
+  });
+});
