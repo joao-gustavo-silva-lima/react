@@ -1,5 +1,5 @@
 import { cleanup, render, screen } from "@testing-library/react";
-import { beforeEach, describe, expect, test } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { Link } from "../types/links.types";
 import Metrics from "./Metrics";
 
@@ -38,7 +38,17 @@ describe("Metrics Component", () => {
     },
   ];
 
-  test("should render correct metrics when links are provided", () => {
+  it("should render loading skeletons when isQuerying is true", () => {
+    render(<Metrics links={[]} isQuerying={true} />);
+
+    expect(
+      screen
+        .getAllByRole("listitem")
+        .every(({ textContent }) => !Boolean(textContent.trim())),
+    ).toBeTruthy();
+  });
+
+  it("should render correct metrics when links are provided", () => {
     render(<Metrics links={links} isQuerying={false} />);
 
     expect(screen.getByText(/total de links/i)).toBeInTheDocument();
@@ -51,5 +61,13 @@ describe("Metrics Component", () => {
     expect(
       screen.getByText(/desenvolvimento \(2 links\)/i),
     ).toBeInTheDocument();
+  });
+
+  it("should not render popular category metric when list is empty", () => {
+    render(<Metrics links={[]} isQuerying={false} />);
+
+    expect(screen.getByText(/total de links/i)).toBeInTheDocument();
+    expect(screen.getByText(/total de clicks/i)).toBeInTheDocument();
+    expect(screen.queryByText(/categoria popular/i)).not.toBeInTheDocument();
   });
 });
