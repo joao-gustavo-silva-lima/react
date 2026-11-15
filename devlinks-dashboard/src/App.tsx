@@ -1,14 +1,14 @@
-import "./assets/styles/tailwind.style.css";
-import LinkList from "./components/LinkList";
-import useLinksQuery from "./hooks/useLinksQuery.hook";
-import Modal from "./components/Modal";
-import { useState } from "react";
-import type { Link, Query } from "./types/links.types";
-import SearchBar from "./components/SearchBar";
-import Metrics from "./components/Metrics/Metrics";
-import Header from "./components/Header";
-import ActionButton from "./components/ActionButton";
 import { LinkIcon } from "lucide-react";
+import { useState } from "react";
+import "./assets/styles/tailwind.style.css";
+import ActionButton from "./components/ActionButton";
+import Header from "./components/Header";
+import LinkList from "./components/LinkList/LinkList";
+import Metrics from "./components/Metrics/Metrics";
+import Modal from "./components/Modal";
+import SearchBar from "./components/SearchBar";
+import useLinksQuery from "./hooks/useLinksQuery.hook";
+import type { Link, Query } from "./types/links.types";
 
 function App() {
   const { links, isQuerying, hasQueryFailed, refetchLinks } = useLinksQuery();

@@ -1,5 +1,9 @@
-import useLinkAction from "../hooks/useLinkActions.hook";
-import type { Link, PREDEFINED_CATEGORIES, Query } from "../types/links.types";
+import useLinkAction from "../../hooks/useLinkActions.hook";
+import type {
+  Link,
+  PREDEFINED_CATEGORIES,
+  Query,
+} from "../../types/links.types";
 import {
   ExternalLink,
   LinkIcon,
@@ -7,9 +11,9 @@ import {
   SquarePen,
   Trash2,
 } from "lucide-react";
-import Overlay from "./Overlay";
+import Overlay from "../Overlay";
 
-function LinkList({
+export default function LinkList({
   links,
   hasQueryFailed,
   isQuerying,
@@ -30,24 +34,9 @@ function LinkList({
 }) {
   const { isActing, redirectByLinkID, deleteLinkByID } = useLinkAction();
 
-  const filteredLinks = links.filter((link) => {
-    const matchesTitle =
-      !filterQuery.title ||
-      filterQuery.title === "" ||
-      link.title.toLowerCase().includes(filterQuery.title.toLowerCase());
-
-    const matchesTags =
-      !filterQuery.tag ||
-      filterQuery.tag === "" ||
-      link.tags.includes(filterQuery.tag);
-
-    const matchesCategory =
-      !filterQuery.category ||
-      filterQuery.category === "" ||
-      link.category.toLowerCase() === filterQuery.category.toLowerCase();
-
-    return matchesTitle && matchesTags && matchesCategory;
-  });
+  const filteredLinks = filterLinks(links, filterQuery);
+  const hasLinks = links.length > 0;
+  const linksMatchFilter = filteredLinks.length > 0;
 
   function handleRedirection(link: Link) {
     const confirmRedirection = confirm(
@@ -100,16 +89,24 @@ function LinkList({
     );
   }
 
-  if (!isQuerying && filteredLinks.length === 0) {
+  if (!isQuerying && (!hasLinks || !linksMatchFilter)) {
     return (
       <p className="w-full text-center">
-        Não há links registrados. Que tal{" "}
-        <span
-          onClick={openRegisterModal}
+        {!hasLinks
+          ? "Não há links registrados."
+          : !linksMatchFilter &&
+            "Nenhum link satisfaz os filtros aplicados."}{" "}
+        <button
+          type="button"
+          onClick={() =>
+            links.length === 0 ? openRegisterModal() : setFilterQuery({})
+          }
           className="underline text-brand hover:cursor-pointer"
         >
-          registrar um novo?
-        </span>
+          {!hasLinks
+            ? "Registrar um novo?"
+            : !linksMatchFilter && "Limpar filtros?"}
+        </button>
       </p>
     );
   }
@@ -221,6 +218,25 @@ function CardSkeleton() {
   );
 }
 
+export function filterLinks(links: Link[], query: Query): Link[] {
+  return links.filter((link) => {
+    const matchesTitle =
+      !query.title ||
+      query.title === "" ||
+      link.title.toLowerCase().includes(query.title.toLowerCase());
+
+    const matchesTags =
+      !query.tag || query.tag === "" || link.tags.includes(query.tag);
+
+    const matchesCategory =
+      !query.category ||
+      query.category === "" ||
+      link.category.toLowerCase() === query.category.toLowerCase();
+
+    return matchesTitle && matchesTags && matchesCategory;
+  });
+}
+
 const categoryColorsMap = new Map<
   (typeof PREDEFINED_CATEGORIES)[number],
   string
@@ -233,5 +249,3 @@ const categoryColorsMap = new Map<
   ["estudo", "#eab308"],
   ["pessoal", "#0d9488"],
 ]);
-
-export default LinkList;
