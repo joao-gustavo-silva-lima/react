@@ -1,6 +1,6 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it } from "vitest";
-import { type Link } from "../../types/links.types";
+import { getMockedLinks } from "../../utils/.test.utils";
 import Metrics from "./Metrics";
 
 beforeEach(() => {
@@ -8,36 +8,6 @@ beforeEach(() => {
 });
 
 describe("Metrics Component", () => {
-  const links: Link[] = [
-    {
-      id: "1",
-      title: "React Docs",
-      url: "https://react.dev",
-      category: "desenvolvimento",
-      tags: ["react"],
-      clicks: 5,
-      createdAt: "2026-01-15",
-    },
-    {
-      id: "2",
-      title: "TypeScript Docs",
-      url: "https://www.typescriptlang.org",
-      category: "desenvolvimento",
-      tags: ["typescript"],
-      clicks: 3,
-      createdAt: "2026-01-16",
-    },
-    {
-      id: "3",
-      title: "Design System",
-      url: "https://example.com/design",
-      category: "design",
-      tags: [],
-      clicks: 1,
-      createdAt: "2026-01-17",
-    },
-  ];
-
   it("should render loading skeletons when isQuerying is true", () => {
     render(<Metrics links={[]} isQuerying={true} />);
 
@@ -49,7 +19,7 @@ describe("Metrics Component", () => {
   });
 
   it("should render correct metrics when links are provided", () => {
-    render(<Metrics links={links} isQuerying={false} />);
+    render(<Metrics links={getMockedLinks()} isQuerying={false} />);
 
     expect(screen.getByText(/total de links/i)).toBeInTheDocument();
     expect(screen.getByText("3")).toBeInTheDocument();

@@ -13,6 +13,17 @@ import {
 } from "lucide-react";
 import Overlay from "../Overlay";
 
+export interface LinkListProps {
+  links: Link[];
+  filterQuery: Query;
+  isQuerying: boolean;
+  hasQueryFailed: boolean;
+  refetchLinks: () => void;
+  openRegisterModal: () => void;
+  setFilterQuery: (query: Query) => void;
+  openUpdatingModal: (link: Link) => void;
+}
+
 export default function LinkList({
   links,
   hasQueryFailed,
@@ -22,16 +33,7 @@ export default function LinkList({
   setFilterQuery,
   openRegisterModal,
   openUpdatingModal,
-}: {
-  links: Link[];
-  filterQuery: Query;
-  isQuerying: boolean;
-  hasQueryFailed: boolean;
-  refetchLinks: () => void;
-  openRegisterModal: () => void;
-  setFilterQuery: (query: Query) => void;
-  openUpdatingModal: (link: Link) => void;
-}) {
+}: LinkListProps) {
   const { isActing, redirectByLinkID, deleteLinkByID } = useLinkAction();
 
   const filteredLinks = filterLinks(links, filterQuery);
@@ -82,30 +84,37 @@ export default function LinkList({
       <p className="w-full text-center">
         Ocorreu um erro ao buscar os links. Tente novamente{" "}
         <a className="underline text-brand" href="/">
-          aqui
+          aqui.
         </a>
-        .
       </p>
     );
   }
 
-  if (!isQuerying && (!hasLinks || !linksMatchFilter)) {
+  if (!isQuerying && !hasLinks) {
     return (
       <p className="w-full text-center">
-        {!hasLinks
-          ? "Não há links registrados."
-          : !linksMatchFilter &&
-            "Nenhum link satisfaz os filtros aplicados."}{" "}
+        Não há links registrados.{" "}
         <button
           type="button"
-          onClick={() =>
-            links.length === 0 ? openRegisterModal() : setFilterQuery({})
-          }
+          onClick={openRegisterModal}
           className="underline text-brand hover:cursor-pointer"
         >
-          {!hasLinks
-            ? "Registrar um novo?"
-            : !linksMatchFilter && "Limpar filtros?"}
+          Registrar um novo?
+        </button>
+      </p>
+    );
+  }
+
+  if (!isQuerying && !linksMatchFilter) {
+    return (
+      <p className="w-full text-center">
+        Nenhum link satisfaz os filtros aplicados.{" "}
+        <button
+          type="button"
+          onClick={() => setFilterQuery({})}
+          className="underline text-brand hover:cursor-pointer"
+        >
+          Limpar filtros?
         </button>
       </p>
     );
