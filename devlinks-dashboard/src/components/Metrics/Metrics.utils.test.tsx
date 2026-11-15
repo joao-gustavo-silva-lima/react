@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Link } from "../../types/links.types";
+import { type Link } from "../../types/links.types";
 import { calculateMetrics } from "./Metrics";
 
 describe("calculateMetrics", () => {
