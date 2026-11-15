@@ -34,7 +34,7 @@ export default function CategorySelect({
         onFocus={() => setIsOpen(true)}
         className={`${buttonStyles} flex flex-row flex-nowrap justify-between items-center w-full capitalize main-border ${error ? "border-error" : ""} focus:border-white rounded-input p-input hover:cursor-pointer`}
       >
-        <span>{categoryState || placeholder || "Categoria"}</span>
+        {categoryState || placeholder || "Categoria"}
         <ChevronDown width={17.5} />
       </button>
 

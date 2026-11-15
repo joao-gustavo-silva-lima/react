@@ -79,7 +79,11 @@ export default function Modal({
 
   return (
     <Overlay>
-      <aside className="flex flex-col flex-nowrap gap-container w-full max-w-[400px] h-dvh bp1:h-fit max-h-dvh overflow-auto rounded-surface bg-surface main-border p-container">
+      <form
+        aria-label="formulário"
+        onSubmit={handleSubmit}
+        className="flex flex-col flex-nowrap gap-container w-full max-w-[400px] h-dvh bp1:h-fit max-h-dvh overflow-auto rounded-surface bg-surface main-border p-container"
+      >
         <div className="flex flex-nowrap w-full items-center justify-between">
           <h3 className="font-[700] text-h2">
             {updatingLink === undefined
@@ -90,67 +94,60 @@ export default function Modal({
             <X width={22.5} />
           </div>
         </div>
-        <form onSubmit={handleSubmit}>
-          <fieldset className="flex flex-col gap-container" disabled={isActing}>
-            <MonitoredInput label="Título" error={inputErrors.title}>
-              <input
-                onBlur={handleInputAction}
-                onChange={handleInputAction}
-                type="text"
-                name="title"
-                id="title"
-                maxLength={50}
-                placeholder="Meu Link..."
-                defaultValue={updatingLink?.title ?? ""}
-              />
-            </MonitoredInput>
-            <MonitoredInput label="URL" error={inputErrors.url}>
-              <input
-                onBlur={handleInputAction}
-                onChange={handleInputAction}
-                type="text"
-                name="url"
-                id="url"
-                max={300}
-                placeholder="https://..."
-                defaultValue={updatingLink?.url ?? ""}
-              />
-            </MonitoredInput>
-            <MonitoredInput error={inputErrors.category}>
-              <CategorySelect
-                error={inputErrors.category !== undefined}
-                category={category}
-                dropdownStyles="z-3"
-                validateInput={() => validateInput("category", category)}
-                changeCategory={(category) => setCategory(category)}
-              />
-            </MonitoredInput>
+        <fieldset className="flex flex-col gap-container" disabled={isActing}>
+          <MonitoredInput label="Título" error={inputErrors.title}>
             <input
-              type="hidden"
-              id="category"
-              name="category"
-              value={category}
+              onBlur={handleInputAction}
+              onChange={handleInputAction}
+              type="text"
+              name="title"
+              id="title"
+              maxLength={50}
+              placeholder="Meu Link..."
+              defaultValue={updatingLink?.title ?? ""}
             />
-            <MonitoredInput label="Tags" error={inputErrors.tags}>
-              <input
-                onBlur={handleInputAction}
-                onChange={handleInputAction}
-                type="text"
-                name="tags"
-                id="tags"
-                placeholder="site, dev, links..."
-                defaultValue={updatingLink?.tags.join(", ") ?? ""}
-              />
-            </MonitoredInput>
-            <div className="flex flex-row flex-nowrap gap-[0.5rem] text-body font-[500]">
-              <ActionButton action={closeModal}>Cancelar</ActionButton>
-              <ActionButton type="submit" filled={true}>
-                {updatingLink === undefined ? "Registrar" : "Atualizar"}
-              </ActionButton>
-            </div>
-          </fieldset>
-        </form>
-      </aside>
+          </MonitoredInput>
+          <MonitoredInput label="URL" error={inputErrors.url}>
+            <input
+              onBlur={handleInputAction}
+              onChange={handleInputAction}
+              type="text"
+              name="url"
+              id="url"
+              max={300}
+              placeholder="https://..."
+              defaultValue={updatingLink?.url ?? ""}
+            />
+          </MonitoredInput>
+          <MonitoredInput error={inputErrors.category}>
+            <CategorySelect
+              error={inputErrors.category !== undefined}
+              category={category}
+              dropdownStyles="z-3"
+              validateInput={() => validateInput("category", category)}
+              changeCategory={(category) => setCategory(category)}
+            />
+          </MonitoredInput>
+          <input type="hidden" id="category" name="category" value={category} />
+          <MonitoredInput label="Tags" error={inputErrors.tags}>
+            <input
+              onBlur={handleInputAction}
+              onChange={handleInputAction}
+              type="text"
+              name="tags"
+              id="tags"
+              placeholder="site, dev, links..."
+              defaultValue={updatingLink?.tags.join(", ") ?? ""}
+            />
+          </MonitoredInput>
+          <div className="flex flex-row flex-nowrap gap-[0.5rem] text-body font-[500]">
+            <ActionButton action={closeModal}>Cancelar</ActionButton>
+            <ActionButton type="submit" filled={true}>
+              {updatingLink === undefined ? "Registrar" : "Atualizar"}
+            </ActionButton>
+          </div>
+        </fieldset>
+      </form>
     </Overlay>
   );
 }
