@@ -1,8 +1,7 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { getMockedLinks } from "../../utils/.test.utils";
-import LinkList, { filterLinks, type LinkListProps } from "./LinkList";
-import type { Query } from "../../types/links.types";
+import LinkList, { type LinkListProps } from "./LinkList";
 
 afterEach(() => {
   cleanup();
@@ -81,34 +80,39 @@ describe("LinkList Component", () => {
     expect(button).toBeInTheDocument();
   });
 
-  it.for([
-    {},
-    {
-      category: "desenvolvimento",
-    },
-    { title: "docs" },
-  ] as Query[])(
-    "should render link cards satisfying query when fetching is successfully done",
-    (query) => {
-      const links = getMockedLinks();
-      const filteredLinks = filterLinks(links, query);
-      const nonMatchingLinks = links.filter(
-        (link) => !filteredLinks.includes(link),
-      );
+  it("should render link cards when links fetching is successfull", () => {
+    const links = getMockedLinks();
 
-      renderLinkList({
-        links,
-        filterQuery: query,
-      });
+    renderLinkList({
+      links,
+    });
 
-      nonMatchingLinks.forEach(({ title }) => {
-        expect(
-          screen.queryByText(new RegExp(title, "i")),
-        ).not.toBeInTheDocument();
-      });
-      filteredLinks.forEach(({ title }) => {
-        expect(screen.getByText(new RegExp(title, "i"))).toBeInTheDocument();
-      });
-    },
-  );
+    links.forEach(({ title }) => {
+      expect(screen.getByText(new RegExp(title, "i"))).toBeInTheDocument();
+    });
+  });
+
+  it("should render link cards respecting the category filter", () => {
+    const links = getMockedLinks();
+
+    renderLinkList({
+      links,
+      filterQuery: { category: "desenvolvimento" },
+    });
+
+    expect(screen.queryByText(/design/i)).not.toBeInTheDocument();
+    expect(screen.getAllByText(/desenvolvimento/i)).toHaveLength(2);
+  });
+
+  it("should render link cards respecting the title filter", () => {
+    const links = getMockedLinks();
+
+    renderLinkList({
+      links,
+      filterQuery: { title: "docs" },
+    });
+
+    expect(screen.queryByText(/design/i)).not.toBeInTheDocument();
+    expect(screen.getAllByText(/docs/i)).toHaveLength(2);
+  });
 });
