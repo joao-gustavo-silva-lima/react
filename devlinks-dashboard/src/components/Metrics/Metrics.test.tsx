@@ -1,6 +1,6 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it } from "vitest";
-import { Link } from "../types/links.types";
+import { Link } from "../../types/links.types";
 import Metrics from "./Metrics";
 
 beforeEach(() => {

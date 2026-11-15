@@ -4,7 +4,7 @@ import {
   MousePointerClick,
   Star,
 } from "lucide-react";
-import type { Link } from "../types/links.types";
+import type { Link } from "../../types/links.types";
 
 type Metrics = {
   numOfLinks: number;

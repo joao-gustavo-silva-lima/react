@@ -5,7 +5,7 @@ import Modal from "./components/Modal";
 import { useState } from "react";
 import type { Link, Query } from "./types/links.types";
 import SearchBar from "./components/SearchBar";
-import Metrics from "./components/Metrics";
+import Metrics from "./components/Metrics/Metrics";
 import Header from "./components/Header";
 import ActionButton from "./components/ActionButton";
 import { LinkIcon } from "lucide-react";
