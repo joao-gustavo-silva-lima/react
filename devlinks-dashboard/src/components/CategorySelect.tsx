@@ -39,15 +39,19 @@ export default function CategorySelect({
       </button>
 
       <ul
+        aria-hidden={!isOpen}
         className={`absolute top-0 left-0 ${isOpen ? "flex" : "hidden"} flex-col flex-nowrap w-full h-[150px] bg-surface capitalize rounded-input main-border border-[white] overflow-auto ${dropdownStyles}`}
       >
         {["", ...PREDEFINED_CATEGORIES].map((category, i) => (
-          <li
-            className={`!${itemsStyles} text-nowrap p-input ${category === categoryState ? "bg-border-main" : ""} hover:cursor-pointer hover:bg-border-main`}
-            onMouseDown={() => changeCategory(category.toLowerCase())}
-            key={i}
-          >
-            {category || placeholder || "categoria"}
+          <li aria-hidden={!isOpen} key={i}>
+            <button
+              aria-label={category || placeholder || "categoria"}
+              aria-hidden={!isOpen}
+              className={`!${itemsStyles} text-nowrap text-left w-full p-input ${category === categoryState ? "bg-border-main" : ""} hover:cursor-pointer hover:bg-border-main capitalize`}
+              onMouseDown={() => changeCategory(category.toLowerCase())}
+            >
+              {category || placeholder || "categoria"}
+            </button>
           </li>
         ))}
       </ul>

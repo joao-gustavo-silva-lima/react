@@ -1,6 +1,6 @@
-import { type Query } from "../types/links.types";
+import { type Query } from "../../types/links.types";
 import { Search } from "lucide-react";
-import CategorySelect from "./CategorySelect";
+import CategorySelect from "../CategorySelect";
 
 export default function SearchBar({
   filterQuery,

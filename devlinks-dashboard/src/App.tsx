@@ -5,8 +5,8 @@ import ActionButton from "./components/ActionButton";
 import Header from "./components/Header";
 import LinkList from "./components/LinkList/LinkList";
 import Metrics from "./components/Metrics/Metrics";
-import Modal from "./components/Modal";
-import SearchBar from "./components/SearchBar";
+import Modal from "./components/Modal/Modal";
+import SearchBar from "./components/SearchBar/SearchBar";
 import useLinksQuery from "./hooks/useLinksQuery.hook";
 import type { Link, Query } from "./types/links.types";
 

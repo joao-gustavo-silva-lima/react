@@ -1,11 +1,11 @@
 import React, { useState, type SyntheticEvent } from "react";
-import useFormValidation from "../hooks/useFormValidation.hook";
-import useLinkAction from "../hooks/useLinkActions.hook";
-import { type Link, type ModalFormData } from "../types/links.types";
-import ActionButton from "./ActionButton";
+import useFormValidation from "../../hooks/useFormValidation.hook";
+import useLinkAction from "../../hooks/useLinkActions.hook";
+import { type Link, type ModalFormData } from "../../types/links.types";
+import ActionButton from "../ActionButton";
 import { LoaderCircle, X } from "lucide-react";
-import CategorySelect from "./CategorySelect";
-import Overlay from "./Overlay";
+import CategorySelect from "../CategorySelect";
+import Overlay from "../Overlay";
 
 export default function Modal({
   enabled,
