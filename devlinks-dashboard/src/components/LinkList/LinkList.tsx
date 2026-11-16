@@ -152,7 +152,8 @@ export default function LinkList({
                   {link.url}
                 </span>
               </div>
-              <span
+              <button
+                type="button"
                 style={{
                   backgroundColor:
                     categoryColorsMap.get(
@@ -163,7 +164,7 @@ export default function LinkList({
                 onClick={() => handleQueryChange("category", link.category)}
               >
                 {link.category}
-              </span>
+              </button>
               {link.tags.length > 0 && (
                 <ul className="flex flex-wrap gap-[0.5rem]">
                   {link.tags.map((tag, i) => (
