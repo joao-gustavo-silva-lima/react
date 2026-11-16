@@ -4,7 +4,7 @@ import useLinkAction from "../../hooks/useLinkActions.hook";
 import { type Link, type ModalFormData } from "../../types/links.types";
 import ActionButton from "../ActionButton";
 import { LoaderCircle, X } from "lucide-react";
-import CategorySelect from "../CategorySelect";
+import CategorySelect from "../CategorySelect/CategorySelect";
 import Overlay from "../Overlay";
 
 export default function Modal({

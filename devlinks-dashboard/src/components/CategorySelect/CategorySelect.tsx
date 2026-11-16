@@ -1,6 +1,6 @@
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
-import { PREDEFINED_CATEGORIES } from "../types/links.types";
+import { PREDEFINED_CATEGORIES } from "../../types/links.types";
 
 export default function CategorySelect({
   category: categoryState,
