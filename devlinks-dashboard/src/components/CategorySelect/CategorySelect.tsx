@@ -45,6 +45,7 @@ export default function CategorySelect({
         {["", ...PREDEFINED_CATEGORIES].map((category, i) => (
           <li aria-hidden={!isOpen} key={i}>
             <button
+              type="button"
               aria-label={category || placeholder || "categoria"}
               aria-hidden={!isOpen}
               className={`!${itemsStyles} text-nowrap text-left w-full p-input ${category === categoryState ? "bg-border-main" : ""} hover:cursor-pointer hover:bg-border-main capitalize`}

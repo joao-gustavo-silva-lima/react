@@ -190,6 +190,7 @@ export default function LinkList({
                 <ExternalLink width={20} />
               </button>
               <button
+                aria-label="edit"
                 className="animated-button main-border rounded-input p-[5px]"
                 type="button"
                 onClick={() => openUpdatingModal(link)}
